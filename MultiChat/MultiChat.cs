@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -8,9 +9,9 @@ namespace MultiChat
 {
     public partial class MultiChat : Form
     {
-        TcpClient tcpClient;
-        NetworkStream networkStream;
-        Thread thread;
+        private TcpClient client;
+        private NetworkStream networkStream;
+        private Thread thread;
 
         public MultiChat()
         {
@@ -19,48 +20,47 @@ namespace MultiChat
 
         public delegate void setMessage(string input);
 
-        private void testMethod(string input)
+        private void updateChatBox(string input)
         {
             if (this.ChatBox.InvokeRequired)
             {
-                // var test = testDelegate(string);
-                // this.Invoke(test, new object[], input);
+                
             }
             else
             {
-                // this.update ?
+                
             }
         }
 
         private void ListenBtn_Click(object sender, EventArgs e)
         {
-            var server = new TcpListener(IPAddress.Any, 9000);
+            TcpListener server = new TcpListener(IPAddress.Any, 9000);
             server.Start();
             
-            ChatBox.AppendText("Listening for client..." + Environment.NewLine);
+            ChatBox.AppendText("Listening for clients..." + Environment.NewLine);
 
-            Console.WriteLine("Connecting...");
-            tcpClient = server.AcceptTcpClient();
-
-            //thread = new Thread(ReceiveData());
-            //thread.Start();
+            client = server.AcceptTcpClient();
+            thread = new Thread(new ThreadStart(ReceiveData));
+            thread.Start();
         }
 
-        //private ThreadStart ReceiveData()
-        //{
-        //    int value;
-        //    string text;
-        //    byte[] arr = new byte[1024];
+        private void ReceiveData()
+        {
+            int bufferSize = 1024;
+            string message;
+            byte[] buffer = new byte[bufferSize];
 
-        //    networkStream = tcpClient.GetStream();
+            networkStream = client.GetStream();
 
-        //    while (true)
-        //    {
-        //       networkStream.Read(arr, 0, arr.Length);
-        //       text = Encoding.ASCII.GetString(arr);
+            while (true)
+            {
+                int readBytes = networkStream.Read(buffer, 0, buffer.Length);
+                message = Encoding.ASCII.GetString(buffer);
 
-        //       if (text == "bye") break;
-        //    }
-        //}
+                if (message == "bye") break;
+
+                // update textbox
+            }
+        }
     }
 }
