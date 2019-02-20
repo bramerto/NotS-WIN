@@ -18,6 +18,12 @@ namespace MultiChat
         public MultiChat()
         {
             InitializeComponent();
+            txtMessageToBeSend.KeyDown += (sender, args) => {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnSendMessage.PerformClick();
+                }
+            };
         }
 
         private void AddMessage(string message)
