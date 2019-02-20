@@ -34,6 +34,8 @@ namespace MultiChat
 
         private void UpdateDisplay(string message)
         {
+            int nItems = (int)(listChats.Height / listChats.ItemHeight);
+            listChats.TopIndex = listChats.Items.Count - nItems;
             listChats.Items.Add(message);
         }
 
