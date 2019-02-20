@@ -10,7 +10,7 @@ namespace MultiChat
     public partial class MultiChat : Form
     {
         TcpClient tcpClient;
-        NetworkStream networkStream;
+        NetworkStream stream;
         Thread thread;
 
         protected delegate void UpdateDisplayDelegate(string message);
@@ -39,10 +39,15 @@ namespace MultiChat
 
         private void btnListen_Click(object sender, EventArgs e)
         {
-            TcpListener tcpListener = new TcpListener(IPAddress.Any, 9000);
-            tcpListener.Start();
+            IPAddress ip = IPAddress.Any;
+            TcpListener tcpListener = new TcpListener(ip, 9000);
+            thread = new Thread(new ThreadStart(tcpListener.Start));
 
+            thread.Start();
+
+            AddMessage("Chat server started on: " + ip.ToString());
             AddMessage("Listening for client.");
+           
 
             tcpClient = tcpListener.AcceptTcpClient();
             thread = new Thread(new ThreadStart(ReceiveData));
@@ -52,26 +57,29 @@ namespace MultiChat
         private void ReceiveData()
         {
             int bufferSize = 2;
-            string message = "";
+            var message = new StringBuilder(); ;
             byte[] buffer = new byte[bufferSize];
 
-            networkStream = tcpClient.GetStream();
+            stream = tcpClient.GetStream();
             
             AddMessage("Connected!");
 
-            while (true)
-            {
-                int readBytes = networkStream.Read(buffer, 0, bufferSize);
-                message = Encoding.ASCII.GetString(buffer, 0, readBytes);
+            while (true) {
+                do
+                {
+                    int readBytes = stream.Read(buffer, 0, bufferSize);
+                    message.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
+                }
+                while (stream.DataAvailable);
 
-                if (message == "bye")
-                    break;
+                if (message.ToString() == "bye") break;
 
-                AddMessage(message);
+                AddMessage(message.ToString());
+                message.Clear();
             }
 
             buffer = Encoding.ASCII.GetBytes("bye");
-            networkStream.Write(buffer, 0, buffer.Length);
+            stream.Write(buffer, 0, buffer.Length);
 
             // cleanup:
             //networkStream.Close();
@@ -94,7 +102,7 @@ namespace MultiChat
             string message = txtMessageToBeSend.Text;
 
             byte[] buffer = Encoding.ASCII.GetBytes(message);
-            networkStream.Write(buffer, 0, buffer.Length);
+            stream.Write(buffer, 0, buffer.Length);
 
             AddMessage(message);
             txtMessageToBeSend.Clear();
