@@ -55,7 +55,6 @@ namespace MultiChat
 
             AddMessage("Chat server started on: " + ip.ToString());
             AddMessage("Listening for client.");
-           
 
             tcpClient = tcpListener.AcceptTcpClient();
             thread = new Thread(new ThreadStart(ReceiveData));
@@ -64,8 +63,8 @@ namespace MultiChat
 
         private void ReceiveData()
         {
-            int bufferSize = 2;
-            var message = new StringBuilder(); ;
+            int bufferSize = int.Parse(bufferSizeInput.Text);
+            var message = new StringBuilder();
             byte[] buffer = new byte[bufferSize];
 
             stream = tcpClient.GetStream();
