@@ -38,6 +38,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.bufferSizeInput = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.btnDisconnect = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,6 +88,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnDisconnect);
             this.groupBox1.Controls.Add(this.txtChatServerIP);
             this.groupBox1.Controls.Add(this.btnConnectWithServer);
             this.groupBox1.Controls.Add(this.label1);
@@ -95,7 +97,7 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(184, 162);
+            this.groupBox1.Size = new System.Drawing.Size(184, 186);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connect to Server";
@@ -111,10 +113,10 @@
             // 
             // btnConnectWithServer
             // 
-            this.btnConnectWithServer.Location = new System.Drawing.Point(29, 116);
+            this.btnConnectWithServer.Location = new System.Drawing.Point(29, 113);
             this.btnConnectWithServer.Margin = new System.Windows.Forms.Padding(2);
             this.btnConnectWithServer.Name = "btnConnectWithServer";
-            this.btnConnectWithServer.Size = new System.Drawing.Size(139, 27);
+            this.btnConnectWithServer.Size = new System.Drawing.Size(139, 30);
             this.btnConnectWithServer.TabIndex = 1;
             this.btnConnectWithServer.Text = "Connect";
             this.btnConnectWithServer.UseVisualStyleBackColor = true;
@@ -136,6 +138,7 @@
             this.bufferSizeInput.Name = "bufferSizeInput";
             this.bufferSizeInput.Size = new System.Drawing.Size(123, 20);
             this.bufferSizeInput.TabIndex = 5;
+            this.bufferSizeInput.Text = "1024";
             // 
             // label2
             // 
@@ -145,6 +148,15 @@
             this.label2.Size = new System.Drawing.Size(58, 13);
             this.label2.TabIndex = 6;
             this.label2.Text = "Buffer Size";
+            // 
+            // btnDisconnect
+            // 
+            this.btnDisconnect.Location = new System.Drawing.Point(29, 149);
+            this.btnDisconnect.Name = "btnDisconnect";
+            this.btnDisconnect.Size = new System.Drawing.Size(139, 32);
+            this.btnDisconnect.TabIndex = 3;
+            this.btnDisconnect.Text = "Disconnect";
+            this.btnDisconnect.UseVisualStyleBackColor = true;
             // 
             // MultiChat
             // 
@@ -180,6 +192,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox bufferSizeInput;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnDisconnect;
     }
 }
 
