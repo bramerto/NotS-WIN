@@ -89,8 +89,8 @@ namespace MultiChat
             stream.Write(buffer, 0, buffer.Length);
 
             // cleanup:
-            //networkStream.Close();
-            //tcpClient.Close();
+            tcpClient.GetStream().Close();
+            tcpClient.Close();
 
             AddMessage("Connection closed");
         }
