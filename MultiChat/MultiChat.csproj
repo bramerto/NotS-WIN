@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{61393BB7-36B3-4BBD-AF8D-D3F04F98D7E6}</ProjectGuid>
+    <ProjectGuid>{97F9AAA4-9C19-4051-9D0B-003F7DD82FCF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>MultiChat</RootNamespace>
     <AssemblyName>MultiChat</AssemblyName>
