@@ -28,126 +28,172 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnListen = new System.Windows.Forms.Button();
-            this.listChats = new System.Windows.Forms.ListBox();
-            this.txtMessageToBeSend = new System.Windows.Forms.TextBox();
-            this.btnSendMessage = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.txtChatServerIP = new System.Windows.Forms.TextBox();
-            this.btnConnectWithServer = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.groupBox1.SuspendLayout();
+            this.ChatBox = new System.Windows.Forms.RichTextBox();
+            this.MessageTxtBox = new System.Windows.Forms.TextBox();
+            this.SendMessageBtn = new System.Windows.Forms.Button();
+            this.IpTxtBox = new System.Windows.Forms.TextBox();
+            this.ConnectBtn = new System.Windows.Forms.Button();
+            this.ListenBtn = new System.Windows.Forms.Button();
+            this.IpLbl = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.ChatLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.ServerLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.ConnectLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.ChatLayout.SuspendLayout();
+            this.ServerLayout.SuspendLayout();
+            this.ConnectLayout.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btnListen
+            // ChatBox
             // 
-            this.btnListen.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnListen.Location = new System.Drawing.Point(872, 38);
-            this.btnListen.Name = "btnListen";
-            this.btnListen.Size = new System.Drawing.Size(276, 44);
-            this.btnListen.TabIndex = 0;
-            this.btnListen.Text = "Listen";
-            this.btnListen.UseVisualStyleBackColor = true;
-            this.btnListen.Click += new System.EventHandler(this.btnListen_Click);
+            this.ChatBox.Location = new System.Drawing.Point(3, 3);
+            this.ChatBox.Name = "ChatBox";
+            this.ChatBox.Size = new System.Drawing.Size(342, 221);
+            this.ChatBox.TabIndex = 0;
+            this.ChatBox.Text = "";
             // 
-            // listChats
+            // MessageTxtBox
             // 
-            this.listChats.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listChats.FormattingEnabled = true;
-            this.listChats.ItemHeight = 25;
-            this.listChats.Location = new System.Drawing.Point(53, 38);
-            this.listChats.Name = "listChats";
-            this.listChats.Size = new System.Drawing.Size(777, 604);
-            this.listChats.TabIndex = 1;
+            this.MessageTxtBox.Location = new System.Drawing.Point(3, 230);
+            this.MessageTxtBox.Multiline = true;
+            this.MessageTxtBox.Name = "MessageTxtBox";
+            this.MessageTxtBox.Size = new System.Drawing.Size(342, 20);
+            this.MessageTxtBox.TabIndex = 1;
             // 
-            // txtMessageToBeSend
+            // SendMessageBtn
             // 
-            this.txtMessageToBeSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMessageToBeSend.Location = new System.Drawing.Point(53, 715);
-            this.txtMessageToBeSend.Name = "txtMessageToBeSend";
-            this.txtMessageToBeSend.Size = new System.Drawing.Size(666, 30);
-            this.txtMessageToBeSend.TabIndex = 2;
+            this.SendMessageBtn.Location = new System.Drawing.Point(351, 230);
+            this.SendMessageBtn.Name = "SendMessageBtn";
+            this.SendMessageBtn.Size = new System.Drawing.Size(81, 20);
+            this.SendMessageBtn.TabIndex = 2;
+            this.SendMessageBtn.Text = "Send";
+            this.SendMessageBtn.UseVisualStyleBackColor = true;
             // 
-            // btnSendMessage
+            // IpTxtBox
             // 
-            this.btnSendMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSendMessage.Location = new System.Drawing.Point(738, 709);
-            this.btnSendMessage.Name = "btnSendMessage";
-            this.btnSendMessage.Size = new System.Drawing.Size(92, 42);
-            this.btnSendMessage.TabIndex = 3;
-            this.btnSendMessage.Text = "Send";
-            this.btnSendMessage.UseVisualStyleBackColor = true;
-            this.btnSendMessage.Click += new System.EventHandler(this.btnSendMessage_Click);
+            this.IpTxtBox.Location = new System.Drawing.Point(3, 23);
+            this.IpTxtBox.Name = "IpTxtBox";
+            this.IpTxtBox.Size = new System.Drawing.Size(137, 20);
+            this.IpTxtBox.TabIndex = 4;
             // 
-            // groupBox1
+            // ConnectBtn
             // 
-            this.groupBox1.Controls.Add(this.txtChatServerIP);
-            this.groupBox1.Controls.Add(this.btnConnectWithServer);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(872, 134);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(276, 250);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Connect to Server";
+            this.ConnectBtn.Location = new System.Drawing.Point(3, 48);
+            this.ConnectBtn.Name = "ConnectBtn";
+            this.ConnectBtn.Size = new System.Drawing.Size(137, 28);
+            this.ConnectBtn.TabIndex = 6;
+            this.ConnectBtn.Text = "Connect";
+            this.ConnectBtn.UseVisualStyleBackColor = true;
             // 
-            // txtChatServerIP
+            // ListenBtn
             // 
-            this.txtChatServerIP.Location = new System.Drawing.Point(43, 101);
-            this.txtChatServerIP.Name = "txtChatServerIP";
-            this.txtChatServerIP.Size = new System.Drawing.Size(209, 30);
-            this.txtChatServerIP.TabIndex = 2;
-            this.txtChatServerIP.Text = "127.0.0.1";
+            this.ListenBtn.Location = new System.Drawing.Point(3, 3);
+            this.ListenBtn.Name = "ListenBtn";
+            this.ListenBtn.Size = new System.Drawing.Size(83, 20);
+            this.ListenBtn.TabIndex = 3;
+            this.ListenBtn.Text = "Start";
+            this.ListenBtn.UseVisualStyleBackColor = false;
+            this.ListenBtn.Click += new System.EventHandler(this.ListenBtn_Click);
             // 
-            // btnConnectWithServer
+            // IpLbl
             // 
-            this.btnConnectWithServer.Location = new System.Drawing.Point(44, 178);
-            this.btnConnectWithServer.Name = "btnConnectWithServer";
-            this.btnConnectWithServer.Size = new System.Drawing.Size(208, 41);
-            this.btnConnectWithServer.TabIndex = 1;
-            this.btnConnectWithServer.Text = "Connect";
-            this.btnConnectWithServer.UseVisualStyleBackColor = true;
-            this.btnConnectWithServer.Click += new System.EventHandler(this.btnConnectWithServer_Click);
+            this.IpLbl.AutoSize = true;
+            this.IpLbl.Location = new System.Drawing.Point(3, 0);
+            this.IpLbl.Name = "IpLbl";
+            this.IpLbl.Size = new System.Drawing.Size(73, 13);
+            this.IpLbl.TabIndex = 5;
+            this.IpLbl.Text = "ChatServer IP";
             // 
-            // label1
+            // label2
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(39, 52);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(140, 25);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Chat Server IP";
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label2.AutoSize = true;
+            this.label2.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label2.Location = new System.Drawing.Point(3, 52);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(134, 26);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "Server can only be started from one client";
+            // 
+            // ChatLayout
+            // 
+            this.ChatLayout.ColumnCount = 2;
+            this.ChatLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.ChatLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.ChatLayout.Controls.Add(this.ChatBox, 0, 0);
+            this.ChatLayout.Controls.Add(this.SendMessageBtn, 1, 1);
+            this.ChatLayout.Controls.Add(this.MessageTxtBox, 0, 1);
+            this.ChatLayout.Location = new System.Drawing.Point(12, 10);
+            this.ChatLayout.Name = "ChatLayout";
+            this.ChatLayout.RowCount = 2;
+            this.ChatLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
+            this.ChatLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.ChatLayout.Size = new System.Drawing.Size(435, 253);
+            this.ChatLayout.TabIndex = 14;
+            // 
+            // ServerLayout
+            // 
+            this.ServerLayout.ColumnCount = 1;
+            this.ServerLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ServerLayout.Controls.Add(this.ListenBtn, 0, 0);
+            this.ServerLayout.Controls.Add(this.label2, 0, 1);
+            this.ServerLayout.Location = new System.Drawing.Point(453, 10);
+            this.ServerLayout.Name = "ServerLayout";
+            this.ServerLayout.RowCount = 2;
+            this.ServerLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.ServerLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.ServerLayout.Size = new System.Drawing.Size(143, 100);
+            this.ServerLayout.TabIndex = 15;
+            // 
+            // ConnectLayout
+            // 
+            this.ConnectLayout.ColumnCount = 1;
+            this.ConnectLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ConnectLayout.Controls.Add(this.IpLbl, 0, 0);
+            this.ConnectLayout.Controls.Add(this.IpTxtBox, 0, 1);
+            this.ConnectLayout.Controls.Add(this.ConnectBtn, 0, 2);
+            this.ConnectLayout.Location = new System.Drawing.Point(453, 116);
+            this.ConnectLayout.Name = "ConnectLayout";
+            this.ConnectLayout.RowCount = 3;
+            this.ConnectLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.ConnectLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.ConnectLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55F));
+            this.ConnectLayout.Size = new System.Drawing.Size(143, 100);
+            this.ConnectLayout.TabIndex = 16;
             // 
             // MultiChat
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1186, 793);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.btnSendMessage);
-            this.Controls.Add(this.txtMessageToBeSend);
-            this.Controls.Add(this.listChats);
-            this.Controls.Add(this.btnListen);
+            this.ClientSize = new System.Drawing.Size(607, 275);
+            this.Controls.Add(this.ConnectLayout);
+            this.Controls.Add(this.ServerLayout);
+            this.Controls.Add(this.ChatLayout);
             this.Name = "MultiChat";
             this.Text = "MultiChat";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.ChatLayout.ResumeLayout(false);
+            this.ChatLayout.PerformLayout();
+            this.ServerLayout.ResumeLayout(false);
+            this.ServerLayout.PerformLayout();
+            this.ConnectLayout.ResumeLayout(false);
+            this.ConnectLayout.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button btnListen;
-        private System.Windows.Forms.ListBox listChats;
-        private System.Windows.Forms.TextBox txtMessageToBeSend;
-        private System.Windows.Forms.Button btnSendMessage;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox txtChatServerIP;
-        private System.Windows.Forms.Button btnConnectWithServer;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.RichTextBox ChatBox;
+        private System.Windows.Forms.TextBox MessageTxtBox;
+        private System.Windows.Forms.Button SendMessageBtn;
+        private System.Windows.Forms.Button ListenBtn;
+        private System.Windows.Forms.TextBox IpTxtBox;
+        private System.Windows.Forms.Label IpLbl;
+        private System.Windows.Forms.Button ConnectBtn;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TableLayoutPanel ChatLayout;
+        private System.Windows.Forms.TableLayoutPanel ServerLayout;
+        private System.Windows.Forms.TableLayoutPanel ConnectLayout;
     }
 }
 

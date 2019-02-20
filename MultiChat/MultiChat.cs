@@ -9,96 +9,58 @@ namespace MultiChat
 {
     public partial class MultiChat : Form
     {
-        TcpClient tcpClient;
-        NetworkStream networkStream;
-        Thread thread;
-
-        protected delegate void UpdateDisplayDelegate(string message);
+        private TcpClient client;
+        private NetworkStream networkStream;
+        private Thread thread;
 
         public MultiChat()
         {
             InitializeComponent();
         }
 
-        private void AddMessage(string message)
+        public delegate void setMessage(string input);
+
+        private void updateChatBox(string input)
         {
-            if (listChats.InvokeRequired)
+            if (this.ChatBox.InvokeRequired)
             {
-                listChats.Invoke(new UpdateDisplayDelegate(UpdateDisplay), new object[] { message });
+                
             }
             else
             {
-                UpdateDisplay(message);
+                
             }
         }
 
-        private void UpdateDisplay(string message)
+        private void ListenBtn_Click(object sender, EventArgs e)
         {
-            listChats.Items.Add(message);
-        }
+            TcpListener server = new TcpListener(IPAddress.Any, 9000);
+            server.Start();
+            
+            ChatBox.AppendText("Listening for clients..." + Environment.NewLine);
 
-        private void btnListen_Click(object sender, EventArgs e)
-        {
-            TcpListener tcpListener = new TcpListener(IPAddress.Any, 9000);
-            tcpListener.Start();
-
-            AddMessage("Listening for client.");
-
-            tcpClient = tcpListener.AcceptTcpClient();
+            client = server.AcceptTcpClient();
             thread = new Thread(new ThreadStart(ReceiveData));
             thread.Start();
         }
 
         private void ReceiveData()
         {
-            int bufferSize = 2;
-            string message = "";
+            int bufferSize = 1024;
+            string message;
             byte[] buffer = new byte[bufferSize];
 
-            networkStream = tcpClient.GetStream();
-            
-            AddMessage("Connected!");
+            networkStream = client.GetStream();
 
             while (true)
             {
-                int readBytes = networkStream.Read(buffer, 0, bufferSize);
-                message = Encoding.ASCII.GetString(buffer, 0, readBytes);
+                int readBytes = networkStream.Read(buffer, 0, buffer.Length);
+                message = Encoding.ASCII.GetString(buffer);
 
-                if (message == "bye")
-                    break;
+                if (message == "bye") break;
 
-                AddMessage(message);
+                // update textbox
             }
-
-            buffer = Encoding.ASCII.GetBytes("bye");
-            networkStream.Write(buffer, 0, buffer.Length);
-
-            // cleanup:
-            //networkStream.Close();
-            //tcpClient.Close();
-
-            AddMessage("Connection closed");
-        }
-
-        private void btnConnectWithServer_Click(object sender, EventArgs e)
-        {
-            AddMessage("Connecting...");
-
-            tcpClient = new TcpClient(txtChatServerIP.Text, 9000);
-            thread = new Thread(new ThreadStart(ReceiveData));
-            thread.Start();
-        }
-
-        private void btnSendMessage_Click(object sender, EventArgs e)
-        {
-            string message = txtMessageToBeSend.Text;
-
-            byte[] buffer = Encoding.ASCII.GetBytes(message);
-            networkStream.Write(buffer, 0, buffer.Length);
-
-            AddMessage(message);
-            txtMessageToBeSend.Clear();
-            txtMessageToBeSend.Focus();
         }
     }
 }
