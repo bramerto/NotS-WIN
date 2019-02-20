@@ -26,15 +26,15 @@ namespace MultiChat
             };
         }
 
-        private void AddMessage(string message)
+        public void AddMessage(string message)
         {
             if (listChats.InvokeRequired)
             {
-                listChats.Invoke(new UpdateDisplayDelegate(UpdateDisplay), new object[] { message });
+                listChats.Invoke(new UpdateDisplayDelegate(UpdateDisplay), new object[] { ">>" + message });
             }
             else
             {
-                UpdateDisplay(message);
+                UpdateDisplay("<<" + message);
             }
         }
 
