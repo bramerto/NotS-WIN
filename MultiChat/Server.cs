@@ -80,8 +80,15 @@ namespace MultiChat
 				while (listening)
 				{
 					try {
-                        int bytesRead = stream.Read(buffer, 0, bufferSize);
-                        message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                        do
+                        {
+                            int readBytes = stream.Read(buffer, 0, bufferSize);
+                            stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
+
+                        } while (stream.DataAvailable);
+
+                        message = stringBuilder.ToString();
+                        stringBuilder.Clear();
 
                         if (message.StartsWith("!disconnect"))
                         {

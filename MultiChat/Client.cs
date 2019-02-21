@@ -73,6 +73,7 @@ namespace MultiChat
         private void ReceiveData(Client rClient)
         {
             byte[] buffer = new byte[bufferSize];
+            var stringBuilder = new StringBuilder();
             string message;
 
             form.AddMessage("Connected!");
@@ -81,13 +82,20 @@ namespace MultiChat
             {
                 while (listening)
                 {
-                    int bytesRead = stream.Read(buffer, 0, bufferSize);
-                    message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    do
+                    {
+                        int readBytes = stream.Read(buffer, 0, bufferSize);
+                        stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
+
+                    } while (stream.DataAvailable);
+
+                    message = stringBuilder.ToString();
+                    stringBuilder.Clear();
 
                     // When server disconnects, stop listening
                     if (message.StartsWith("!close"))
                     {
-                        form.AddMessage("Host disconnected.");
+                        form.AddMessage("Host disconnected");
                         break;
                     }
 
