@@ -1,119 +1,139 @@
 ﻿using System;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace MultiChat
 {
     public partial class MultiChat : Form
     {
-        TcpClient tcpClient;
-        NetworkStream stream;
-        Thread thread;
+        private Client client;
+        private Server server;
+        private int localPort;
+        private int bufferSize;
 
-        protected delegate void UpdateDisplayDelegate(string message);
-
+        protected delegate void UpdateChatDelegate(string message);
+        
         public MultiChat()
         {
+            localPort = 3000;
             InitializeComponent();
+
+            // Enable to send a message with enter
             txtMessageToBeSend.KeyDown += (sender, args) => {
                 if (args.KeyCode == Keys.Return)
-                {
                     btnSendMessage.PerformClick();
-                }
             };
         }
 
+        // Delegate functions
         public void AddMessage(string message)
         {
             if (listChats.InvokeRequired)
-            {
-                listChats.Invoke(new UpdateDisplayDelegate(UpdateDisplay), new object[] { ">>" + message });
-            }
+                listChats.Invoke(new UpdateChatDelegate(UpdateChat), new object[] { ">> " + message });
             else
-            {
-                UpdateDisplay("<<" + message);
-            }
+                UpdateChat("<< " + message);
         }
 
-        private void UpdateDisplay(string message)
+        private void UpdateChat(string message)
         {
             int nItems = (int)(listChats.Height / listChats.ItemHeight);
             listChats.TopIndex = listChats.Items.Count - nItems;
             listChats.Items.Add(message);
         }
 
-        private void btnListen_Click(object sender, EventArgs e)
+        // Client methods
+        private void Disconnect()
         {
-            IPAddress ip = IPAddress.Any;
-            TcpListener tcpListener = new TcpListener(ip, 9000);
-            thread = new Thread(new ThreadStart(tcpListener.Start));
-
-            thread.Start();
-
-            AddMessage("Chat server started on: " + ip.ToString());
-            AddMessage("Listening for client.");
-
-            tcpClient = tcpListener.AcceptTcpClient();
-            thread = new Thread(new ThreadStart(ReceiveData));
-            thread.Start();
+            if (client != null)
+            {
+                try
+                {
+                    client.Dispose();
+                    client = null;
+                } catch(Exception ex)
+                {
+                    AddMessage(ex.ToString());
+                }
+                
+            }
+            else if (server != null)
+            {
+                try
+                {
+                    server.Dispose();
+                    server = null;
+                }
+                catch (Exception ex)
+                {
+                    AddMessage(ex.ToString());
+                }
+            }
         }
 
-        private void ReceiveData()
+        private void validateBufferSize(string bufferInput)
         {
-            int bufferSize = int.Parse(bufferSizeInput.Text);
-            var message = new StringBuilder();
-            byte[] buffer = new byte[bufferSize];
-
-            stream = tcpClient.GetStream();
-            
-            AddMessage("Connected!");
-
-            while (true) {
-                do
-                {
-                    int readBytes = stream.Read(buffer, 0, bufferSize);
-                    message.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
-                }
-                while (stream.DataAvailable);
-
-                if (message.ToString() == "bye") break;
-
-                AddMessage(message.ToString());
-                message.Clear();
+            if (!String.IsNullOrEmpty(bufferInput) && int.TryParse(bufferInput, out int n) && n > 1 && n < int.MaxValue)
+            {
+                bufferSize = n;
             }
+            else
+            {
+                AddMessage("Invalid buffersize");
+            }
+        }
 
-            buffer = Encoding.ASCII.GetBytes("bye");
-            stream.Write(buffer, 0, buffer.Length);
-
-            // cleanup:
-            tcpClient.GetStream().Close();
-            tcpClient.Close();
-
-            AddMessage("Connection closed");
+        // Events
+        private void btnListen_Click(object sender, EventArgs e)
+        {
+            validateBufferSize(bufferSizeInput.Text);
+            server = new Server(localPort, bufferSize,  this);
+            server.Start();
         }
 
         private void btnConnectWithServer_Click(object sender, EventArgs e)
         {
-            AddMessage("Connecting...");
-
-            tcpClient = new TcpClient(txtChatServerIP.Text, 9000);
-            thread = new Thread(new ThreadStart(ReceiveData));
-            thread.Start();
+            try
+            {
+                validateBufferSize(bufferSizeInput.Text);
+                TcpClient c = new TcpClient(txtChatServerIP.Text, localPort);
+                client = new Client(c, bufferSize, this);
+                client.Connect();
+            }
+            catch (Exception ex)
+            {
+                AddMessage("Connection failed.");
+            }
         }
 
         private void btnSendMessage_Click(object sender, EventArgs e)
         {
             string message = txtMessageToBeSend.Text;
 
-            byte[] buffer = Encoding.ASCII.GetBytes(message);
-            stream.Write(buffer, 0, buffer.Length);
+            if (client == null)
+                AddMessage("There is no connection yet");
+            else if
+                (String.IsNullOrEmpty(message)) AddMessage("Type a message first");
+            else
+            {
+                // Disables the ability to send "!close" or "!disconnect 
+                if (!message.StartsWith("!"))
+                {
+                    client.Send(message);
+                }
 
-            AddMessage(message);
-            txtMessageToBeSend.Clear();
-            txtMessageToBeSend.Focus();
+                txtMessageToBeSend.Clear();
+                txtMessageToBeSend.Focus();
+            }
+        }
+
+        private void BtnDisconnect_Click(object sender, EventArgs e)
+        {
+            Disconnect();
+        }
+
+        private void MultiChat_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Disconnect();
         }
     }
 }

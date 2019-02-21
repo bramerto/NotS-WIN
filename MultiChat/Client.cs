@@ -14,14 +14,13 @@ namespace MultiChat
         public string id;
 
         /// <summary>
-        /// Constructor
+        /// Constructor of the client class
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="username"></param>
         /// <param name="form"></param>
-        public Client(TcpClient client, string username, MultiChat form)
+        public Client(TcpClient client, int bufferSize, MultiChat form)
         {
-            bufferSize = 1024;
+            this.bufferSize = bufferSize;
             this.client = client;
             this.form = form;
 
@@ -30,7 +29,7 @@ namespace MultiChat
         }
 
         /// <summary>
-        /// Gets the actual TcpClient
+        /// Gets the TcpClient of client class
         /// </summary>
         public TcpClient Connection
         {
@@ -38,18 +37,14 @@ namespace MultiChat
         }
 
         /// <summary>
-        /// Starts a thread for listening to incoming messages
+        /// Starts a new thread for listening to incoming messages
         /// </summary>
         public void Connect()
         {
             try
             {
                 form.AddMessage("Connecting...");
-
-                Task.Run(() =>
-                {
-                    ReceiveData(this);
-                });
+                Task.Run(() => ReceiveData(this));
             }
             catch
             {
@@ -58,7 +53,7 @@ namespace MultiChat
         }
 
         /// <summary>
-        /// Sends a message to the server
+        /// Sends a message to the networkstream from server
         /// </summary>
         /// <param name="message"></param>
         public void Send(string message)
@@ -69,42 +64,35 @@ namespace MultiChat
             network.Write(bytes, 0, bytes.Length);
 
             form.AddMessage(message);
-            
         }
 
         /// <summary>
-        /// Starts an infinite loop that listens for new messages
+        /// Starts a loop that listens for new messages
         /// </summary>
-        /// <param name="c"></param>
-        private void ReceiveData(Client c)
+        /// <param name="rClient"></param>
+        private void ReceiveData(Client rClient)
         {
-            byte[] bytes = new byte[bufferSize];
-            string message = "";
+            byte[] buffer = new byte[bufferSize];
+            string message;
 
             form.AddMessage("Connected!");
 
-            // Using the network as long as it is listening
-            using (NetworkStream network = c.Connection.GetStream())
+            using (NetworkStream stream = rClient.Connection.GetStream())
             {
                 while (listening)
                 {
-                    int bytesRead = network.Read(bytes, 0, bufferSize);
-                    message = Encoding.ASCII.GetString(bytes, 0, bytesRead);
-                    bytes = new byte[bufferSize];
+                    int bytesRead = stream.Read(buffer, 0, bufferSize);
+                    message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
-                    // Handles disconnection when server disconnects and send the message "!close"
+                    // When server disconnects, stop listening
                     if (message.StartsWith("!close"))
                     {
                         form.AddMessage("Host disconnected.");
                         break;
                     }
-                    else
-                    {
-                        form.AddMessage(message);
-                    }
+
+                    if (!string.IsNullOrEmpty(message)) form.AddMessage(message);
                 }
-                //form.Reset();
-                //form.SetButtons(true, true);
             }
         }
 
