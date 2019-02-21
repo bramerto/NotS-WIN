@@ -109,6 +109,7 @@ namespace MultiChat
         private void btnListen_Click(object sender, EventArgs e)
         {
             validateBufferSize(bufferSizeInput.Text);
+            UpdateButtons(true, false);
             server = new Server(localPort, bufferSize,  this);
             server.Start();
         }
@@ -117,6 +118,7 @@ namespace MultiChat
         {
             try
             {
+                UpdateButtons(false, false);
                 validateBufferSize(bufferSizeInput.Text);
                 TcpClient c = new TcpClient(txtChatServerIP.Text, localPort);
                 client = new Client(c, bufferSize, this);
@@ -125,7 +127,13 @@ namespace MultiChat
             catch (Exception ex)
             {
                 AddMessage("Connection failed.");
+                UpdateButtons(false, true);
             }
+        }
+
+        public void ClientReset()
+        {
+            client = null;
         }
 
         private void btnSendMessage_Click(object sender, EventArgs e)

@@ -101,6 +101,8 @@ namespace MultiChat
 
                     if (!string.IsNullOrEmpty(message)) form.AddMessage(message);
                 }
+                form.ClientReset();
+                form.SetButtons(true, true);
             }
         }
 
