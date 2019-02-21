@@ -11,6 +11,7 @@ namespace MultiChat
         private MultiChat form;
         public int bufferSize { get; set; }
         private bool listening = true;
+        public string id;
 
         /// <summary>
         /// Constructor
@@ -23,6 +24,9 @@ namespace MultiChat
             bufferSize = 1024;
             this.client = client;
             this.form = form;
+
+            Guid guid = Guid.NewGuid();
+            id = guid.ToString();
         }
 
         /// <summary>

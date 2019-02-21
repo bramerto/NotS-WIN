@@ -7,144 +7,129 @@ using System.Threading.Tasks;
 
 namespace MultiChat
 {
-    class Server : IDisposable
-    {
-        private List<Client> clients = new List<Client>();
-        private MultiChat form;
-        private int port;
-        public int bufferSize { get; set; }
-        private TcpListener listener;
-        private bool listening = true;
+	class Server : IDisposable
+	{
+		private List<Client> clients = new List<Client>();
+		private MultiChat form;
+		private int port;
+        private int bufferSize;
+		private TcpListener listener;
+		private bool listening = true;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="port"></param>
-        /// <param name="form"></param>
-        public Server(int port, MultiChat form)
-        {
-            bufferSize = 1024;
-            this.port = port;
-            this.form = form;
-        }
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="port"></param>
+		/// <param name="form"></param>
+		public Server(int port, int bufferSize, MultiChat form)
+		{
+			this.bufferSize = bufferSize;
+			this.port = port;
+			this.form = form;
+		}
 
-        /// <summary>
-        /// Starts the server
-        /// </summary>
-        public void Start()
-        {
-            try
-            {
-                listener = new TcpListener(IPAddress.Any, port);
-                listener.Start();
-                Listen();
-            }
-            catch (Exception e)
-            {
-                form.AddMessage("Another server is already running!");
-                //form.SetButtons(true, true);
-            }
-        }
+		/// <summary>
+		/// Starts the server
+		/// </summary>
+		public void Start()
+		{
+			try
+			{
+				listener = new TcpListener(IPAddress.Any, port);
+				listener.Start();
+				Listen();
+			}
+			catch (Exception e)
+			{
+				form.AddMessage("Another server is already running!");
+			}
+		}
 
-        /// <summary>
-        /// Starts a new thread that listens for new clients and starts a new thread for each client to listen for their messages
-        /// </summary>
-        public void Listen()
-        {
-            form.AddMessage("Listening for clients...");
+		/// <summary>
+		/// Starts a new thread that listens for new clients and starts a new thread for each client to listen for their messages
+		/// </summary>
+		public void Listen()
+		{
+			form.AddMessage("Listening for clients...");
 
-            Task.Run(async () =>
-            {
-                while (listening)
-                {
-                    TcpClient c = await listener.AcceptTcpClientAsync();
+			Task.Run(async () =>
+			{
+				while (listening)
+				{
+					TcpClient rClient = await listener.AcceptTcpClientAsync();
+					Client client = new Client(rClient, bufferSize, form);
 
-                    Client client = new Client(c, "", form);
+					clients.Add(client);
+					Task.Run(() => ReceiveData(client));
+				}
+			});
+		}
 
-                    clients.Add(client);
-                    Task.Run(() =>
-                    {
-                        ReceiveData(client);
-                    });
-                }
-            });
-        }
+		/// <summary>
+		/// Starts an infinite loop that listens for new messages for a specific client
+		/// </summary>
+		/// <param name="rClient"></param>
+		private void ReceiveData(Client rClient)
+		{
+            byte[] buffer = new byte[bufferSize];
+            var stringBuilder = new StringBuilder();
+            string message;
 
-        /// <summary>
-        /// Starts an infinite loop that listens for new messages for a specific client
-        /// </summary>
-        /// <param name="c"></param>
-        private void ReceiveData(Client c)
-        {
-            string endMessage = "bye";
-            string message = "";
+			using (NetworkStream stream = rClient.Connection.GetStream())
+			{
+				while (listening)
+				{
+					try {
+                        int bytesRead = stream.Read(buffer, 0, bufferSize);
+                        message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
-            byte[] bytes = new byte[bufferSize];
-
-            // Using the network as long as it is listening
-            using (NetworkStream network = c.Connection.GetStream())
-            {
-                while (listening)
-                {
-                    try
-                    {
-                        int bytesRead = network.Read(bytes, 0, bufferSize);
-                        message = Encoding.ASCII.GetString(bytes, 0, bytesRead);
-                        bytes = new byte[bufferSize];
-
-                        if (message == endMessage)
+                        if (message.StartsWith("!disconnect"))
                         {
-                            break;
-                        }
+						    clients.Remove(rClient);
+						    Broadcast("a client left.");
+						    break;
+					    }
 
-                        string msg = "";
+						Broadcast(message, rClient);
+						form.AddMessage(message);
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine("Receiving data went wrong.");
+					}
+				}
+				stream.Close();
+				rClient.Connection.Close();
+			}
+		}
 
-                       if (message == "bye")
-                        {
-                            msg = "a client left.";
-                            clients.Remove(c);
-                            Broadcast(msg, c);
-                            form.AddMessage(msg);
-                            break;
-                        }
-
-                        Broadcast(msg, c);
-                        form.AddMessage(msg);
-                    }
-                    catch (Exception e)
+		/// <summary>
+		/// Sends a message to all clients except self
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="rClient"></param>
+		private void Broadcast(string message, Client rClient)
+		{
+			foreach (Client client in clients)
+			{
+                if (client.id != rClient.id)
+                {
+                    using (NetworkStream ns = client.Connection.GetStream())
                     {
-                        Console.WriteLine("Receiving data went wrong.");
+                        byte[] bytes = new byte[bufferSize];
+
+                        bytes = Encoding.ASCII.GetBytes(message);
+                        ns.Write(bytes, 0, bytes.Length);
                     }
                 }
-                network.Close();
-                c.Connection.Close();
             }
-        }
+		}
 
         /// <summary>
-        /// Sends a message to all clients except the one who sent it
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="c"></param>
-        private void Broadcast(string message, Client c)
-        {
-            foreach (Client client in clients)
-            {
-                
-                NetworkStream ns = client.Connection.GetStream();
-
-                byte[] bytes = new byte[bufferSize];
-
-                bytes = Encoding.ASCII.GetBytes(message);
-                ns.Write(bytes, 0, bytes.Length);
-                
-            }
-        }
-
-        /// <summary>
-        /// Notifies all clients that the server disconnected and stops listening
-        /// </summary>
-        public void Dispose()
+		/// Sends a message to all clients except self
+		/// </summary>
+		/// <param name="message"></param>
+        private void Broadcast(string message)
         {
             foreach (Client client in clients)
             {
@@ -152,16 +137,21 @@ namespace MultiChat
                 {
                     byte[] bytes = new byte[bufferSize];
 
-                    bytes = Encoding.ASCII.GetBytes("!close");
+                    bytes = Encoding.ASCII.GetBytes(message);
                     ns.Write(bytes, 0, bytes.Length);
                 }
             }
-
-            listening = false;
-            clients = null;
-            listener.Stop();
-
-            //form.SetButtons(true, true);
         }
-    }
+
+        /// <summary>
+        /// Notifies all clients that the server disconnected and stops listening
+        /// </summary>
+        public void Dispose()
+		{
+            Broadcast("!close");
+            listening = false;
+			clients = null;
+			listener.Stop();
+		}
+	}
 }
