@@ -12,6 +12,7 @@ namespace MultiChat
         private int bufferSize;
 
         protected delegate void UpdateChatDelegate(string message);
+        protected delegate void SetButtonsDelegate(bool server, bool enable);
         
         public MultiChat()
         {
@@ -39,6 +40,28 @@ namespace MultiChat
             int nItems = (int)(listChats.Height / listChats.ItemHeight);
             listChats.TopIndex = listChats.Items.Count - nItems;
             listChats.Items.Add(message);
+        }
+
+        public void SetButtons(bool server, bool enable)
+        {
+            if (txtMessageToBeSend.InvokeRequired)
+                listChats.Invoke(new SetButtonsDelegate(UpdateButtons), new object[] { server, enable });
+            else
+                UpdateButtons(server, enable);
+        }
+
+        private void UpdateButtons(bool server, bool enable)
+        {
+            txtChatServerIP.ReadOnly = !enable;
+            btnConnectWithServer.Enabled = enable;
+            btnListen.Enabled = enable;
+            btnDisconnect.Enabled = !enable;
+
+            if (server)
+            {
+                txtMessageToBeSend.ReadOnly = !enable;
+                btnSendMessage.Enabled = enable;
+            }
         }
 
         // Client methods

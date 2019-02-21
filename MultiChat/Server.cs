@@ -42,7 +42,8 @@ namespace MultiChat
 			catch (Exception e)
 			{
 				form.AddMessage("Another server is already running!");
-			}
+                form.SetButtons(true, true);
+            }
 		}
 
 		/// <summary>
@@ -159,6 +160,7 @@ namespace MultiChat
             listening = false;
 			clients = null;
 			listener.Stop();
-		}
+            form.SetButtons(true, true);
+        }
 	}
 }
