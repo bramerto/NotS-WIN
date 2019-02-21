@@ -49,20 +49,46 @@ public class List()
 ### Authentieke en gezaghebbende bronnen
 
 Generics: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/
+
 Pluralsight: https://app.pluralsight.com/library/courses/c-sharp-fundamentals-with-visual-studio-2015/table-of-contents
 
 ## Boxing & Unboxing
 ### Beschrijving van concept in eigen woorden
+Boxing is het proces van converteren van een *value type* (`int`,`byte`, of een `float`) naar het type `object`. Wat dit doet is dat deze variabele een referentie krijgt naar de managed heap in plaats van op de stack.
 
+```c#
+int i = 123;
+object o = i;
+```
+
+In dit voorbeeld wordt `int i` geboxt naar `object o`. Omdat dit nu een referentie is zal een kopie van `o` ook `o` zelf aanpassen. Om deze variabele weer te unboxen wordt het volgende gedaan:
+
+```c#
+o = 123;
+i = (int)o;
+```
 
 ### Code voorbeeld van je eigen code
+In de MultiChat app is er op een plaats waar mogelijk boxing gebruikt had kunnen worden. Dit is bij de `btnBuffer_Click()` functie  waar  de `string bufferSize` om wordt gezet naar een `int`. Dit is anders gedaan  met de functie `Int32.TryParse()`. 
 
+Hieronder is een mogelijkheid getoont waarin boxing wordt toegepast in MultiChat
+
+```c#
+string bufferInput = "1024";
+// Dit kan resulteren in een fout
+int i1 = (int)bufferInput;
+
+// Als dit fout gaat is success false
+bool success = int.TryParse(bufferInput, out int n) && n > 1 && n < int.MaxValue)
+```
 
 ### Alternatieven & adviezen
-
+Boxing en unboxing is grotendeels overbodig geworden door generics. Ook is het CPU intensief als het op grote schaal wordt gebruikt. Het advies is om boxing en unboxing niet te gebruiken.
 
 ### Authentieke en gezaghebbende bronnen
+Boxing and unboxing: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing
 
+Pluralsight: https://app.pluralsight.com/library/courses/c-sharp-fundamentals-with-visual-studio-2015/table-of-contents
 
 ## Delegates & Invoke
 ### Beschrijving van concept in eigen woorden
