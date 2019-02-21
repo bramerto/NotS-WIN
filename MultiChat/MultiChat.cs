@@ -44,24 +44,24 @@ namespace MultiChat
         // Client methods
         private void Disconnect()
         {
-            if (client != null)
-            {
-                try
-                {
-                    client.Dispose();
-                    client = null;
-                } catch(Exception ex)
-                {
-                    AddMessage(ex.ToString());
-                }
-                
-            }
-            else if (server != null)
+            if (server != null)
             {
                 try
                 {
                     server.Dispose();
                     server = null;
+                }
+                catch (Exception ex)
+                {
+                    AddMessage(ex.ToString());
+                }
+            }
+            else if (client != null)
+            {
+                try
+                {
+                    client.Dispose();
+                    client = null;
                 }
                 catch (Exception ex)
                 {
