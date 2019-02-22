@@ -7,9 +7,9 @@ namespace MultiChat
 {
     class Client : IDisposable
     {
-        private TcpClient client;
-        private MultiChat form;
-        public int bufferSize { get; set; }
+        private readonly TcpClient client;
+        private readonly MultiChat form;
+        public int BufferSize { get; set; }
         private bool listening = true;
         public string id;
 
@@ -21,7 +21,7 @@ namespace MultiChat
         /// <param name="form"></param>
         public Client(TcpClient client, int bufferSize, MultiChat form)
         {
-            this.bufferSize = bufferSize;
+            this.BufferSize = bufferSize;
             this.client = client;
             this.form = form;
 
@@ -74,7 +74,7 @@ namespace MultiChat
         /// <param name="rClient"></param>
         private void ReceiveData(Client rClient)
         {
-            byte[] buffer = new byte[bufferSize];
+            byte[] buffer = new byte[BufferSize];
             var stringBuilder = new StringBuilder();
             string message;
 
@@ -86,7 +86,7 @@ namespace MultiChat
                 {
                     do
                     {
-                        int readBytes = ns.Read(buffer, 0, bufferSize);
+                        int readBytes = ns.Read(buffer, 0, BufferSize);
                         stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
 
                     } while (ns.DataAvailable);

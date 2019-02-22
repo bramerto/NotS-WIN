@@ -51,7 +51,7 @@
             this.btnListen.TabIndex = 0;
             this.btnListen.Text = "Listen";
             this.btnListen.UseVisualStyleBackColor = true;
-            this.btnListen.Click += new System.EventHandler(this.btnListen_Click);
+            this.btnListen.Click += new System.EventHandler(this.BtnListen_Click);
             // 
             // listChats
             // 
@@ -83,7 +83,7 @@
             this.btnSendMessage.TabIndex = 3;
             this.btnSendMessage.Text = "Send";
             this.btnSendMessage.UseVisualStyleBackColor = true;
-            this.btnSendMessage.Click += new System.EventHandler(this.btnSendMessage_Click);
+            this.btnSendMessage.Click += new System.EventHandler(this.BtnSendMessage_Click);
             // 
             // groupBox1
             // 
@@ -118,7 +118,7 @@
             this.btnConnectWithServer.TabIndex = 1;
             this.btnConnectWithServer.Text = "Connect";
             this.btnConnectWithServer.UseVisualStyleBackColor = true;
-            this.btnConnectWithServer.Click += new System.EventHandler(this.btnConnectWithServer_Click);
+            this.btnConnectWithServer.Click += new System.EventHandler(this.BtnConnectWithServer_Click);
             // 
             // label1
             // 

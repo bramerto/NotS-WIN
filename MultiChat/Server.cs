@@ -10,9 +10,9 @@ namespace MultiChat
 	class Server : IDisposable
 	{
 		private List<Client> clients = new List<Client>();
-		private MultiChat form;
-		private int port;
-        private int bufferSize;
+		private readonly MultiChat form;
+		private readonly int port;
+        private readonly int bufferSize;
 		private TcpListener listener;
 		private bool listening = true;
 
@@ -140,7 +140,6 @@ namespace MultiChat
 
                     bytes = Encoding.ASCII.GetBytes(message);
                     ns.Write(bytes, 0, bytes.Length);
-                    
                 }
             }
 		}

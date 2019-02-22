@@ -9,7 +9,7 @@ namespace MultiChat
     {
         private Client client;
         private Server server;
-        private int localPort;
+        private readonly int localPort;
         private int bufferSize;
 
         protected delegate void UpdateChatDelegate(string message);
@@ -135,7 +135,7 @@ namespace MultiChat
         /// </summary>
         /// <param name="bufferInput"></param>
         /// <returns></returns>
-        private bool validateBufferSize()
+        private bool ValidateBufferSize()
         {
             string bufferInput = bufferSizeInput.Text;
             // checks if number put into bufferinput can be parsed to a number and number has to be above 1 and can not be above int maxvalue
@@ -166,16 +166,14 @@ namespace MultiChat
             }
 
             string[] splitValues = ipString.Split('.');
-            //checkt of de ipstring 4 punten in de string heeft
+            //checks if the ipstring has 4 members between the periods
             if (splitValues.Length != 4)
             {
                 AddMessage("[validation]: IP address input is too short");
                 return false;
             }
 
-            byte tempForParsing;
-
-            bool success = splitValues.All(r => byte.TryParse(r, out tempForParsing));
+            bool success = splitValues.All(r => byte.TryParse(r, out byte tempForParsing));
 
             // looks if the ipaddress can be assessed to a number
             if (!success)
@@ -191,10 +189,10 @@ namespace MultiChat
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnListen_Click(object sender, EventArgs e)
+        private void BtnListen_Click(object sender, EventArgs e)
         {
-            //check of de buffersize input correct is
-            if (validateBufferSize())
+            //checks if the buffersize input is correct
+            if (ValidateBufferSize())
             {
                 UpdateButtons(true, false);
                 server = new Server(localPort, bufferSize, this);
@@ -207,13 +205,13 @@ namespace MultiChat
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnConnectWithServer_Click(object sender, EventArgs e)
+        private void BtnConnectWithServer_Click(object sender, EventArgs e)
         {
             string ipString = txtChatServerIP.Text;
             try
             {
                 //check of de buffersize en ipstring input correct is 
-                if (validateBufferSize() && ValidateIPv4(ipString))
+                if (ValidateBufferSize() && ValidateIPv4(ipString))
                 {
                     UpdateButtons(false, false);
                     TcpClient c = new TcpClient(ipString, localPort);
@@ -234,7 +232,7 @@ namespace MultiChat
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnSendMessage_Click(object sender, EventArgs e)
+        private void BtnSendMessage_Click(object sender, EventArgs e)
         {
             string message = txtMessageToBeSend.Text;
 
