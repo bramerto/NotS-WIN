@@ -59,11 +59,15 @@ namespace MultiChat
 			{
 				while (listening)
 				{
-					TcpClient rClient = await listener.AcceptTcpClientAsync();
-					Client client = new Client(rClient, bufferSize, form);
+					TcpClient c = await listener.AcceptTcpClientAsync();
+					Client client = new Client(c, bufferSize, form);
 
-					clients.Add(client);
-					Task.Run(() => ReceiveData(client));
+                    string msg = client.id + " joined";
+                    form.AddMessage(msg);
+                    Broadcast(msg, client);
+
+                    clients.Add(client);
+                    _ = Task.Run(() => ReceiveData(client));
 				}
 			});
 		}
