@@ -92,16 +92,71 @@ Pluralsight: https://app.pluralsight.com/library/courses/c-sharp-fundamentals-wi
 
 ## Delegates & Invoke
 ### Beschrijving van concept in eigen woorden
+Een delegate is een referentie naar een andere methode. Deze methode kan vervolgens worden gestart via elke thread met `invoke`. Met deze manier kan de methode op de juiste thread worden uitgevoerd.
 
+```c#
+public static void DelegateMethod(string message)
+{
+    // Do something
+}
+
+Del handler = DelegateMethod;
+
+handler("Hello world!");
+```
 
 ### Code voorbeeld van je eigen code
+In de Windows Form class `MultiChat` is er een delegate gemaakt die onderdelen toevoegt aan de lijst. Omdat dit in de UI thread geregeld moet worden (de lijst is een UI onderdeel) is er een delegate gemaakt die kan worden aangeroepen vanuit andere threads.
 
+Hieronder is een voorbeeld aangemaakt uit de MultiChat.cs class
+```c#
+protected delegate void UpdateChatDelegate(string message);
+
+public void AddMessage(string message)
+{
+    if (listChats.InvokeRequired)
+        listChats.Invoke(new UpdateChatDelegate(UpdateChat), new object[] { ">> " + message });
+    else
+        UpdateChat("<< " + message);
+}
+```
 
 ### Alternatieven & adviezen
+Een delegate is een handig onderdeel als je deze heel vaak moet gebruiken. Het is ook mogelijk om een anonieme delegate te maken. Deze methode is doorgaans sneller dan een volledige delegate maken. Daarnaast is er een derdere optie: Lambda's. Lambda's zijn het snelst om uit te voeren.
 
+Dit is een klein voorbeeld van een anonieme delegate:
+
+```c#
+delegate void TestDelegate(int i);
+
+TestDelegate a = delegate(int count) {
+    // Do something
+};
+
+a("Hello World!");
+```
+
+Dit is een klein voorbeeld van een lambda:
+
+```c#
+delegate void TestDelegate(int i);
+
+TestDelegate a = (int count) => {
+    // Do something
+};
+
+a("Hello World!");
+```
 
 ### Authentieke en gezaghebbende bronnen
 
+Delegates: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/
+
+Using delegates: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/using-delegates
+
+Lambda expressions: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/lambda-expressions
+
+Anonymous methods: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/anonymous-methods
 
 ## Threading & Async
 ### Beschrijving van concept in eigen woorden
