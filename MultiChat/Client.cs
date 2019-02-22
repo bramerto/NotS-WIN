@@ -47,8 +47,9 @@ namespace MultiChat
                 form.AddMessage("[client]: Connecting...");
                 Task.Run(() => ReceiveData(this));
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 form.AddMessage("[server]: Connection failed, please try again.");
             }
         }

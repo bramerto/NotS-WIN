@@ -40,8 +40,9 @@ namespace MultiChat
 				listener.Start();
 				Listen();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
+                Console.WriteLine(ex.ToString());
 				form.AddMessage("[client]: Another server is already running!");
                 form.SetButtons(true, true);
             }
@@ -110,9 +111,11 @@ namespace MultiChat
 						Broadcast(message, rClient);
 						form.AddMessage(message);
 					}
-					catch (Exception e)
+					catch (Exception ex)
 					{
-						Console.WriteLine("Receiving data went wrong.");
+                        Console.WriteLine(ex.ToString());
+                        form.AddMessage("Receiving data went wrong.");
+                        listening = false;
 					}
 				}
                 ns.Close();

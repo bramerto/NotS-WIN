@@ -109,7 +109,8 @@ namespace MultiChat
                 }
                 catch (Exception ex)
                 {
-                    AddMessage(ex.ToString());
+                    Console.WriteLine(ex.ToString());
+                    AddMessage("Something went wrong disconnecting");
                 }
             }
             else if (client != null)
@@ -121,7 +122,8 @@ namespace MultiChat
                 }
                 catch (Exception ex)
                 {
-                    AddMessage(ex.ToString());
+                    Console.WriteLine(ex.ToString());
+                    AddMessage("Something went wrong disconnecting");
                 }
             }
         }
@@ -221,6 +223,7 @@ namespace MultiChat
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 AddMessage("[client]: Connection failed.");
                 UpdateButtons(false, true);
             }
