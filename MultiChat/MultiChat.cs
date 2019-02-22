@@ -158,7 +158,7 @@ namespace MultiChat
         /// <returns></returns>
         public bool ValidateIPv4(string ipString)
         {
-            // checkt of de ipstring niet leeg is
+            // checks if ipString is not empty
             if (String.IsNullOrWhiteSpace(ipString))
             {
                 AddMessage("[validation]: IP address input is empty");
