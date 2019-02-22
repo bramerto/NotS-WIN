@@ -78,8 +78,8 @@ string bufferInput = "1024";
 // Dit kan resulteren in een fout
 int i1 = (int)bufferInput;
 
-// Als dit fout gaat is success false
-bool success = int.TryParse(bufferInput, out int n) && n > 1 && n < int.MaxValue)
+// 'succes' wordt naar false gezet als dit fout gaat
+bool success = int.TryParse(bufferInput, out int n);
 ```
 
 ### Alternatieven & adviezen
@@ -95,12 +95,14 @@ Pluralsight: https://app.pluralsight.com/library/courses/c-sharp-fundamentals-wi
 Een delegate is een referentie naar een andere methode. Deze methode kan vervolgens worden gestart via elke thread met `invoke`. Met deze manier kan de methode op de juiste thread worden uitgevoerd.
 
 ```c#
-public static void DelegateMethod(string message)
+delegate void TestDelegate(string msg);
+
+public static void MethodDelegate(string msg)
 {
     // Do something
 }
 
-Del handler = DelegateMethod;
+TestDelegate handler = MethodDelegate;
 
 handler("Hello world!");
 ```
