@@ -17,6 +17,7 @@ namespace MultiChat
         /// Constructor of the client class
         /// </summary>
         /// <param name="client"></param>
+        /// <param name="bufferSize"></param>
         /// <param name="form"></param>
         public Client(TcpClient client, int bufferSize, MultiChat form)
         {
@@ -43,12 +44,12 @@ namespace MultiChat
         {
             try
             {
-                form.AddMessage("Connecting...");
+                form.AddMessage("[client]: Connecting...");
                 Task.Run(() => ReceiveData(this));
             }
             catch
             {
-                form.AddMessage("Connection failed, please try again.");
+                form.AddMessage("[server]: Connection failed, please try again.");
             }
         }
 
@@ -76,43 +77,43 @@ namespace MultiChat
             var stringBuilder = new StringBuilder();
             string message;
 
-            form.AddMessage("Connected!");
+            form.AddMessage("[client]: Connected!");
 
-            using (NetworkStream stream = rClient.Connection.GetStream())
+            using (NetworkStream ns = rClient.Connection.GetStream())
             {
                 while (listening)
                 {
                     do
                     {
-                        int readBytes = stream.Read(buffer, 0, bufferSize);
+                        int readBytes = ns.Read(buffer, 0, bufferSize);
                         stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
 
-                    } while (stream.DataAvailable);
+                    } while (ns.DataAvailable);
 
                     message = stringBuilder.ToString();
                     stringBuilder.Clear();
 
                     // When server disconnects, stop listening
-                    if (message.StartsWith("!close"))
+                    if (message.StartsWith("@close"))
                     {
-                        form.AddMessage("Host disconnected");
+                        form.AddMessage("[server]: Host disconnected");
                         break;
                     }
 
                     if (!string.IsNullOrEmpty(message)) form.AddMessage(message);
                 }
-                form.ClientReset();
+                
                 form.SetButtons(true, true);
             }
         }
 
         /// <summary>
-        /// Disconnects the client and notifies the server by sending the message "!disconnect"
+        /// Disconnects the client and notifies the server by sending the message "@disconnect"
         /// </summary>
         public void Dispose()
         {
             listening = false;
-            Send("!disconnect");
+            Send("@disconnect");
         }
     }
 }

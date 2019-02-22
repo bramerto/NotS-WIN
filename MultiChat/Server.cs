@@ -16,12 +16,13 @@ namespace MultiChat
 		private TcpListener listener;
 		private bool listening = true;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="port"></param>
-		/// <param name="form"></param>
-		public Server(int port, int bufferSize, MultiChat form)
+        /// <summary>
+        /// Constructor of the Server class
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="bufferSize"></param>
+        /// <param name="form"></param>
+        public Server(int port, int bufferSize, MultiChat form)
 		{
 			this.bufferSize = bufferSize;
 			this.port = port;
@@ -29,7 +30,7 @@ namespace MultiChat
 		}
 
 		/// <summary>
-		/// Starts the server
+		/// Starts the server class so clients can connect to it
 		/// </summary>
 		public void Start()
 		{
@@ -41,17 +42,17 @@ namespace MultiChat
 			}
 			catch (Exception e)
 			{
-				form.AddMessage("Another server is already running!");
+				form.AddMessage("[client]: Another server is already running!");
                 form.SetButtons(true, true);
             }
 		}
 
 		/// <summary>
-		/// Starts a new thread that listens for new clients and starts a new thread for each client to listen for their messages
+		/// Starts a new thread that listens for new clients and starts a new thread for each client to listen to their messages
 		/// </summary>
 		public void Listen()
 		{
-			form.AddMessage("Listening for clients...");
+			form.AddMessage("[server]: Listening for clients...");
 
 			Task.Run(async () =>
 			{
@@ -67,7 +68,7 @@ namespace MultiChat
 		}
 
 		/// <summary>
-		/// Starts an infinite loop that listens for new messages for a specific client
+		/// Starts a loop that listens for new messages for a client
 		/// </summary>
 		/// <param name="rClient"></param>
 		private void ReceiveData(Client rClient)
@@ -76,26 +77,34 @@ namespace MultiChat
             var stringBuilder = new StringBuilder();
             string message;
 
-			using (NetworkStream stream = rClient.Connection.GetStream())
+			using (NetworkStream ns = rClient.Connection.GetStream())
 			{
 				while (listening)
 				{
 					try {
+
+                        // as long as data is available in the stream from a single message. Read it through and append it to a string builder.
                         do
                         {
-                            int readBytes = stream.Read(buffer, 0, bufferSize);
+                            int readBytes = ns.Read(buffer, 0, bufferSize);
                             stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
 
-                        } while (stream.DataAvailable);
+                        } while (ns.DataAvailable);
+
+                        buffer = new byte[bufferSize];
 
                         message = stringBuilder.ToString();
                         stringBuilder.Clear();
 
-                        if (message.StartsWith("!disconnect"))
+                        // broadcast when a client left
+                        if (message.StartsWith("@disconnect"))
                         {
-						    clients.Remove(rClient);
-						    Broadcast("a client left.");
-						    break;
+                            string leftMsg = "[server]: a client left.";
+
+                            clients.Remove(rClient);
+						    Broadcast(leftMsg, rClient);
+                            form.AddMessage(leftMsg);
+                            break;
 					    }
 
 						Broadcast(message, rClient);
@@ -106,9 +115,9 @@ namespace MultiChat
 						Console.WriteLine("Receiving data went wrong.");
 					}
 				}
-				stream.Close();
-				rClient.Connection.Close();
-			}
+                ns.Close();
+                rClient.Connection.Close();
+            }
 		}
 
 		/// <summary>
@@ -122,19 +131,19 @@ namespace MultiChat
 			{
                 if (client.id != rClient.id)
                 {
-                    using (NetworkStream ns = client.Connection.GetStream())
-                    {
-                        byte[] bytes = new byte[bufferSize];
+                    NetworkStream ns = client.Connection.GetStream();
+                    
+                    byte[] bytes = new byte[bufferSize];
 
-                        bytes = Encoding.ASCII.GetBytes(message);
-                        ns.Write(bytes, 0, bytes.Length);
-                    }
+                    bytes = Encoding.ASCII.GetBytes(message);
+                    ns.Write(bytes, 0, bytes.Length);
+                    
                 }
             }
 		}
 
         /// <summary>
-		/// Sends a message to all clients except self
+		/// Sends a message to all clients in the list of the server
 		/// </summary>
 		/// <param name="message"></param>
         private void Broadcast(string message)
@@ -156,7 +165,7 @@ namespace MultiChat
         /// </summary>
         public void Dispose()
 		{
-            Broadcast("!close");
+            Broadcast("@close");
             listening = false;
 			clients = null;
 			listener.Stop();
