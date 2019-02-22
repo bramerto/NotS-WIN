@@ -153,13 +153,12 @@ namespace MultiChat
         {
             foreach (Client client in clients)
             {
-                using (NetworkStream ns = client.Connection.GetStream())
-                {
-                    byte[] bytes = new byte[bufferSize];
+                NetworkStream ns = client.Connection.GetStream();
 
-                    bytes = Encoding.ASCII.GetBytes(message);
-                    ns.Write(bytes, 0, bytes.Length);
-                }
+                byte[] bytes = new byte[bufferSize];
+
+                bytes = Encoding.ASCII.GetBytes(message);
+                ns.Write(bytes, 0, bytes.Length);
             }
         }
 
