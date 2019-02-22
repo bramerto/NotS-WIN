@@ -169,7 +169,7 @@ namespace MultiChat
             //checks if the ipstring has 4 members between the periods
             if (splitValues.Length != 4)
             {
-                AddMessage("[validation]: IP address input is too short");
+                AddMessage("[validation]: IP address input has wrong format");
                 return false;
             }
 
@@ -177,7 +177,7 @@ namespace MultiChat
 
             // looks if the ipaddress can be assessed to a number
             if (!success)
-                AddMessage("[validation]: IP address input not correct");
+                AddMessage("[validation]: IP address input not numeric");
 
             return success;
         }
