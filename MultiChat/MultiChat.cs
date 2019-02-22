@@ -15,6 +15,9 @@ namespace MultiChat
         protected delegate void UpdateChatDelegate(string message);
         protected delegate void SetButtonsDelegate(bool server, bool enable);
         
+        /// <summary>
+        /// Constructor of the MultiChat app
+        /// </summary>
         public MultiChat()
         {
             localPort = 3000;
@@ -37,6 +40,7 @@ namespace MultiChat
         /// <param name="message"></param>
         public void AddMessage(string message)
         {
+            // checks if chatbox can be invoked on this thread
             if (listChats.InvokeRequired)
                 listChats.Invoke(new UpdateChatDelegate(UpdateChat), new object[] { "Incoming: " + message });
             else
@@ -80,6 +84,7 @@ namespace MultiChat
             btnConnectWithServer.Enabled = enable;
             btnListen.Enabled = enable;
 
+            // toggle message inputs when server is instantiated
             if (server)
             {
                 txtMessageToBeSend.ReadOnly = !enable;
@@ -94,6 +99,7 @@ namespace MultiChat
         /// </summary>
         private void Disconnect()
         {
+            // checks if server or client is instantiated and disposes the set server or client
             if (server != null)
             {
                 try
@@ -130,6 +136,7 @@ namespace MultiChat
         private bool validateBufferSize()
         {
             string bufferInput = bufferSizeInput.Text;
+            // checks if number put into bufferinput can be parsed to a number and number has to be above 1 and can not be above int maxvalue
             if (!String.IsNullOrEmpty(bufferInput) && int.TryParse(bufferInput, out int n) && n > 1 && n < int.MaxValue)
             {
                 bufferSize = n;
@@ -149,6 +156,7 @@ namespace MultiChat
         /// <returns></returns>
         public bool ValidateIPv4(string ipString)
         {
+            // checkt of de ipstring niet leeg is
             if (String.IsNullOrWhiteSpace(ipString))
             {
                 AddMessage("[validation]: IP address input is empty");
@@ -156,6 +164,7 @@ namespace MultiChat
             }
 
             string[] splitValues = ipString.Split('.');
+            //checkt of de ipstring 4 punten in de string heeft
             if (splitValues.Length != 4)
             {
                 AddMessage("[validation]: IP address input is too short");
@@ -166,6 +175,7 @@ namespace MultiChat
 
             bool success = splitValues.All(r => byte.TryParse(r, out tempForParsing));
 
+            // looks if the ipaddress can be assessed to a number
             if (!success)
                 AddMessage("[validation]: IP address input not correct");
 
@@ -181,6 +191,7 @@ namespace MultiChat
         /// <param name="e"></param>
         private void btnListen_Click(object sender, EventArgs e)
         {
+            //check of de buffersize input correct is
             if (validateBufferSize())
             {
                 UpdateButtons(true, false);
@@ -199,6 +210,7 @@ namespace MultiChat
             string ipString = txtChatServerIP.Text;
             try
             {
+                //check of de buffersize en ipstring input correct is 
                 if (validateBufferSize() && ValidateIPv4(ipString))
                 {
                     UpdateButtons(false, false);
@@ -223,6 +235,7 @@ namespace MultiChat
         {
             string message = txtMessageToBeSend.Text;
 
+            // looks if the client is instantiated and if the messagebox is empty
             if (client == null)
                 AddMessage("[client]: There is no connection yet");
             else if
