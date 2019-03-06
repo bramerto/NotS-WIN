@@ -5,8 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProxyServer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="ProxyServer" SizeToContent="WidthAndHeight" SizeChanged="FormSizeChanged" MinHeight="350" MinWidth="350" MaxHeight="500" MaxWidth="700"
+    >
+    <Grid Name="LayoutGrid" HorizontalAlignment="Left" Height="469" VerticalAlignment="Top" Width="692">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Button x:Name="StartButton" Content="Start Proxy" VerticalAlignment="Top" Height="25" Grid.Row="1" Grid.Column="1" Margin="24,64,25,0" Click="StartServer"/>
     </Grid>
 </Window>
