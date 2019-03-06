@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libraries", "libraries", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyServices", "Proxy\ProxyServices.csproj", "{193332C1-434C-4240-A93C-3A6D594CB9C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpDummy", "HttpDummy\HttpDummy.csproj", "{46192B8A-2F90-4A01-B940-047216D7C508}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{193332C1-434C-4240-A93C-3A6D594CB9C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{193332C1-434C-4240-A93C-3A6D594CB9C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{193332C1-434C-4240-A93C-3A6D594CB9C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46192B8A-2F90-4A01-B940-047216D7C508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46192B8A-2F90-4A01-B940-047216D7C508}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46192B8A-2F90-4A01-B940-047216D7C508}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46192B8A-2F90-4A01-B940-047216D7C508}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
