@@ -5,19 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProxyServer"
         mc:Ignorable="d"
-        Title="ProxyServer" SizeToContent="WidthAndHeight" SizeChanged="FormSizeChanged" MinHeight="350" MinWidth="350" MaxHeight="500" MaxWidth="700"
+        Title="ProxyServer" SizeToContent="WidthAndHeight" SizeChanged="FormSizeChanged" Width="700" Height="500" MinHeight="350" MinWidth="350" MaxHeight="500" MaxWidth="700"
     >
     <Grid Name="LayoutGrid" HorizontalAlignment="Left" Height="469" VerticalAlignment="Top" Width="692">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="221*"/>
+            <ColumnDefinition Width="125*"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Button x:Name="StartButton" Content="Start Proxy" VerticalAlignment="Top" Height="25" Grid.Row="1" Grid.Column="1" Margin="24,64,25,0" Click="StartServer"/>
+        <Button x:Name="StartBtn" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Height="19" Margin="62,35,0,0" Click="StartServer" Grid.Column="1" Width="62"/>
+        <Button x:Name="StopBtn" Content="Stop" Grid.Column="1" HorizontalAlignment="Left" Margin="130,35,0,0" VerticalAlignment="Top" Width="67" Height="19" Click="StopServer"/>
+        <ListView x:Name="listView" HorizontalAlignment="Left" Height="449" Margin="10,10,0,0" VerticalAlignment="Top" Width="422">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Label x:Name="PortLbl" Content="Port" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="25" Width="38"/>
+        <TextBox x:Name="PortTxtB" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="10,35,0,0" TextWrapping="Wrap" Text="8080" VerticalAlignment="Top" Width="47" IsUndoEnabled="False"/>
+
+        <Label x:Name="BufferSizeLbl" Content="Buffer" Grid.Column="1" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Height="25" Width="47" RenderTransformOrigin="0.277,0.56"/>
+        <TextBox x:Name="BufferSizeTxtB" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="10,85,0,0" TextWrapping="Wrap" Text="12" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="SetBufferSizeBtn" Content="Set" Grid.Column="1" HorizontalAlignment="Left" Margin="135,84,0,0" VerticalAlignment="Top" Width="62" Height="20" Click="SetBufferSize"/>
+
+        <CheckBox x:Name="CacheCB" Content="Enable cache" Grid.Column="1" HorizontalAlignment="Left" Margin="10,124,0,0" VerticalAlignment="Top" Height="15" Width="89" Checked="EnableCache"/>
+        <CheckBox x:Name="ImageCB" Content="Enable Image filtering" Grid.Column="1" HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Height="15" Width="136" Checked="EnableImageFilter"/>
+        <CheckBox x:Name="AdCB" Content="Enable Advertising filtering" Grid.Column="1" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Height="15" Width="162" Checked="EnableAdFilter"/>
+        <CheckBox x:Name="PrivacyCB" Content="Enable privacy filter" Grid.Column="1" HorizontalAlignment="Left" Margin="10,184,0,0" VerticalAlignment="Top" Height="15" Width="123" Checked="EnablePrivacyFilter"/>
+        <CheckBox x:Name="ScriptCB" Content="Disable JavaScript" Grid.Column="1" HorizontalAlignment="Left" Margin="10,204,0,0" VerticalAlignment="Top" Height="15" Width="114" Checked="EnableScriptFilter"/>
+
     </Grid>
 </Window>
