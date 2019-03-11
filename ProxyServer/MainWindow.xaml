@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProxyServer"
         mc:Ignorable="d"
-        Title="ProxyServer" SizeToContent="WidthAndHeight" SizeChanged="FormSizeChanged" Width="700" Height="500" MinHeight="350" MinWidth="350" MaxHeight="500" MaxWidth="700"
+        Title="ProxyServer" SizeToContent="WidthAndHeight" SizeChanged="FormSizeChanged" Width="800" Height="520" MinHeight="350" MinWidth="700" MaxHeight="520" MaxWidth="800"
     >
-    <Grid Name="LayoutGrid" HorizontalAlignment="Left" Height="469" VerticalAlignment="Top" Width="692">
+    <Grid Name="LayoutGrid" HorizontalAlignment="Left" Height="491" VerticalAlignment="Top" Width="794" Margin="0,0,-0.667,-0.333">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="221*"/>
             <ColumnDefinition Width="125*"/>
@@ -32,7 +32,6 @@
         <CheckBox x:Name="ImageCB" Content="Enable Image filtering" Grid.Column="1" HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Height="15" Width="136" Checked="EnableImageFilter"/>
         <CheckBox x:Name="AdCB" Content="Enable Advertising filtering" Grid.Column="1" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Height="15" Width="162" Checked="EnableAdFilter"/>
         <CheckBox x:Name="PrivacyCB" Content="Enable privacy filter" Grid.Column="1" HorizontalAlignment="Left" Margin="10,184,0,0" VerticalAlignment="Top" Height="15" Width="123" Checked="EnablePrivacyFilter"/>
-        <CheckBox x:Name="ScriptCB" Content="Disable JavaScript" Grid.Column="1" HorizontalAlignment="Left" Margin="10,204,0,0" VerticalAlignment="Top" Height="15" Width="114" Checked="EnableScriptFilter"/>
-
+        <CheckBox x:Name="ScriptCB" Content="Disable JavaScript" Grid.Column="1" HorizontalAlignment="Left" Margin="10,204,0,0" VerticalAlignment="Top" Height="15" Width="114" Checked="EnableScriptFilter"
     </Grid>
 </Window>

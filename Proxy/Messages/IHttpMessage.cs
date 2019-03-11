@@ -2,7 +2,7 @@
 
 namespace Proxy.Messages
 {
-    interface IHttpMessage
+    public interface IHttpMessage
     {
     }
 }

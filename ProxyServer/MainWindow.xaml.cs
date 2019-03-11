@@ -1,13 +1,16 @@
-﻿using System;
+﻿using ProxyServer.ViewModels;
+using System;
 using System.Windows;
 
 namespace ProxyServer
 {
     public partial class MainWindow : Window
     {
+        ProxyViewModel _ViewModel = new ProxyViewModel();
         public MainWindow()
         {
             InitializeComponent();
+            base.DataContext = _ViewModel;
         }
 
         //Form events
