@@ -6,11 +6,9 @@ namespace ProxyServer
 {
     public partial class MainWindow : Window
     {
-        ProxyViewModel _ViewModel = new ProxyViewModel();
         public MainWindow()
         {
             InitializeComponent();
-            base.DataContext = _ViewModel;
         }
 
         //Form events
@@ -38,26 +36,6 @@ namespace ProxyServer
 
         //Checkbox events
         private void EnableCache(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void EnableImageFilter(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void EnableAdFilter(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void EnablePrivacyFilter(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void EnableScriptFilter(object sender, RoutedEventArgs e)
         {
 
         }

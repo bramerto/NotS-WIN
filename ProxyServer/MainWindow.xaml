@@ -29,9 +29,5 @@
         <Button x:Name="SetBufferSizeBtn" Content="Set" Grid.Column="1" HorizontalAlignment="Left" Margin="135,84,0,0" VerticalAlignment="Top" Width="62" Height="20" Click="SetBufferSize"/>
 
         <CheckBox x:Name="CacheCB" Content="Enable cache" Grid.Column="1" HorizontalAlignment="Left" Margin="10,124,0,0" VerticalAlignment="Top" Height="15" Width="89" Checked="EnableCache"/>
-        <CheckBox x:Name="ImageCB" Content="Enable Image filtering" Grid.Column="1" HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Height="15" Width="136" Checked="EnableImageFilter"/>
-        <CheckBox x:Name="AdCB" Content="Enable Advertising filtering" Grid.Column="1" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Height="15" Width="162" Checked="EnableAdFilter"/>
-        <CheckBox x:Name="PrivacyCB" Content="Enable privacy filter" Grid.Column="1" HorizontalAlignment="Left" Margin="10,184,0,0" VerticalAlignment="Top" Height="15" Width="123" Checked="EnablePrivacyFilter"/>
-        <CheckBox x:Name="ScriptCB" Content="Disable JavaScript" Grid.Column="1" HorizontalAlignment="Left" Margin="10,204,0,0" VerticalAlignment="Top" Height="15" Width="114" Checked="EnableScriptFilter"
     </Grid>
 </Window>
