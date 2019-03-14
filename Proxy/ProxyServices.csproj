@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="CacheControl.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="DataStructures\ProxyEndPoint.cs" />
     <Compile Include="Filters\Filter.cs" />
     <Compile Include="Filters\AdFilter.cs" />
     <Compile Include="Filters\ImageFilter.cs" />

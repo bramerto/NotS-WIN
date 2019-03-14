@@ -1,5 +1,4 @@
-﻿using Proxy.Messages;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace ProxyServer.ViewModels
 {
