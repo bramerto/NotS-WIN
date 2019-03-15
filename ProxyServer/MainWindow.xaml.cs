@@ -26,7 +26,7 @@ namespace ProxyServer
         {
             bufferSize = ValidateBufferSize(BufferSizeTxtB.Text);
             int port = ValidatePort(PortTxtB.Text);
-            server = new Server(bufferSize, port);
+            server = new Server(port, bufferSize);
 
             server.Start();
         }

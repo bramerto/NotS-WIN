@@ -1,6 +1,4 @@
-﻿
-
-namespace Proxy.Messages
+﻿namespace Proxy.Messages
 {
     class HttpResponse : IHttpMessage
     {

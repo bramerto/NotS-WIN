@@ -1,6 +1,4 @@
-﻿
-
-namespace Proxy
+﻿namespace Proxy
 {
     class CacheControl
     {

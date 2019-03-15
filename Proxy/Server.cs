@@ -1,14 +1,16 @@
-﻿using ProxyServices.DataStructures;
+﻿using Proxy.Messages;
+using ProxyServices.DataStructures;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Proxy
 {
     public class Server : IDisposable
     {
-        private readonly int _bufferSize;
+        private int _bufferSize;
         private ProxyEndPoint endPoint;
         private TcpListener listener;
         private bool listening = true;
@@ -42,10 +44,10 @@ namespace Proxy
                 {
                     try
                     {
-                        Socket c = await listener.AcceptSocketAsync();
+                        TcpClient c = await listener.AcceptTcpClientAsync();
                         Console.WriteLine("Connected!");
-                        Client client = new Client(c);
-                        _ = Task.Run(() => client.HandleConnection());
+                        
+                        _ = Task.Run(() => HandleConnection(c));
                     }
                     catch (Exception ex)
                     {
@@ -54,12 +56,52 @@ namespace Proxy
                 }
             });
         }
+        private void HandleConnection(TcpClient socket)
+        {
+            byte[] buffer = new byte[_bufferSize];
+            var stringBuilder = new StringBuilder();
+            string message;
+
+            using (NetworkStream ns = socket.GetStream())
+            {
+                while (listening)
+                {
+                    try
+                    {
+                        do
+                        {
+                            int readBytes = ns.Read(buffer, 0, _bufferSize);
+                            stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
+
+                        } while (ns.DataAvailable);
+
+                        buffer = new byte[_bufferSize];
+
+                        message = stringBuilder.ToString();
+                        stringBuilder.Clear();
+
+                        HttpRequest request = new HttpRequest(message);
+                        request.SetRequest();
+
+                        Client client = new Client(request);
+                        client.HandleConnection();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("ERROR: " + ex.ToString());
+                        listening = false;
+                    }
+                }
+                ns.Close();
+                socket.Close();
+            }
+        }
 
         public void Dispose()
         {
             listening = false;
             listener.Stop();
-            Console.WriteLine("Stopped listening");
+            Console.WriteLine("Closed connection");
         }
     }
 }
