@@ -4,11 +4,11 @@ namespace Proxy
 {
     class Client
     {
-        private IHttpMessage _socket;
+        private IHttpMessage HttpMessage;
 
         public Client(IHttpMessage message)
         {
-            _socket = message;
+            HttpMessage = message;
         }
 
         public void HandleConnection()

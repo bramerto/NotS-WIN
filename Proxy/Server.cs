@@ -10,22 +10,22 @@ namespace Proxy
 {
     public class Server : IDisposable
     {
-        private int _bufferSize;
-        private ProxyEndPoint endPoint;
-        private TcpListener listener;
-        private bool listening = true;
+        private int BufferSize;
+        private ProxyEndPoint EndPoint;
+        private TcpListener Listener;
+        private bool Listening = true;
 
         public Server(int port, int bufferSize)
         {
-            endPoint = new ProxyEndPoint(IPAddress.Any, port);
-            _bufferSize = bufferSize;
+            EndPoint = new ProxyEndPoint(IPAddress.Any, port);
+            BufferSize = bufferSize;
         }
         public void Start()
         {
             try
             {
-                listener = new TcpListener(endPoint._ipAddress, endPoint._port);
-                listener.Start();
+                Listener = new TcpListener(EndPoint.IpAddress, EndPoint.Port);
+                Listener.Start();
                 Listen();
             }
             catch (Exception ex)
@@ -40,11 +40,11 @@ namespace Proxy
             {
                 Console.WriteLine("Listening...");
 
-                while (listening)
+                while (Listening)
                 {
                     try
                     {
-                        TcpClient c = await listener.AcceptTcpClientAsync();
+                        TcpClient c = await Listener.AcceptTcpClientAsync();
                         Console.WriteLine("Connected!");
                         
                         _ = Task.Run(() => HandleConnection(c));
@@ -58,24 +58,24 @@ namespace Proxy
         }
         private void HandleConnection(TcpClient socket)
         {
-            byte[] buffer = new byte[_bufferSize];
+            byte[] buffer = new byte[BufferSize];
             var stringBuilder = new StringBuilder();
             string message;
 
             using (NetworkStream ns = socket.GetStream())
             {
-                while (listening)
+                while (Listening)
                 {
                     try
                     {
                         do
                         {
-                            int readBytes = ns.Read(buffer, 0, _bufferSize);
+                            int readBytes = ns.Read(buffer, 0, BufferSize);
                             stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
 
                         } while (ns.DataAvailable);
 
-                        buffer = new byte[_bufferSize];
+                        buffer = new byte[BufferSize];
 
                         message = stringBuilder.ToString();
                         stringBuilder.Clear();
@@ -89,7 +89,7 @@ namespace Proxy
                     catch (Exception ex)
                     {
                         Console.WriteLine("ERROR: " + ex.ToString());
-                        listening = false;
+                        Listening = false;
                     }
                 }
                 ns.Close();
@@ -99,8 +99,8 @@ namespace Proxy
 
         public void Dispose()
         {
-            listening = false;
-            listener.Stop();
+            Listening = false;
+            Listener.Stop();
             Console.WriteLine("Closed connection");
         }
     }

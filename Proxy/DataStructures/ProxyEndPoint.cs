@@ -9,10 +9,10 @@ namespace ProxyServices.DataStructures
     {
         public ProxyEndPoint(IPAddress ipAddress, int port)
         {
-            _ipAddress = ipAddress;
-            _port = port;
+            IpAddress = ipAddress;
+            Port = port;
         }
-        public IPAddress _ipAddress { get; set; }
-        public int _port { get; set; }
+        public IPAddress IpAddress { get; set; }
+        public int Port { get; set; }
     }
 }
