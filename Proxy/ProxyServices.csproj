@@ -44,11 +44,6 @@
     <Compile Include="CacheControl.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="DataStructures\ProxyEndPoint.cs" />
-    <Compile Include="Filters\Filter.cs" />
-    <Compile Include="Filters\AdFilter.cs" />
-    <Compile Include="Filters\ImageFilter.cs" />
-    <Compile Include="Filters\PrivacyFilter.cs" />
-    <Compile Include="Filters\ScriptFilter.cs" />
     <Compile Include="Messages\HttpRequest.cs" />
     <Compile Include="Messages\HttpResponse.cs" />
     <Compile Include="Messages\IHttpMessage.cs" />

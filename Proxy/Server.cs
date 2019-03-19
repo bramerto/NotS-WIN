@@ -36,25 +36,25 @@ namespace Proxy
 
         public void Listen()
         {
-            Task.Run(async () =>
-            {
-                Console.WriteLine("Listening...");
+            _ = Task.Run(async () =>
+              {
+                  Console.WriteLine("Listening...");
 
-                while (Listening)
-                {
-                    try
-                    {
-                        TcpClient c = await Listener.AcceptTcpClientAsync();
-                        Console.WriteLine("Connected!");
-                        
-                        _ = Task.Run(() => HandleConnection(c));
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("ERROR: " + ex.ToString());
-                    }
-                }
-            });
+                  while (Listening)
+                  {
+                      try
+                      {
+                          TcpClient c = await Listener.AcceptTcpClientAsync();
+                          Console.WriteLine("Connected!");
+
+                          _ = Task.Run(() => HandleConnection(c));
+                      }
+                      catch (Exception ex)
+                      {
+                          Console.WriteLine("ERROR: " + ex.ToString());
+                      }
+                  }
+              });
         }
         private void HandleConnection(TcpClient socket)
         {
