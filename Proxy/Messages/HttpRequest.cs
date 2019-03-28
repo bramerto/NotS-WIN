@@ -112,6 +112,29 @@ namespace Proxy.Messages
         public void ClearBody()
         {
             BodyString.Clear();
+            Bodysize = 0;
+            BodyJson = new Hashtable();
+            BodyData = null;
+        }
+
+        public void ClearHeaders()
+        {
+            Headers = new Hashtable();
+        }
+
+        public void ClearHttpHeader()
+        {
+            Method = "";
+            URL = "";
+            Version = "";
+        }
+
+        public void ClearAll()
+        {
+            ClearBody();
+            ClearHeaders();
+            ClearHttpHeader();
+            Message = "";
         }
     }
 }
