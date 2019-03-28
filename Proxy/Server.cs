@@ -10,8 +10,8 @@ namespace Proxy
 {
     public class Server : IDisposable
     {
-        private int BufferSize;
-        private ProxyEndPoint EndPoint;
+        private readonly int BufferSize;
+        private readonly ProxyEndPoint EndPoint;
         private TcpListener Listener;
         private bool Listening = true;
 
