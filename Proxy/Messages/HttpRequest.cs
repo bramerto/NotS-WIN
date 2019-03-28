@@ -97,10 +97,10 @@ namespace Proxy.Messages
                 for (int i=0; i<jsonData.Length;i++)
                 {
                     jsonData[i] = jsonData[i].Trim(new char[] { ' ', '"' });
-                    Console.WriteLine(jsonData[i]);
                 }
-                //BodyJson.Add(jsonData[0], jsonData[1]);
                
+                BodyJson.Add(jsonData[0], jsonData[1]);
+
             }
         }
 
