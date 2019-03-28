@@ -81,7 +81,6 @@ namespace Proxy
                         stringBuilder.Clear();
 
                         HttpRequest request = new HttpRequest(message);
-                        request.SetRequest();
 
                         Client client = new Client(request);
                         client.HandleConnection();

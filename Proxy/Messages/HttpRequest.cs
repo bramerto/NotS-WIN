@@ -8,8 +8,9 @@ namespace Proxy.Messages
     {
         private bool IsMethodLine = true;
         private bool ReachedBody = false;
+        private bool IsJson = false;
 
-        public string Message;
+        public string Message { get; set; }
 
         public string Method { get; private set; }
         public string URL { get; private set; }
@@ -17,17 +18,22 @@ namespace Proxy.Messages
         public Hashtable Headers { get; private set; }
 
         public int Bodysize { get; private set; }
-        public byte[] BodyData { get; set; }
-        public StringBuilder BodyString { get; set; }
+        public byte[] BodyData { get; private set; }
+        public StringBuilder BodyString { get; private set; }
+        public Hashtable BodyJson { get; private set; }
 
         public HttpRequest(string message)
         {
             Message = message;
             Headers = new Hashtable();
+            Bodysize = 0;
+
+            BodyJson = new Hashtable();
             BodyString = new StringBuilder();
+            SetRequest();
         }
 
-        public void SetRequest()
+        protected void SetRequest()
         {
             string[] requestLines = Message.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -37,13 +43,26 @@ namespace Proxy.Messages
                 {
                     SetMethod(line);
                 }
-                else
+                else if (line.StartsWith("{"))
+                {
+                    ReachedBody = true;
+                    IsJson = true;
+                    
+                    SetJsonBody(line);
+                }
+                else if (!ReachedBody)
                 {
                     SetHeader(line);
-                }   
+                }
+                else if (IsJson)
+                {
+                    SetJsonBody(line);
+                }
+                else
+                {
+                    SetBody(line);
+                }
             }
-
-            SetData();
         }
 
         private void SetMethod(string line)
@@ -60,24 +79,32 @@ namespace Proxy.Messages
         private void SetHeader(string line)
         {
             string[] headerLine = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (headerLine[1] == null)
-            {
-                ReachedBody = true;
-                AppendBody(headerLine[0]);
-            }
-            else
-            {
-                if (!ReachedBody) Headers.Add(headerLine[0], headerLine[1]);
-            }
+            Headers.Add(headerLine[0], headerLine[1]);
         }
 
-        private void SetData()
+        private void SetBody(string line)
         {
-
+            Console.WriteLine(line);
         }
 
-        private void AppendBody(string line)
+        private void SetJsonBody(string line)
+        {
+            line = line.Trim(new char[] { '{', '}', ' ', '\t' });
+            
+            if (line.Length > 0)
+            {
+                string[] jsonData = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i=0; i<jsonData.Length;i++)
+                {
+                    jsonData[i] = jsonData[i].Trim(new char[] { ' ', '"' });
+                    Console.WriteLine(jsonData[i]);
+                }
+                //BodyJson.Add(jsonData[0], jsonData[1]);
+               
+            }
+        }
+
+        private void AppendBodyString(string line)
         {
             BodyString.Append(line);
         }
