@@ -2,17 +2,9 @@
 
 namespace Proxy.Messages
 {
-    class HttpResponse : IHttpMessage
+    class HttpResponse : HttpMessage
     {
-        public string Message;
-
-        public int Status;
-        public string Version;
-        public Hashtable Headers;
-        public int BodySize;
-        public string BodyData;
-
-        public enum State
+        public enum Status
         {
             OK                    = 200,
             BAD_REQUEST           = 400,

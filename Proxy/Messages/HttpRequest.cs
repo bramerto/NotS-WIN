@@ -4,16 +4,11 @@ using System.Text;
 
 namespace Proxy.Messages
 {
-    class HttpRequest : IHttpMessage
+    class HttpRequest : HttpMessage
     {
         private bool IsMethodLine = true;
 
-        public string Message { get; set; }
-
         public string Method { get; private set; }
-        public string URL { get; private set; }
-        public string Version { get; private set; }
-        public Hashtable Headers { get; private set; }
 
         public HttpRequest(string message)
         {
@@ -31,6 +26,7 @@ namespace Proxy.Messages
                 if (IsMethodLine)
                 {
                     SetMethod(line);
+                    IsMethodLine = false;
                 }
                 else
                 {
@@ -46,8 +42,6 @@ namespace Proxy.Messages
             Method = methodLine[0];
             URL = methodLine[1];
             Version = methodLine[2];
-
-            IsMethodLine = false;
         }
 
         private void SetHeader(string line)
@@ -56,23 +50,10 @@ namespace Proxy.Messages
             Headers.Add(headerLine[0], headerLine[1]);
         }
 
-        public void ClearHeaders()
+        public override void ClearHttpHeader()
         {
-            Headers = new Hashtable();
-        }
-
-        public void ClearHttpHeader()
-        {
+            base.ClearHttpHeader();
             Method = "";
-            URL = "";
-            Version = "";
-        }
-
-        public void ClearAll()
-        {
-            ClearHeaders();
-            ClearHttpHeader();
-            Message = "";
         }
     }
 }
