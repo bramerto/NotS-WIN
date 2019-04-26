@@ -6,12 +6,14 @@ namespace Proxy.Messages
 {
     class HttpRequest : HttpMessage
     {
-        private bool IsMethodLine = true;
+        private bool IsMethodLine;
 
         public string Method { get; private set; }
+        public string URL { get; protected set; }
 
         public HttpRequest(string message)
         {
+            IsMethodLine = true;
             Message = message;
             Headers = new Hashtable();
             SetRequest();
@@ -54,6 +56,7 @@ namespace Proxy.Messages
         {
             base.ClearHttpHeader();
             Method = "";
+            URL = "";
         }
     }
 }

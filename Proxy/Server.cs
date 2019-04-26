@@ -83,7 +83,7 @@ namespace Proxy
                         HttpRequest request = new HttpRequest(message);
 
                         Client client = new Client(request);
-                        client.HandleConnection();
+                        HttpResponse response = client.HandleConnection();
                     }
                     catch (Exception ex)
                     {
