@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WAPP-Demo", "WAPP-Demo", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityDemo", "IdentityDemo\IdentityDemo.csproj", "{FC585E28-2558-4AFF-ACD5-8ACD6AB22943}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InsideAirbnb", "InsideAirbnb", "{764E97E9-36B8-4874-9974-FF4E9A947518}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
