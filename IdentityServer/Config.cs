@@ -51,9 +51,9 @@ namespace IdentityServer
                     AllowedGrantTypes = GrantTypes.Implicit,
                     ClientSecrets = { new Secret("49C1A7E1-0C79-4A89-A3D6-A37998FB86B0".Sha256()) },
 
-                    RedirectUris = { "https://localhost:44307/signin-oidc" },
-                    FrontChannelLogoutUri = "https://localhost:44307/signout-oidc",
-                    PostLogoutRedirectUris = { "https://localhost:44307/signout-callback-oidc" },
+                    RedirectUris = { "https://localhost:44328/signin-oidc" },
+                    FrontChannelLogoutUri = "https://localhost:44328/signout-oidc",
+                    PostLogoutRedirectUris = { "https://localhost:44328/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
                     AllowedScopes = { "openid", "profile", "api1" }

@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
+using InsideAirbnb.Entities;
+using InsideAirbnb.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace InsideAirbnb
 {
@@ -35,6 +32,9 @@ namespace InsideAirbnb
                 .AddNewtonsoftJson();
             services.AddRazorPages();
 
+            services.AddTransient<IRepository<Listings>, ListingsRepository>();
+            services.AddTransient<IRepository<Neighbourhoods>, NeighbourhoodsRepository>();
+
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(options =>
@@ -42,16 +42,15 @@ namespace InsideAirbnb
                 options.DefaultScheme = "Cookies";
                 options.DefaultChallengeScheme = "oidc";
             })
-                .AddCookie("Cookies")
-                .AddOpenIdConnect("oidc", options =>
-                {
-                    options.SaveTokens = true;
-                    options.ClientId = "mvc";
-                    options.ClientSecret = "49C1A7E1-0C79-4A89-A3D6-A37998FB86B0";
-                    options.RequireHttpsMetadata = false;
-                    options.Authority = "http://localhost:5000/";
-                });
-
+            .AddCookie("Cookies")
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.SaveTokens = true;
+                options.ClientId = "mvc";
+                options.ClientSecret = "49C1A7E1-0C79-4A89-A3D6-A37998FB86B0";
+                options.RequireHttpsMetadata = false;
+                options.Authority = "http://localhost:5000/";
+            });   
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +74,7 @@ namespace InsideAirbnb
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
