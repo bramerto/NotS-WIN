@@ -1,8 +1,8 @@
-﻿using Proxy.Messages;
+﻿using ProxyServices.Messages;
 using System;
 using System.Net.Sockets;
 
-namespace Proxy
+namespace ProxyServices
 {
     class Client
     {
@@ -22,7 +22,7 @@ namespace Proxy
             {
                 string message = request.Message;
                 string[] UrlSplit = request.URL.Split(':');
-                int port = Int32.Parse(UrlSplit[2].Split('/')[0]);
+                int port = int.Parse(UrlSplit[2].Split('/')[0]);
                 string URL = UrlSplit[1].TrimStart('/');
 
                 tcpClient.Connect(URL, port);
@@ -32,9 +32,9 @@ namespace Proxy
                 stream.Write(data, 0, data.Length);
 
                 data = new byte[256];
-                String responseData = String.Empty;
+                string responseData = string.Empty;
 
-                Int32 bytes = stream.Read(data, 0, data.Length);
+                int bytes = stream.Read(data, 0, data.Length);
                 responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
                 response = new HttpResponse(responseData);
 

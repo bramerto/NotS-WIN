@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Proxy.Messages
+namespace ProxyServices.Messages
 {
     public class HttpMessage
     {

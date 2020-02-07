@@ -1,4 +1,4 @@
-﻿namespace Proxy
+﻿namespace ProxyServices
 {
     public class Proxy
     {

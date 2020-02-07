@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace Proxy.Messages
+namespace ProxyServices.Messages
 {
     class HttpResponse : HttpMessage
     {

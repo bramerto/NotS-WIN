@@ -1,8 +1,9 @@
-﻿using Proxy.Messages;
+﻿using ProxyServices.Messages;
+using System;
 
-namespace ProxyServer
+namespace ProxyServices.Models
 {
-    class ProxyLog
+    public class ProxyLog : EventArgs
     {
         public string Type { get; set; }
         public string Source { get; set; }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Text;
 
-namespace Proxy.Messages
+namespace ProxyServices.Messages
 {
     class HttpRequest : HttpMessage
     {
@@ -49,7 +48,7 @@ namespace Proxy.Messages
         private void SetHeader(string line)
         {
             string[] headerLine = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-            Headers.Add(headerLine[0], headerLine[1]);
+            if (headerLine.Length > 0) Headers.Add(headerLine[0], headerLine[1]);
         }
 
         public override void ClearHttpHeader()

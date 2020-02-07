@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsideAirbnb", "InsideAirbnb\InsideAirbnb.csproj", "{9A45EBF6-A4F8-4A07-B60F-D9092EA297A9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoadBalancer", "LoadBalancer", "{306F5BDC-C036-497D-931D-DCD9B72E7394}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

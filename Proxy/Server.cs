@@ -1,4 +1,5 @@
-﻿using Proxy.Messages;
+﻿using ProxyServices.Messages;
+using ProxyServices.Models;
 using ProxyServices.DataStructures;
 using System;
 using System.Net;
@@ -6,11 +7,11 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Proxy
+namespace ProxyServices
 {
     public class Server : IDisposable
     {
-        private readonly int BufferSize;
+        private int BufferSize;
         private readonly ProxyEndPoint EndPoint;
         private TcpListener Listener;
         private bool Listening = true;
@@ -20,6 +21,7 @@ namespace Proxy
             EndPoint = new ProxyEndPoint(IPAddress.Any, port);
             BufferSize = bufferSize;
         }
+
         public void Start()
         {
             try
@@ -37,25 +39,26 @@ namespace Proxy
         public void Listen()
         {
             _ = Task.Run(async () =>
-              {
-                  Console.WriteLine("Listening...");
+            {
+                Console.WriteLine("Listening...");
 
-                  while (Listening)
-                  {
-                      try
-                      {
-                          TcpClient c = await Listener.AcceptTcpClientAsync();
-                          Console.WriteLine("Connected!");
+                while (Listening)
+                {
+                    try
+                    {
+                        TcpClient c = await Listener.AcceptTcpClientAsync();
+                        Console.WriteLine("Connected!");
 
-                          _ = Task.Run(() => HandleConnection(c));
-                      }
-                      catch (Exception ex)
-                      {
-                          Console.WriteLine("ERROR: " + ex.ToString());
-                      }
-                  }
-              });
+                        _ = Task.Run(() => HandleConnection(c));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("ERROR: " + ex.ToString());
+                    }
+                }
+            });
         }
+
         private void HandleConnection(TcpClient socket)
         {
             byte[] buffer = new byte[BufferSize];
@@ -88,7 +91,7 @@ namespace Proxy
                     catch (Exception ex)
                     {
                         Console.WriteLine("ERROR: " + ex.ToString());
-                        Listening = false;
+                        Dispose();
                     }
                 }
                 ns.Close();
