@@ -25,20 +25,22 @@ namespace ProxyServices
                 int port = int.Parse(UrlSplit[2].Split('/')[0]);
                 string URL = UrlSplit[1].TrimStart('/');
 
+                //add caching
+
                 tcpClient.Connect(URL, port);
 
                 byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
-                NetworkStream stream = tcpClient.GetStream();
-                stream.Write(data, 0, data.Length);
+                NetworkStream ns = tcpClient.GetStream();
+                ns.Write(data, 0, data.Length);
 
                 data = new byte[256];
                 string responseData = string.Empty;
 
-                int bytes = stream.Read(data, 0, data.Length);
+                int bytes = ns.Read(data, 0, data.Length);
                 responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
                 response = new HttpResponse(responseData);
 
-                stream.Close();
+                ns.Close();
                 tcpClient.Close();
 
                 return response;

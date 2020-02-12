@@ -10,18 +10,17 @@ namespace HttpDummy
         static void Main(string[] args)
         {
             HttpListener listener;
+            listener = new HttpListener();
+            listener.Prefixes.Add("http://localhost:4000/dummy/");
+            listener.Start();
+            Console.WriteLine("Listening...");
 
-            try
+            while (true)
             {
-                listener = new HttpListener();
-                listener.Prefixes.Add("http://localhost:4000/dummy/");
-                listener.Start();
-                Console.WriteLine("Listening...");
-
-                while (true)
+                try
                 {
                     var context = listener.GetContext();
-                    string msg = "Hello World!";
+                    string msg = "<h1>Hello World!</h1>";
                     context.Response.ContentLength64 = Encoding.UTF8.GetByteCount(msg);
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
                     using (Stream stream = context.Response.OutputStream)
@@ -34,11 +33,15 @@ namespace HttpDummy
 
                     Console.WriteLine("Message sent (HTTP 200 OK)");
                 }
-            }
-            catch (WebException ex)
-            {
-                Console.WriteLine("Something went wrong (HTTP 500 Internal Server Error)");
-                Console.WriteLine(ex.Status);
+                catch (WebException ex)
+                {
+                    Console.WriteLine("Something went wrong (HTTP 500 Internal Server Error)");
+                    Console.WriteLine(ex.Status);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Something went wrong: " + ex);
+                }
             }
         }
     }

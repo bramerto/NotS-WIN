@@ -1,5 +1,4 @@
 ﻿using ProxyServices.Messages;
-using ProxyServices.Models;
 using ProxyServices.DataStructures;
 using System;
 using System.Net;
@@ -22,6 +21,9 @@ namespace ProxyServices
             BufferSize = bufferSize;
         }
 
+        /// <summary>
+        /// Starts the server
+        /// </summary>
         public void Start()
         {
             try
@@ -36,6 +38,9 @@ namespace ProxyServices
             }
         }
 
+        /// <summary>
+        /// Start listening for incoming clients on a different thread
+        /// </summary>
         public void Listen()
         {
             _ = Task.Run(async () =>
@@ -59,6 +64,10 @@ namespace ProxyServices
             });
         }
 
+        /// <summary>
+        /// Handles the connection from a tcpclient, reads the http message, sends a request to the client and writes it back to original tcpclient.
+        /// </summary>
+        /// <param name="socket"></param>
         private void HandleConnection(TcpClient socket)
         {
             byte[] buffer = new byte[BufferSize];
@@ -78,15 +87,19 @@ namespace ProxyServices
 
                         } while (ns.DataAvailable);
 
-                        buffer = new byte[BufferSize];
-
                         message = stringBuilder.ToString();
                         stringBuilder.Clear();
 
                         HttpRequest request = new HttpRequest(message);
+                        // add privacy filter by changing the request headers for privacy
 
                         Client client = new Client(request);
                         HttpResponse response = client.HandleConnection();
+
+                        //add ad filter to response here to replace pictures with placeholders.
+
+                        //write back to stream
+                        //ns.Write(response, 0, BufferSize);
                     }
                     catch (Exception ex)
                     {

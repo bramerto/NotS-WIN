@@ -16,22 +16,25 @@
             <ColumnDefinition Width="125*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="StartBtn" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Height="19" Margin="62,35,0,0" Click="StartServer" Grid.Column="1" Width="62"/>
-        <Button x:Name="StopBtn" Content="Stop" Grid.Column="1" HorizontalAlignment="Left" Margin="130,35,0,0" VerticalAlignment="Top" Width="67" Height="19" Click="StopServer"/>
-        <ListView x:Name="listView" HorizontalAlignment="Left" Height="449" Margin="10,10,0,0" VerticalAlignment="Top" Width="422">
+        <Button x:Name="StopBtn" IsEnabled="False" Content="Stop" Grid.Column="1" HorizontalAlignment="Left" Margin="130,35,0,0" VerticalAlignment="Top" Width="67" Height="19" Click="StopServer"/>
+        <ListView x:Name="listView" HorizontalAlignment="Left" Height="449" Margin="10,10,0,0" VerticalAlignment="Top" Width="460">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Type}"/>
-                    <GridViewColumn Header="Source" DisplayMemberBinding="{Binding Source}"/>
-                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"/>
+                    <GridViewColumn Width="100" Header="Type" DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn Width="100" Header="Source" DisplayMemberBinding="{Binding Source}"/>
+                    <GridViewColumn Width="260" Header="Message" DisplayMemberBinding="{Binding Message}"/>
                 </GridView>
             </ListView.View>
         </ListView>
         <Label x:Name="PortLbl" Content="Port" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="25" Width="38"/>
         <TextBox x:Name="PortTxtB" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="10,35,0,0" TextWrapping="Wrap" Text="8080" VerticalAlignment="Top" Width="47" IsUndoEnabled="False"/>
 
-        <Label x:Name="BufferSizeLbl" Content="Buffer" Grid.Column="1" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Height="25" Width="47" RenderTransformOrigin="0.277,0.56"/>
+        <Label x:Name="BufferSizeLbl" Content="Buffer" Grid.Column="1" HorizontalAlignment="Left" Margin="9.667,60,0,0" VerticalAlignment="Top" Height="25" Width="47" RenderTransformOrigin="0.277,0.56"/>
         <TextBox x:Name="BufferSizeTxtB" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="10,85,0,0" TextWrapping="Wrap" Text="12" VerticalAlignment="Top" Width="120"/>
 
-        <CheckBox x:Name="CacheCB" Content="Enable cache" Grid.Column="1" HorizontalAlignment="Left" Margin="10,124,0,0" VerticalAlignment="Top" Height="15" Width="89" Checked="EnableCache"/>
+        <Label x:Name="label" Content="Filters" Grid.Column="1" HorizontalAlignment="Left" Margin="9.667,158,0,0" VerticalAlignment="Top" Height="24" Width="47"/>
+        <CheckBox x:Name="CacheCB" Content="Enable cache" Grid.Column="1" HorizontalAlignment="Left" Margin="10,124,0,0" VerticalAlignment="Top" Height="15" Width="89"/>
+        <CheckBox x:Name="AdvertiseFilterCB" Content="Advertentie filter" Grid.Column="1" HorizontalAlignment="Left" Margin="9.667,182,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="privacyFilterCB" Content="Privacy filter" Grid.Column="1" HorizontalAlignment="Left" Margin="9.667,203,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
