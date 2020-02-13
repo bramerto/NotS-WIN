@@ -53,7 +53,6 @@ namespace ProxyServices
                     {
                         TcpClient c = await Listener.AcceptTcpClientAsync();
                         Console.WriteLine("Connected!");
-
                         _ = Task.Run(() => HandleConnection(c));
                     }
                     catch (Exception ex)

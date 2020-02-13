@@ -17,12 +17,12 @@
         </Grid.ColumnDefinitions>
         <Button x:Name="StartBtn" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Height="19" Margin="62,35,0,0" Click="StartServer" Grid.Column="1" Width="62"/>
         <Button x:Name="StopBtn" IsEnabled="False" Content="Stop" Grid.Column="1" HorizontalAlignment="Left" Margin="130,35,0,0" VerticalAlignment="Top" Width="67" Height="19" Click="StopServer"/>
-        <ListView x:Name="listView" HorizontalAlignment="Left" Height="449" Margin="10,10,0,0" VerticalAlignment="Top" Width="460">
+        <ListView x:Name="listView" HorizontalAlignment="Left" Height="449" Margin="10,10,0,0" VerticalAlignment="Top" Width="416">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="100" Header="Type" DisplayMemberBinding="{Binding Type}"/>
                     <GridViewColumn Width="100" Header="Source" DisplayMemberBinding="{Binding Source}"/>
-                    <GridViewColumn Width="260" Header="Message" DisplayMemberBinding="{Binding Message}"/>
+                    <GridViewColumn Width="216" Header="Message" DisplayMemberBinding="{Binding Message}"/>
                 </GridView>
             </ListView.View>
         </ListView>
