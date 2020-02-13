@@ -48,7 +48,7 @@ namespace ProxyServices.Messages
         private void SetHeader(string line)
         {
             string[] headerLine = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-            if (headerLine.Length > 0) Headers.Add(headerLine[0], headerLine[1]);
+            if (headerLine.Length > 1) Headers.Add(headerLine[0], headerLine[1]);
         }
 
         public override void ClearHttpHeader()

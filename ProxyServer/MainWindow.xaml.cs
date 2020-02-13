@@ -75,9 +75,6 @@ namespace ProxyServer
             StopBtn.IsEnabled = (StopBtn.IsEnabled) ? false : true;
             PortTxtB.IsEnabled = (PortTxtB.IsEnabled) ? false : true;
             BufferSizeTxtB.IsEnabled = (BufferSizeTxtB.IsEnabled) ? false : true;
-            CacheCB.IsEnabled = (CacheCB.IsEnabled) ? false : true;
-            AdvertiseFilterCB.IsEnabled = (AdvertiseFilterCB.IsEnabled) ? false : true;
-            privacyFilterCB.IsEnabled = (privacyFilterCB.IsEnabled) ? false : true;
         }
     }
 }

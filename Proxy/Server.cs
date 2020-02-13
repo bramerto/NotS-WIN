@@ -10,7 +10,7 @@ namespace ProxyServices
 {
     public class Server : IDisposable
     {
-        private int BufferSize;
+        private readonly int BufferSize;
         private readonly ProxyEndPoint EndPoint;
         private TcpListener Listener;
         private bool Listening = true;
@@ -90,6 +90,14 @@ namespace ProxyServices
                         stringBuilder.Clear();
 
                         HttpRequest request = new HttpRequest(message);
+
+                        //check if privacy filter is on
+                        if (true)
+                        {
+                            string key = "User-Agent";
+                            request.Headers[key] = "Proxy";
+                        }
+                        
                         // add privacy filter by changing the request headers for privacy
 
                         Client client = new Client(request);

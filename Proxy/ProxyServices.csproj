@@ -47,7 +47,6 @@
     <Compile Include="Messages\HttpRequest.cs" />
     <Compile Include="Messages\HttpResponse.cs" />
     <Compile Include="Messages\HttpMessage.cs" />
-    <Compile Include="Models\ProxyLog.cs" />
     <Compile Include="Proxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
