@@ -5,20 +5,40 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using ProxyServices.Models;
 
 namespace ProxyServices
 {
     public class Server : IDisposable
     {
-        private readonly int BufferSize;
-        private readonly ProxyEndPoint EndPoint;
-        private TcpListener Listener;
-        private bool Listening = true;
+        private readonly int _bufferSize;
+        private readonly ProxyEndPoint _endPoint;
+        private TcpListener _listener;
+        private bool _listening;
+        private readonly bool caching;
+        private readonly bool advertisementFilter;
+        private readonly bool privacyFilter;
 
-        public Server(int port, int bufferSize)
+        public event EventHandler<ProxyLogEventArgs> AddedToList;
+
+        public Server(int port, int bufferSize, ProxyUIEventArgs args)
         {
-            EndPoint = new ProxyEndPoint(IPAddress.Any, port);
-            BufferSize = bufferSize;
+            _endPoint = new ProxyEndPoint(IPAddress.Any, port);
+            _bufferSize = bufferSize;
+            _listening = true;
+
+            caching = args.cacheEnabled;
+            advertisementFilter = args.advertisementFilterEnabled;
+            privacyFilter = args.privacyFilterEnabled;
+        }
+
+        /// <summary>
+        /// Raise event
+        /// </summary>
+        /// <param name="proxyLog"></param>
+        protected virtual void OnAddToList(ProxyLog proxyLog)
+        {
+            AddedToList?.Invoke(this, new ProxyLogEventArgs() { ProxyLog = proxyLog });
         }
 
         /// <summary>
@@ -28,13 +48,14 @@ namespace ProxyServices
         {
             try
             {
-                Listener = new TcpListener(EndPoint.IpAddress, EndPoint.Port);
-                Listener.Start();
+                _listener = new TcpListener(_endPoint.IpAddress, _endPoint.Port);
+                _listener.Start();
                 Listen();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ERROR: " + ex.ToString());
+                OnAddToList(new ProxyLog() { Message = ex.ToString(), Source = "Server", Type = "Error" });
+                Console.WriteLine("ERROR: " + ex);
             }
         }
 
@@ -45,72 +66,77 @@ namespace ProxyServices
         {
             _ = Task.Run(async () =>
             {
+                OnAddToList(new ProxyLog(){Message = "Listening...", Source = "Server", Type = "TCP"});
                 Console.WriteLine("Listening...");
 
-                while (Listening)
+                while (_listening)
                 {
                     try
                     {
-                        TcpClient c = await Listener.AcceptTcpClientAsync();
+                        TcpClient c = await _listener.AcceptTcpClientAsync();
+                        OnAddToList(new ProxyLog() { Message = "Connected!", Source = "Server", Type = "TCP" });
                         Console.WriteLine("Connected!");
                         _ = Task.Run(() => HandleConnection(c));
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("ERROR: " + ex.ToString());
+                        OnAddToList(new ProxyLog() { Message = ex.ToString(), Source = "Server", Type = "Error" });
+                        Console.WriteLine("ERROR: " + ex);
+                        Dispose();
                     }
                 }
             });
         }
 
         /// <summary>
-        /// Handles the connection from a tcpclient, reads the http message, sends a request to the client and writes it back to original tcpclient.
+        /// Handles the connection from a tcp client, reads the http message, sends a request to the client and writes it back to original tcp client.
         /// </summary>
         /// <param name="socket"></param>
         private void HandleConnection(TcpClient socket)
         {
-            byte[] buffer = new byte[BufferSize];
+            byte[] buffer = new byte[_bufferSize];
             var stringBuilder = new StringBuilder();
-            string message;
 
             using (NetworkStream ns = socket.GetStream())
             {
-                while (Listening)
+                while (_listening)
                 {
                     try
                     {
                         do
                         {
-                            int readBytes = ns.Read(buffer, 0, BufferSize);
+                            int readBytes = ns.Read(buffer, 0, _bufferSize);
                             stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
 
                         } while (ns.DataAvailable);
 
-                        message = stringBuilder.ToString();
+                        var message = stringBuilder.ToString();
                         stringBuilder.Clear();
 
                         HttpRequest request = new HttpRequest(message);
 
-                        //check if privacy filter is on
-                        if (true)
+                        if (privacyFilter)
                         {
                             string key = "User-Agent";
                             request.Headers[key] = "Proxy";
                         }
-                        
-                        // add privacy filter by changing the request headers for privacy
 
-                        Client client = new Client(request);
+                        Client client = new Client(request, caching);
                         HttpResponse response = client.HandleConnection();
 
-                        //add ad filter to response here to replace pictures with placeholders.
+                        //TODO: add ad filter to response here to replace pictures with placeholders
+                        if (advertisementFilter)
+                        {
 
-                        //write back to stream
+                        }
+
+                        //TODO: write back to stream
                         //ns.Write(response, 0, BufferSize);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("ERROR: " + ex.ToString());
+                        OnAddToList(new ProxyLog() { Message = ex.ToString(), Source = "Server", Type = "Error" });
+                        Console.WriteLine("ERROR: " + ex);
                         Dispose();
                     }
                 }
@@ -121,8 +147,9 @@ namespace ProxyServices
 
         public void Dispose()
         {
-            Listening = false;
-            Listener.Stop();
+            _listening = false;
+            _listener.Stop();
+            OnAddToList(new ProxyLog() { Message = "Closed connection", Source = "Server", Type = "TCP" });
             Console.WriteLine("Closed connection");
         }
     }

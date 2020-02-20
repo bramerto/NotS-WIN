@@ -1,4 +1,4 @@
-﻿namespace ProxyServer.Models
+﻿namespace ProxyServices.Models
 {
     public class ProxyLog
     {

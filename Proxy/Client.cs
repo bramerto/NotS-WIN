@@ -9,11 +9,13 @@ namespace ProxyServices
         private readonly HttpRequest request;
         private HttpResponse response;
         private readonly TcpClient tcpClient;
+        private readonly bool caching;
 
-        public Client(HttpRequest message)
+        public Client(HttpRequest message, bool caching)
         {
             request = message;
             tcpClient = new TcpClient();
+            this.caching = caching;
         }
 
         public HttpResponse HandleConnection()
@@ -23,21 +25,24 @@ namespace ProxyServices
                 string message = request.Message;
                 string[] UrlSplit = request.URL.Split(':');
                 int port = int.Parse(UrlSplit[2].Split('/')[0]);
-                string URL = UrlSplit[1].TrimStart('/');
+                string url = UrlSplit[1].TrimStart('/');
 
-                //add caching
+                //TODO: add caching
+                if (caching)
+                {
+                    
+                }
 
-                tcpClient.Connect(URL, port);
+                tcpClient.Connect(url, port);
 
                 byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
                 NetworkStream ns = tcpClient.GetStream();
                 ns.Write(data, 0, data.Length);
 
                 data = new byte[256];
-                string responseData = string.Empty;
 
                 int bytes = ns.Read(data, 0, data.Length);
-                responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                var responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
                 response = new HttpResponse(responseData);
 
                 ns.Close();
