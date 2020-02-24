@@ -1,6 +1,8 @@
 ﻿using ProxyServices.Messages;
 using System;
 using System.Net.Sockets;
+using System.Collections.ObjectModel;
+using ProxyServices.Models;
 
 namespace ProxyServices
 {
@@ -11,11 +13,14 @@ namespace ProxyServices
         private readonly TcpClient tcpClient;
         private readonly bool caching;
 
+        private readonly Collection<CacheItem> _cachePool;
+
         public Client(HttpRequest message, bool caching)
         {
             request = message;
             tcpClient = new TcpClient();
             this.caching = caching;
+            _cachePool = new Collection<CacheItem>();
         }
 
         public HttpResponse HandleConnection()
@@ -30,7 +35,15 @@ namespace ProxyServices
                 //TODO: add caching
                 if (caching)
                 {
-                    Console.WriteLine("CACHING...");
+                    Console.WriteLine("CHECKING CACHE...");
+
+                    foreach (var cacheItem in _cachePool)
+                    {
+                        if (cacheItem.Url == url && cacheItem.ExpireTime.CompareTo(DateTime.Now) >= 0)
+                        {
+                            return cacheItem.Response;
+                        }
+                    }
                 }
 
                 tcpClient.Connect(url, port);
@@ -48,8 +61,13 @@ namespace ProxyServices
                 ns.Close();
                 tcpClient.Close();
 
-                return response;
+                if (caching)
+                {
+                    Console.WriteLine("CACHING...");
+                    _cachePool.Add(new CacheItem() { Url = url, ExpireTime = DateTime.Now.AddDays(30), Response = response });
+                }
 
+                return response;
             }
             catch (ArgumentNullException e)
             {
