@@ -1,20 +1,27 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows.Controls;
 using ProxyServices;
+using ProxyServices.Models;
 
 namespace ProxyServer.ViewModels
 {
-    class ProxyViewModel
+    internal class ProxyViewModel
     {
         private Server server;
+        private ProxyUIEventArgs uiEventArgs;
+        private readonly ListView _list;
+        private readonly int defaultBufferSize;
         private readonly int defaultPort;
         private int bufferSize;
         private int port;
-        private readonly ListView _list;
-        private ProxyUIEventArgs uiEventArgs;
+        
+        public ObservableCollection<ProxyLog> Messages;
 
         public ProxyViewModel(ListView list)
         {
             defaultPort = 8080;
+            defaultBufferSize = 1024;
             _list = list;
         }
 
@@ -25,7 +32,9 @@ namespace ProxyServer.ViewModels
             port = ValidatePort(uiEventArgs.port);
 
             server = new Server(port, bufferSize, args);
-            server.AddedToList += OnAddedToList;
+            Messages = server.MessagesCollection;
+
+            Messages.CollectionChanged += OnAddedToList;
 
             server.Start();
         }
@@ -36,13 +45,15 @@ namespace ProxyServer.ViewModels
         }
 
         /// <summary>
-        /// Validates a buffersize text and sets it to an int
+        /// Validates a buffer size text and sets it to an int
         /// </summary>
         /// <param name="bufferInput"></param>
         /// <returns></returns>
         private int ValidateBufferSize(string bufferInput)
         {
-            return (!string.IsNullOrEmpty(bufferInput) && int.TryParse(bufferInput, out int n) && n > 1 && n < int.MaxValue) ? n : 0;
+            return (!string.IsNullOrEmpty(bufferInput) && int.TryParse(bufferInput, out var n) && n > 1 && n < int.MaxValue) ? 
+                n :
+                defaultBufferSize;
         }
 
         /// <summary>
@@ -52,13 +63,17 @@ namespace ProxyServer.ViewModels
         /// <returns></returns>
         private int ValidatePort(string portTxt)
         {
-            bool success = int.TryParse(portTxt, out int port);
-            return (success) ? port : defaultPort;
+            return (int.TryParse(portTxt, out var port)) ? 
+                port :
+                defaultPort;
         }
 
-        public void OnAddedToList(object source, ProxyLogEventArgs e)
+        public void OnAddedToList(object source, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            _list.Items.Add(e.ProxyLog);
+            foreach (ProxyLog item in notifyCollectionChangedEventArgs.NewItems)
+            {
+                _list.Items.Add(item);
+            }
         }
     }
 }

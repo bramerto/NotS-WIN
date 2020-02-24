@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Text;
 
 namespace ProxyServices.Messages
 {
@@ -58,8 +59,26 @@ namespace ProxyServices.Messages
             {
                 Body = headerLine[0];
             }
+        }
 
-            
+        public override string ToString()
+        {
+            var httpMessage = new StringBuilder();
+
+            //Method line
+            httpMessage.Append(Version + StatusCode + Status);
+
+            foreach (var headerKey in Headers.Keys)
+            {
+                for (var i = 0; i < Headers.Count; i++)
+                {
+                    httpMessage.Append(headerKey + ":" + Headers[headerKey]);
+                }
+            }
+
+            httpMessage.Append(Body);
+
+            return httpMessage.ToString();
         }
     }
 }
