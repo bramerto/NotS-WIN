@@ -54,37 +54,34 @@ namespace ProxyServices
         /// <summary>
         /// Start listening for incoming clients on a different thread
         /// </summary>
-        public void Listen()
+        public async Task Listen()
         {
-            _ = Task.Run(async () =>
-            {
-                MessagesCollection.Add(new ProxyLog(){Message = "Listening...", Source = "Server", Type = "TCP"});
-                Console.WriteLine("Listening...");
+            MessagesCollection.Add(new ProxyLog(){Message = "Listening...", Source = "Server", Type = "TCP"});
+            Console.WriteLine("Listening...");
 
-                while (_listening)
+            while (_listening)
+            {
+                try
                 {
-                    try
-                    {
-                        var c = await _listener.AcceptTcpClientAsync();
-                        MessagesCollection.Add(new ProxyLog() { Message = "Connected!", Source = "Server", Type = "TCP" });
-                        Console.WriteLine("Connected!");
-                        _ = Task.Run(() => HandleConnection(c));
-                    }
-                    catch (Exception ex)
-                    {
-                        MessagesCollection.Add(new ProxyLog() { Message = ex.ToString(), Source = "Server", Type = "Error" });
-                        Console.WriteLine("ERROR: " + ex);
-                        Dispose();
-                    }
+                    var c = await _listener.AcceptTcpClientAsync();
+                    MessagesCollection.Add(new ProxyLog() {Message = "Connected!", Source = "Server", Type = "TCP"});
+                    Console.WriteLine("Connected!");
+                    HandleConnection(c);
                 }
-            });
+                catch (Exception ex)
+                {
+                    MessagesCollection.Add(new ProxyLog() {Message = ex.ToString(), Source = "Server", Type = "Error"});
+                    Console.WriteLine("ERROR: " + ex);
+                    Dispose();
+                }
+            }
         }
 
         /// <summary>
         /// Handles the connection from a tcp client, reads the http message, sends a request to the client and writes it back to original tcp client.
         /// </summary>
         /// <param name="socket"></param>
-        private void HandleConnection(TcpClient socket)
+        private async Task HandleConnection(TcpClient socket)
         {
             var buffer = new byte[_bufferSize];
             var stringBuilder = new StringBuilder();

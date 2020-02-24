@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace ProxyServices.Messages
 {
-    class HttpRequest : HttpMessage
+    internal class HttpRequest : HttpMessage
     {
         private bool IsMethodLine;
 
