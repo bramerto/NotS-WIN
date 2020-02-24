@@ -1,6 +1,0 @@
-﻿namespace ProxyServices
-{
-    class CacheControl
-    {
-    }
-}
