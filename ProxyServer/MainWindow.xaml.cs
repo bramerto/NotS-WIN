@@ -33,7 +33,7 @@ namespace ProxyServer
         /// <param name="e"></param>
         private void StartProxy(object sender, RoutedEventArgs e)
         {
-            ProxyUIEventArgs args = new ProxyUIEventArgs()
+            var args = new ProxyUIEventArgs()
             {
                 buffer = BufferSizeTxtB.Text,
                 port = PortTxtB.Text,

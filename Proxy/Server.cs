@@ -73,8 +73,8 @@ namespace ProxyServices
                 {
                     try
                     {
-                        TcpClient c = await _listener.AcceptTcpClientAsync();
                         OnAddToList(new ProxyLog() { Message = "Connected!", Source = "Server", Type = "TCP" });
+                        var c = await _listener.AcceptTcpClientAsync();
                         Console.WriteLine("Connected!");
                         _ = Task.Run(() => HandleConnection(c));
                     }
@@ -94,10 +94,10 @@ namespace ProxyServices
         /// <param name="socket"></param>
         private void HandleConnection(TcpClient socket)
         {
-            byte[] buffer = new byte[_bufferSize];
+            var buffer = new byte[_bufferSize];
             var stringBuilder = new StringBuilder();
 
-            using (NetworkStream ns = socket.GetStream())
+            using (var ns = socket.GetStream())
             {
                 while (_listening)
                 {
@@ -105,24 +105,22 @@ namespace ProxyServices
                     {
                         do
                         {
-                            int readBytes = ns.Read(buffer, 0, _bufferSize);
+                            var readBytes = ns.Read(buffer, 0, _bufferSize);
                             stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(buffer, 0, readBytes));
 
                         } while (ns.DataAvailable);
 
-                        var message = stringBuilder.ToString();
+                        var request = new HttpRequest(stringBuilder.ToString());
                         stringBuilder.Clear();
-
-                        HttpRequest request = new HttpRequest(message);
 
                         if (privacyFilter)
                         {
-                            string key = "User-Agent";
+                            const string key = "User-Agent";
                             request.Headers[key] = "Proxy";
                         }
 
-                        Client client = new Client(request, caching);
-                        HttpResponse response = client.HandleConnection();
+                        var client = new Client(request, caching);
+                        var response = client.HandleConnection();
 
                         //TODO: add ad filter to response here to replace pictures with placeholders
                         if (advertisementFilter)

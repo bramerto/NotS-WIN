@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace ProxyServices
 {
-    class Client
+    internal class Client
     {
         private readonly HttpRequest request;
         private HttpResponse response;
@@ -22,10 +22,10 @@ namespace ProxyServices
         {
             try
             {
-                string message = request.Message;
-                string[] UrlSplit = request.URL.Split(':');
-                int port = int.Parse(UrlSplit[2].Split('/')[0]);
-                string url = UrlSplit[1].TrimStart('/');
+                var message = request.Message;
+                var UrlSplit = request.URL.Split(':');
+                var port = int.Parse(UrlSplit[2].Split('/')[0]);
+                var url = UrlSplit[1].TrimStart('/');
 
                 //TODO: add caching
                 if (caching)
@@ -35,13 +35,13 @@ namespace ProxyServices
 
                 tcpClient.Connect(url, port);
 
-                byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
-                NetworkStream ns = tcpClient.GetStream();
+                var data = System.Text.Encoding.ASCII.GetBytes(message);
+                var ns = tcpClient.GetStream();
                 ns.Write(data, 0, data.Length);
 
                 data = new byte[256];
 
-                int bytes = ns.Read(data, 0, data.Length);
+                var bytes = ns.Read(data, 0, data.Length);
                 var responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
                 response = new HttpResponse(responseData);
 

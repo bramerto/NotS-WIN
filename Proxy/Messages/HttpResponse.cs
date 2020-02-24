@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace ProxyServices.Messages
 {
-    class HttpResponse : HttpMessage
+    internal class HttpResponse : HttpMessage
     {
         private bool IsMethodLine;
         public int StatusCode;
@@ -21,9 +21,9 @@ namespace ProxyServices.Messages
 
         public void SetResponse()
         {
-            string[] requestLines = Message.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var requestLines = Message.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (string line in requestLines)
+            foreach (var line in requestLines)
             {
                 if (IsMethodLine)
                 {
@@ -39,16 +39,16 @@ namespace ProxyServices.Messages
 
         private void SetMethod(string line)
         {
-            string[] methodLine = line.Split(' ');
+            var methodLine = line.Split(' ');
 
             Version = methodLine[0];
-            StatusCode = Int32.Parse(methodLine[1]);
+            StatusCode = int.Parse(methodLine[1]);
             Status = methodLine[2];
         }
         
         private void SetHeader(string line)
         {
-            string[] headerLine = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            var headerLine = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
 
             if (headerLine.Length > 1)
             {
