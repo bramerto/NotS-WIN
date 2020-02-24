@@ -23,14 +23,14 @@ namespace ProxyServices
             try
             {
                 var message = request.Message;
-                var UrlSplit = request.URL.Split(':');
-                var port = int.Parse(UrlSplit[2].Split('/')[0]);
-                var url = UrlSplit[1].TrimStart('/');
+                var urlSplit = request.URL.Split(':');
+                var port = int.Parse(urlSplit[2].Split('/')[0]);
+                var url = urlSplit[1].TrimStart('/');
 
                 //TODO: add caching
                 if (caching)
                 {
-                    
+                    Console.WriteLine("CACHING...");
                 }
 
                 tcpClient.Connect(url, port);

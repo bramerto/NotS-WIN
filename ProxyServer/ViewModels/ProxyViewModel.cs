@@ -9,14 +9,13 @@ namespace ProxyServer.ViewModels
     internal class ProxyViewModel
     {
         private Server server;
-        private ProxyUIEventArgs uiEventArgs;
         private readonly ListView _list;
         private readonly int defaultBufferSize;
         private readonly int defaultPort;
         private int bufferSize;
         private int port;
-        
-        public ObservableCollection<ProxyLog> Messages;
+
+        private ObservableCollection<ProxyLog> Messages;
 
         public ProxyViewModel(ListView list)
         {
@@ -25,13 +24,12 @@ namespace ProxyServer.ViewModels
             _list = list;
         }
 
-        public void StartServer(ProxyUIEventArgs args)
+        public void StartServer(ProxyUIEventArgs uiEventArgs)
         {
-            uiEventArgs = args;
             bufferSize = ValidateBufferSize(uiEventArgs.buffer);
             port = ValidatePort(uiEventArgs.port);
 
-            server = new Server(port, bufferSize, args);
+            server = new Server(port, bufferSize, uiEventArgs);
             Messages = server.MessagesCollection;
 
             Messages.CollectionChanged += OnAddedToList;

@@ -107,6 +107,7 @@ namespace ProxyServices
 
                         if (privacyFilter)
                         {
+                            Console.WriteLine("PRIVACY FILTERING...");
                             const string key = "User-Agent";
                             request.Headers[key] = "Proxy";
                         }
@@ -117,10 +118,9 @@ namespace ProxyServices
                         //TODO: add ad filter to response here to replace pictures with placeholders
                         if (advertisementFilter)
                         {
-
+                            Console.WriteLine("AD FILTERING...");
                         }
 
-                        //TODO: write back to stream
                         ns.Write(Encoding.ASCII.GetBytes(response.ToString()), 0, _bufferSize);
                     }
                     catch (Exception ex)
