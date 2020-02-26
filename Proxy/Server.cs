@@ -42,12 +42,11 @@ namespace ProxyServices
             try
             {
                 _listener.Start();
-                Listen();
+                _ = Listen();
             }
             catch (Exception ex)
             {
-                MessagesCollection.Add(new ProxyLog() { Message = ex.ToString(), Source = "Server", Type = "Error" });
-                Console.WriteLine("ERROR: " + ex);
+                AddUiMessage(ex.ToString(), "Error");
             }
         }
 
@@ -56,22 +55,19 @@ namespace ProxyServices
         /// </summary>
         public async Task Listen()
         {
-            MessagesCollection.Add(new ProxyLog(){Message = "Listening...", Source = "Server", Type = "TCP"});
-            Console.WriteLine("Listening...");
+            AddUiMessage("Listening...", "TCP");
 
             while (_listening)
             {
                 try
                 {
                     var c = await _listener.AcceptTcpClientAsync();
-                    MessagesCollection.Add(new ProxyLog() {Message = "Connected!", Source = "Server", Type = "TCP"});
-                    Console.WriteLine("Connected!");
-                    HandleConnection(c);
+                    AddUiMessage("Client Connected!", "TCP");
+                    _ = HandleConnection(c);
                 }
                 catch (Exception ex)
                 {
-                    MessagesCollection.Add(new ProxyLog() {Message = ex.ToString(), Source = "Server", Type = "Error"});
-                    Console.WriteLine("ERROR: " + ex);
+                    AddUiMessage(ex.ToString(), "Error");
                     Dispose();
                 }
             }
@@ -104,9 +100,7 @@ namespace ProxyServices
 
                         if (privacyFilter)
                         {
-                            Console.WriteLine("PRIVACY FILTERING...");
-                            const string key = "User-Agent";
-                            request.Headers[key] = "Proxy";
+                            request.Headers["User-Agent"] = "Proxy";
                         }
 
                         var client = new Client(request, caching);
@@ -122,8 +116,7 @@ namespace ProxyServices
                     }
                     catch (Exception ex)
                     {
-                        MessagesCollection.Add(new ProxyLog() { Message = ex.ToString(), Source = "Server", Type = "Error" });
-                        Console.WriteLine("ERROR: " + ex);
+                        AddUiMessage(ex.ToString(),"Error");
                         Dispose();
                     }
                 }
@@ -132,12 +125,17 @@ namespace ProxyServices
             }
         }
 
+        private void AddUiMessage(string message, string type)
+        {
+            MessagesCollection.Add(new ProxyLog() { Message = message, Source = "Server", Type = type });
+            Console.WriteLine(message);
+        }
+
         public void Dispose()
         {
             _listening = false;
             _listener.Stop();
-            MessagesCollection.Add(new ProxyLog() { Message = "Closed connection", Source = "Server", Type = "TCP" });
-            Console.WriteLine("Closed connection");
+            AddUiMessage("Closed connection", "TCP");
         }
     }
 }
