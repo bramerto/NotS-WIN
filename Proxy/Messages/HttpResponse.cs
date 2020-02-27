@@ -6,7 +6,7 @@ namespace ProxyServices.Messages
 {
     internal class HttpResponse : HttpMessage
     {
-        private bool IsMethodLine;
+        private bool _isMethodLine;
         public int StatusCode;
         public string Status;
 
@@ -14,7 +14,7 @@ namespace ProxyServices.Messages
         
         public HttpResponse(string message)
         {
-            IsMethodLine = true;
+            _isMethodLine = true;
             Message = message;
             Headers = new Hashtable();
             SetResponse();
@@ -26,10 +26,10 @@ namespace ProxyServices.Messages
 
             foreach (var line in requestLines)
             {
-                if (IsMethodLine)
+                if (_isMethodLine)
                 {
                     SetMethod(line);
-                    IsMethodLine = false;
+                    _isMethodLine = false;
                 }
                 else
                 {
