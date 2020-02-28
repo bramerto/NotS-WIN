@@ -1,7 +1,5 @@
 ﻿using ProxyServices.Messages;
-using ProxyServices.Models;
 using System;
-using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -9,20 +7,18 @@ using System.Threading.Tasks;
 
 namespace ProxyServices
 {
-    public class Server : IDisposable
+    public class Server : Proxy
     {
         private readonly TcpListener _listener;
+        public readonly Client Client;
         private readonly int _bufferSize;
         private readonly bool caching;
         private readonly bool advertisementFilter;
         private readonly bool privacyFilter;
         private readonly byte[] _buffer;
         private readonly StringBuilder _stringBuilder;
-        
 
         private bool _listening;
-
-        public ObservableCollection<ProxyLog> MessagesCollection;
 
         /// <summary>
         /// Instantiates the server class to work with Start().
@@ -37,13 +33,12 @@ namespace ProxyServices
             _listener = new TcpListener(IPAddress.Any, port);
             _buffer = new byte[_bufferSize];
             _stringBuilder = new StringBuilder();
-
+            
             caching = args.cacheEnabled;
             advertisementFilter = args.advertisementFilterEnabled;
             privacyFilter = args.privacyFilterEnabled;
-            
 
-            MessagesCollection = new ObservableCollection<ProxyLog>();
+            Client = new Client(caching);
         }
 
         /// <summary>
@@ -65,7 +60,7 @@ namespace ProxyServices
         /// <summary>
         /// Start listening for incoming clients on a different thread
         /// </summary>
-        public async Task Listen()
+        private async Task Listen()
         {
             AddUiMessage("Listening...", "TCP");
 
@@ -80,7 +75,6 @@ namespace ProxyServices
                 catch (Exception ex)
                 {
                     AddUiMessage(ex.ToString(), "Error");
-                    Dispose();
                 }
             }
         }
@@ -103,7 +97,7 @@ namespace ProxyServices
                     catch (Exception ex)
                     {
                         AddUiMessage(ex.ToString(), "Error");
-                        Dispose();
+                        Stop();
                     }
                 }
                 ns.Close();
@@ -138,8 +132,7 @@ namespace ProxyServices
         /// <param name="ns"></param>
         private void SendRequest(HttpRequest request, NetworkStream ns)
         {
-            var client = new Client(request, caching);
-            var response = client.HandleConnection();
+            var response = Client.HandleConnection(request);
 
             //TODO: add ad filter to response here to replace pictures with placeholders
             if (advertisementFilter)
@@ -147,16 +140,14 @@ namespace ProxyServices
                 Console.WriteLine("AD FILTERING...");
             }
 
+            //TODO: write correct HttpResponse back
             ns.Write(Encoding.ASCII.GetBytes(response.ToString()), 0, _bufferSize);
         }
 
-        private void AddUiMessage(string message, string type)
-        {
-            MessagesCollection.Add(new ProxyLog() { Message = message, Source = "Server", Type = type });
-            Console.WriteLine(message);
-        }
-
-        public void Dispose()
+        /// <summary>
+        /// Disposes the Server and sets it to off
+        /// </summary>
+        public void Stop()
         {
             _listening = false;
             _listener.Stop();

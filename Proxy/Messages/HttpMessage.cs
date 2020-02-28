@@ -6,7 +6,6 @@ namespace ProxyServices.Messages
     {
         public string Message { get; set; }
         public Hashtable Headers { get; protected set; }
-        
         public string Version { get; protected set; }
 
         public void ClearHeaders()
@@ -17,13 +16,6 @@ namespace ProxyServices.Messages
         public virtual void ClearHttpHeader()
         {
             Version = "";
-        }
-
-        public void Clear()
-        {
-            ClearHeaders();
-            ClearHttpHeader();
-            Message = "";
         }
     }
 }

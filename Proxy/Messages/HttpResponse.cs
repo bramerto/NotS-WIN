@@ -20,7 +20,10 @@ namespace ProxyServices.Messages
             SetResponse();
         }
 
-        public void SetResponse()
+        /// <summary>
+        /// Sets the full response from a HTTP string 
+        /// </summary>
+        private void SetResponse()
         {
             var requestLines = Message.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -38,6 +41,10 @@ namespace ProxyServices.Messages
             }
         }
 
+        /// <summary>
+        /// Sets the method line for the HttpResponse
+        /// </summary>
+        /// <param name="line"></param>
         private void SetMethod(string line)
         {
             var methodLine = line.Split(' ');
@@ -47,6 +54,10 @@ namespace ProxyServices.Messages
             Status = methodLine[2];
         }
         
+        /// <summary>
+        /// Sets all the header lines for the HttpResponse in a HashTable. Sets the body as well if there are no headers anymore.
+        /// </summary>
+        /// <param name="line"></param>
         private void SetHeader(string line)
         {
             var headerLine = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
@@ -61,6 +72,10 @@ namespace ProxyServices.Messages
             }
         }
 
+        /// <summary>
+        /// Sets the 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             var httpMessage = new StringBuilder();

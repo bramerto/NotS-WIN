@@ -15,22 +15,12 @@ namespace ProxyServer
             DataContext = _viewModel;
         }
 
-        /// <summary>
-        /// Reshapes the form size
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void FormSizeChanged(object sender, SizeChangedEventArgs e)
         {
             LayoutGrid.Width = e.NewSize.Width;
             LayoutGrid.Height = e.NewSize.Height;
         }
 
-        /// <summary>
-        /// Starts the proxy from "Start" button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void StartProxy(object sender, RoutedEventArgs e)
         {
             var args = new ProxyUIEventArgs()
@@ -45,20 +35,12 @@ namespace ProxyServer
             Switch();
         }
 
-        /// <summary>
-        /// Stops the proxy from "Stop" button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void StopProxy(object sender, RoutedEventArgs e)
         {
             _viewModel.StopServer();
             Switch();
         }
 
-        /// <summary>
-        /// Switches to disable or enable UI elements if the proxy started or stopped.
-        /// </summary>
         private void Switch()
         {
             StartBtn.IsEnabled = (!StartBtn.IsEnabled);

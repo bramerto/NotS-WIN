@@ -15,8 +15,6 @@ namespace ProxyServer.ViewModels
         private int bufferSize;
         private int port;
 
-        private ObservableCollection<ProxyLog> Messages;
-
         public ProxyViewModel(ListView list)
         {
             defaultPort = 8080;
@@ -24,22 +22,29 @@ namespace ProxyServer.ViewModels
             _list = list;
         }
 
+        /// <summary>
+        /// Starts the server
+        /// </summary>
+        /// <param name="uiEventArgs"></param>
         public void StartServer(ProxyUIEventArgs uiEventArgs)
         {
             bufferSize = ValidateBufferSize(uiEventArgs.buffer);
             port = ValidatePort(uiEventArgs.port);
 
             server = new Server(port, bufferSize, uiEventArgs);
-            Messages = server.MessagesCollection;
 
-            Messages.CollectionChanged += OnAddedToList;
+            server.MessagesCollection.CollectionChanged += OnAddedToList;
+            server.Client.MessagesCollection.CollectionChanged += OnAddedToList;
 
             server.Start();
         }
 
+        /// <summary>
+        /// Stops the server
+        /// </summary>
         public void StopServer()
         {
-            server.Dispose();
+            server.Stop();
         }
 
         /// <summary>
@@ -66,6 +71,11 @@ namespace ProxyServer.ViewModels
                 defaultPort;
         }
 
+        /// <summary>
+        /// Adds a ProxyLog item to the list view
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="notifyCollectionChangedEventArgs"></param>
         public void OnAddedToList(object source, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             foreach (ProxyLog item in notifyCollectionChangedEventArgs.NewItems)

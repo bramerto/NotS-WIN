@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheControl.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Messages\HttpRequest.cs" />
     <Compile Include="Messages\HttpResponse.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Models\CacheItem.cs" />
     <Compile Include="Models\ProxyLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proxy.cs" />
     <Compile Include="ProxyLogEventArgs.cs" />
     <Compile Include="ProxyUIEventArgs.cs" />
     <Compile Include="Server.cs" />
