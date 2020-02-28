@@ -3,7 +3,7 @@ using ProxyServices.Messages;
 
 namespace ProxyServices.Models
 {
-    internal class CacheItem
+    public class CacheItem
     {
         public string Url { get; set; }
         public DateTime ExpireTime { get; set; }

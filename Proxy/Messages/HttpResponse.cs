@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProxyServices.Messages
 {
-    internal class HttpResponse : HttpMessage
+    public class HttpResponse : HttpMessage
     {
         private bool _isMethodLine;
         public int StatusCode;

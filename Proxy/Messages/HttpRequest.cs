@@ -3,16 +3,17 @@ using System.Collections;
 
 namespace ProxyServices.Messages
 {
-    internal class HttpRequest : HttpMessage
+    public class HttpRequest : HttpMessage
     {
-        private bool IsMethodLine;
+        private bool _isMethodLine;
 
         public string Method { get; private set; }
-        public string URL { get; protected set; }
+        public string Url { get; protected set; }
+        public int Port { get; set; }
 
         public HttpRequest(string message)
         {
-            IsMethodLine = true;
+            _isMethodLine = true;
             Message = message;
             Headers = new Hashtable();
             SetRequest();
@@ -20,14 +21,14 @@ namespace ProxyServices.Messages
 
         protected void SetRequest()
         {
-            string[] requestLines = Message.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var requestLines = Message.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach(string line in requestLines)
+            foreach(var line in requestLines)
             {
-                if (IsMethodLine)
+                if (_isMethodLine)
                 {
                     SetMethod(line);
-                    IsMethodLine = false;
+                    _isMethodLine = false;
                 }
                 else
                 {
@@ -38,16 +39,16 @@ namespace ProxyServices.Messages
 
         private void SetMethod(string line)
         {
-            string[] methodLine = line.Split(' ');
+            var methodLine = line.Split(' ');
 
             Method = methodLine[0];
-            URL = methodLine[1];
+            Url = methodLine[1];
             Version = methodLine[2];
         }
 
         private void SetHeader(string line)
         {
-            string[] headerLine = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            var headerLine = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
             if (headerLine.Length > 1) Headers.Add(headerLine[0], headerLine[1]);
         }
 
@@ -55,7 +56,14 @@ namespace ProxyServices.Messages
         {
             base.ClearHttpHeader();
             Method = "";
-            URL = "";
+            Url = "";
+        }
+
+        public string ParseUrl()
+        {
+            var urlSplit = Url.Split(':');
+            Port = int.Parse(urlSplit[2].Split('/')[0]);
+            return urlSplit[1].TrimStart('/');
         }
     }
 }
