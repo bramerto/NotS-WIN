@@ -53,7 +53,7 @@ namespace ProxyServices
             }
             catch (Exception ex)
             {
-                AddUiMessage(ex.ToString(), "Error");
+                AddUiMessage(ex.Message, "Error");
             }
         }
 
@@ -70,11 +70,11 @@ namespace ProxyServices
                 {
                     var c = await _listener.AcceptTcpClientAsync();
                     AddUiMessage("Client Connected!", "TCP");
-                    _ = HandleConnection(c);
+                    HandleConnection(c);
                 }
                 catch (Exception ex)
                 {
-                    AddUiMessage(ex.ToString(), "Error");
+                    AddUiMessage(ex.Message, "Error");
                 }
             }
         }
@@ -87,21 +87,11 @@ namespace ProxyServices
         {
             using (var ns = socket.GetStream())
             {
-                while (_listening)
+                if (_listening)
                 {
-                    try
-                    {
-                        var request = GetHttpRequest(ns);
-                        SendRequest(request, ns);
-                    }
-                    catch (Exception ex)
-                    {
-                        AddUiMessage(ex.ToString(), "Error");
-                        Stop();
-                    }
+                    var request = GetHttpRequest(ns);
+                    SendRequest(request, ns);
                 }
-                ns.Close();
-                socket.Close();
             }
         }
 
@@ -114,7 +104,9 @@ namespace ProxyServices
 
             } while (ns.DataAvailable);
 
-            var request = new HttpRequest(_stringBuilder.ToString());
+            var message = _stringBuilder.ToString();
+
+            var request = new HttpRequest(message);
             _stringBuilder.Clear();
 
             if (privacyFilter)
@@ -134,14 +126,18 @@ namespace ProxyServices
         {
             var response = Client.HandleConnection(request);
 
+            if (response == null) return;
+            
             //TODO: add ad filter to response here to replace pictures with placeholders
             if (advertisementFilter)
             {
                 Console.WriteLine("AD FILTERING...");
             }
 
+            var message = response.Message;
+
             //TODO: write correct HttpResponse back
-            ns.Write(Encoding.ASCII.GetBytes(response.ToString()), 0, _bufferSize);
+            ns.Write(Encoding.ASCII.GetBytes(message), 0, _bufferSize);
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace ProxyServices.Messages
             SetRequest();
         }
 
-        protected void SetRequest()
+        private void SetRequest()
         {
             var requestLines = Message.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -48,7 +48,7 @@ namespace ProxyServices.Messages
 
         private void SetHeader(string line)
         {
-            var headerLine = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            var headerLine = line.Split(new [] { ": " }, StringSplitOptions.RemoveEmptyEntries);
             if (headerLine.Length > 1) Headers.Add(headerLine[0], headerLine[1]);
         }
 

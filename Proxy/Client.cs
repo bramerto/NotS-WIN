@@ -8,7 +8,7 @@ namespace ProxyServices
     public class Client : Proxy
     {
         private HttpResponse response;
-        private readonly TcpClient tcpClient;
+        private TcpClient tcpClient;
         private readonly CacheControl _cache;
         private readonly bool _caching;
 
@@ -18,7 +18,6 @@ namespace ProxyServices
         /// <param name="caching"></param>
         public Client(bool caching)
         {
-            tcpClient = new TcpClient();
             _caching = caching;
             _cache = new CacheControl();
         }
@@ -53,6 +52,7 @@ namespace ProxyServices
         /// <returns></returns>
         private HttpResponse SendRequest(HttpRequest request)
         {
+            tcpClient = new TcpClient();
             var url = request.ParseUrl();
             tcpClient.Connect(url, request.Port);
 

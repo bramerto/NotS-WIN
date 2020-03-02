@@ -25,7 +25,7 @@ namespace ProxyServices.Messages
         /// </summary>
         private void SetResponse()
         {
-            var requestLines = Message.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var requestLines = Message.Split(new [] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var line in requestLines)
             {
@@ -73,15 +73,15 @@ namespace ProxyServices.Messages
         }
 
         /// <summary>
-        /// Sets the 
+        /// Sets the response back to a message
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public string GetMessage()
         {
             var httpMessage = new StringBuilder();
 
             //Method line
-            httpMessage.Append(Version + StatusCode + Status);
+            httpMessage.AppendLine(Version + " " + StatusCode + " " + Status);
 
             foreach (var headerKey in Headers.Keys)
             {
@@ -91,7 +91,7 @@ namespace ProxyServices.Messages
                 }
             }
 
-            httpMessage.Append(Body);
+            httpMessage.AppendLine(Body);
 
             return httpMessage.ToString();
         }

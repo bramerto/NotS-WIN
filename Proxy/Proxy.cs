@@ -7,10 +7,12 @@ namespace ProxyServices
     public class Proxy
     {
         public ObservableCollection<ProxyLog> MessagesCollection;
+        private readonly int maxMessageLength;
 
         public Proxy()
         {
             MessagesCollection = new ObservableCollection<ProxyLog>();
+            maxMessageLength = 60;
         }
 
         /// <summary>
@@ -20,7 +22,12 @@ namespace ProxyServices
         /// <param name="type"></param>
         protected void AddUiMessage(string message, string type)
         {
-            MessagesCollection.Add(new ProxyLog() { Message = message, Source = "Server", Type = type });
+            MessagesCollection.Add(new ProxyLog
+            {
+                Message = message.Substring(0, Math.Min(message.Length, maxMessageLength)).TrimEnd(),
+                Source = "Server",
+                Type = type
+            });
             Console.WriteLine(message);
         }
     }
