@@ -2,11 +2,11 @@
 {
     public class ProxyUIEventArgs
     {
-        public string buffer { get; set; }
-        public string port { get; set; }
+        public string Buffer { get; set; }
+        public string Port { get; set; }
         
-        public bool cacheEnabled { get; set; }
-        public bool privacyFilterEnabled { get; set; }
-        public bool advertisementFilterEnabled { get; set; }
+        public bool CacheEnabled { get; set; }
+        public bool PrivacyFilterEnabled { get; set; }
+        public bool AdvertisementFilterEnabled { get; set; }
     }
 }

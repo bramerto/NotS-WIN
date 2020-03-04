@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Concurrent;
 
 namespace ProxyServices.Messages
 {
@@ -9,19 +9,21 @@ namespace ProxyServices.Messages
 
         public string Method { get; private set; }
         public string Url { get; protected set; }
-        public int Port { get; set; }
 
         public HttpRequest(string message)
         {
             _isMethodLine = true;
             Message = message;
-            Headers = new Hashtable();
+            Headers = new ConcurrentDictionary<string, string>();
             SetRequest();
         }
 
+        /// <summary>
+        /// Sets the full request from the message that is set.
+        /// </summary>
         private void SetRequest()
         {
-            var requestLines = Message.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var requestLines = Message.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach(var line in requestLines)
             {
@@ -37,6 +39,10 @@ namespace ProxyServices.Messages
             }
         }
 
+        /// <summary>
+        /// Sets the method line from a single line
+        /// </summary>
+        /// <param name="line"></param>
         private void SetMethod(string line)
         {
             var methodLine = line.Split(' ');
@@ -46,24 +52,14 @@ namespace ProxyServices.Messages
             Version = methodLine[2];
         }
 
+        /// <summary>
+        /// Sets a header from a single line
+        /// </summary>
+        /// <param name="line"></param>
         private void SetHeader(string line)
         {
             var headerLine = line.Split(new [] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-            if (headerLine.Length > 1) Headers.Add(headerLine[0], headerLine[1]);
-        }
-
-        public override void ClearHttpHeader()
-        {
-            base.ClearHttpHeader();
-            Method = "";
-            Url = "";
-        }
-
-        public string ParseUrl()
-        {
-            var urlSplit = Url.Split(':');
-            Port = int.Parse(urlSplit[2].Split('/')[0]);
-            return urlSplit[1].TrimStart('/');
+            if (headerLine.Length > 1) Headers.TryAdd(headerLine[0], headerLine[1]);
         }
     }
 }

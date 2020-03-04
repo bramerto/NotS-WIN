@@ -1,21 +1,11 @@
-﻿using System.Collections;
+﻿using System.Collections.Concurrent;
 
 namespace ProxyServices.Messages
 {
     public class HttpMessage
     {
         public string Message { get; set; }
-        public Hashtable Headers { get; protected set; }
+        public ConcurrentDictionary<string, string> Headers { get; protected set; }
         public string Version { get; protected set; }
-
-        public void ClearHeaders()
-        {
-            Headers.Clear();
-        }
-
-        public virtual void ClearHttpHeader()
-        {
-            Version = "";
-        }
     }
 }

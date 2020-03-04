@@ -12,7 +12,6 @@ namespace ProxyServices
         private readonly TcpListener _listener;
         public readonly Client Client;
         private readonly int _bufferSize;
-        private readonly bool caching;
         private readonly bool advertisementFilter;
         private readonly bool privacyFilter;
         private readonly byte[] _buffer;
@@ -20,12 +19,6 @@ namespace ProxyServices
 
         private bool _listening;
 
-        /// <summary>
-        /// Instantiates the server class to work with Start().
-        /// </summary>
-        /// <param name="port"></param>
-        /// <param name="bufferSize"></param>
-        /// <param name="args"></param>
         public Server(int port, int bufferSize, ProxyUIEventArgs args)
         {
             _bufferSize = bufferSize;
@@ -33,12 +26,11 @@ namespace ProxyServices
             _listener = new TcpListener(IPAddress.Any, port);
             _buffer = new byte[_bufferSize];
             _stringBuilder = new StringBuilder();
-            
-            caching = args.cacheEnabled;
-            advertisementFilter = args.advertisementFilterEnabled;
-            privacyFilter = args.privacyFilterEnabled;
 
-            Client = new Client(caching);
+            advertisementFilter = args.AdvertisementFilterEnabled;
+            privacyFilter = args.PrivacyFilterEnabled;
+
+            Client = new Client(args.CacheEnabled);
         }
 
         /// <summary>
@@ -53,7 +45,7 @@ namespace ProxyServices
             }
             catch (Exception ex)
             {
-                AddUiMessage(ex.Message, "Error");
+                AddUiMessage(ex);
             }
         }
 
@@ -74,7 +66,7 @@ namespace ProxyServices
                 }
                 catch (Exception ex)
                 {
-                    AddUiMessage(ex.Message, "Error");
+                    AddUiMessage(ex);
                 }
             }
         }
@@ -95,6 +87,11 @@ namespace ProxyServices
             }
         }
 
+        /// <summary>
+        /// Gets the HTTP request from stream
+        /// </summary>
+        /// <param name="ns"></param>
+        /// <returns></returns>
         private HttpRequest GetHttpRequest(NetworkStream ns)
         {
             do
@@ -127,14 +124,8 @@ namespace ProxyServices
             var response = Client.HandleConnection(request);
 
             if (response == null) return;
-            
-            //TODO: add ad filter to response here to replace pictures with placeholders
-            if (advertisementFilter)
-            {
-                Console.WriteLine("AD FILTERING...");
-            }
 
-            var message = response.Message;
+            var message = response.GetMessage(advertisementFilter);
 
             //TODO: write correct HttpResponse back
             ns.Write(Encoding.ASCII.GetBytes(message), 0, _bufferSize);

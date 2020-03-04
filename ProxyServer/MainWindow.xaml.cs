@@ -25,11 +25,11 @@ namespace ProxyServer
         {
             var args = new ProxyUIEventArgs()
             {
-                buffer = BufferSizeTxtB.Text,
-                port = PortTxtB.Text,
-                advertisementFilterEnabled = AdvertiseFilterCb.IsChecked != null && AdvertiseFilterCb.IsChecked.Value,
-                privacyFilterEnabled = PrivacyFilterCb.IsChecked != null && PrivacyFilterCb.IsChecked.Value,
-                cacheEnabled = CacheCb.IsChecked != null && CacheCb.IsChecked.Value
+                Buffer = BufferSizeTxtB.Text,
+                Port = PortTxtB.Text,
+                AdvertisementFilterEnabled = AdvertiseFilterCb.IsChecked != null && AdvertiseFilterCb.IsChecked.Value,
+                PrivacyFilterEnabled = PrivacyFilterCb.IsChecked != null && PrivacyFilterCb.IsChecked.Value,
+                CacheEnabled = CacheCb.IsChecked != null && CacheCb.IsChecked.Value
             };
             _viewModel.StartServer(args);
             Switch();

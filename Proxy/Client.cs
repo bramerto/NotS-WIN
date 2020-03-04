@@ -12,10 +12,6 @@ namespace ProxyServices
         private readonly CacheControl _cache;
         private readonly bool _caching;
 
-        /// <summary>
-        /// Instantiates the Client class
-        /// </summary>
-        /// <param name="caching"></param>
         public Client(bool caching)
         {
             _caching = caching;
@@ -23,7 +19,7 @@ namespace ProxyServices
         }
 
         /// <summary>
-        /// Sends 
+        /// Sends the request to host and returns it
         /// </summary>
         /// <returns></returns>
         public HttpResponse HandleConnection(HttpRequest request)
@@ -33,14 +29,19 @@ namespace ProxyServices
                 if (!_caching) return SendRequest(request);
                 return _cache.SetCacheItem(request) ? _cache.CachedResponse : SendRequest(request);
             }
-            catch (ArgumentNullException e)
+            catch (ArgumentNullException ex)
             {
-                AddUiMessage(e.ToString(), "Error");
+                AddUiMessage(ex);
                 return null;
             }
-            catch (SocketException e)
+            catch (SocketException ex)
             {
-                AddUiMessage(e.ToString(), "Error");
+                AddUiMessage(ex);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                AddUiMessage(ex);
                 return null;
             }
         }
@@ -53,22 +54,26 @@ namespace ProxyServices
         private HttpResponse SendRequest(HttpRequest request)
         {
             tcpClient = new TcpClient();
-            var url = request.ParseUrl();
-            tcpClient.Connect(url, request.Port);
+            if (request.Headers["Host"] == null) return null;
 
-            var data = System.Text.Encoding.ASCII.GetBytes(request.Message);
-            var ns = tcpClient.GetStream();
-            ns.Write(data, 0, data.Length);
+            var url = request.Headers["Host"];
+            tcpClient.Connect(url, 80);
+            
 
-            data = new byte[256];
+            using (var ns = tcpClient.GetStream())
+            {
+                var data = System.Text.Encoding.ASCII.GetBytes(request.Message);
+                ns.Write(data, 0, data.Length);
 
-            var bytes = ns.Read(data, 0, data.Length);
-            var responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                data = new byte[256];
 
-            ns.Close();
+                var bytes = ns.Read(data, 0, data.Length);
+                var responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                response = new HttpResponse(responseData);
+            }
+
             tcpClient.Close();
 
-            response = new HttpResponse(responseData);
 
             if (_caching)
             {

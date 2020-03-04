@@ -12,7 +12,7 @@ namespace ProxyServices
         public Proxy()
         {
             MessagesCollection = new ObservableCollection<ProxyLog>();
-            maxMessageLength = 60;
+            maxMessageLength = 100;
         }
 
         /// <summary>
@@ -29,6 +29,21 @@ namespace ProxyServices
                 Type = type
             });
             Console.WriteLine(message);
+        }
+
+        /// <summary>
+        /// Adds an UI message with Exception
+        /// </summary>
+        /// <param name="exception"></param>
+        protected void AddUiMessage(Exception exception)
+        {
+            MessagesCollection.Add(new ProxyLog
+            {
+                Message = exception.Message.Substring(0, Math.Min(exception.Message.Length, maxMessageLength)).TrimEnd(),
+                Source = "Server",
+                Type = "Error"
+            });
+            Console.WriteLine(exception.ToString());
         }
     }
 }

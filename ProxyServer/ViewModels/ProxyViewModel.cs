@@ -27,8 +27,8 @@ namespace ProxyServer.ViewModels
         /// <param name="uiEventArgs"></param>
         public void StartServer(ProxyUIEventArgs uiEventArgs)
         {
-            bufferSize = ValidateBufferSize(uiEventArgs.buffer);
-            port = ValidatePort(uiEventArgs.port);
+            bufferSize = ValidateBufferSize(uiEventArgs.Buffer);
+            port = ValidatePort(uiEventArgs.Port);
 
             server = new Server(port, bufferSize, uiEventArgs);
 
