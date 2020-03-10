@@ -74,8 +74,16 @@ namespace ProxyServices.Messages
         /// </summary>
         private void SetBody(string message)
         {
-            var requestBody = message.Split(new[] { "\r\n\r\n" }, StringSplitOptions.None);
-            Body = requestBody[1];
+            try
+            {
+                var requestBody = message.Split(new[] { "\r\n\r\n" }, StringSplitOptions.None);
+                Body = requestBody[1];
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                Console.WriteLine("IndexOutOfRangeException");
+            }
+            
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ using ProxyServices.Models;
 
 namespace ProxyServices
 {
-    public class Client : Proxy
+    public class Client
     {
         private HttpResponse response;
         private TcpClient tcpClient;
@@ -30,19 +30,9 @@ namespace ProxyServices
                 if (!_caching) return SendRequest(request);
                 return _cache.SetCacheItem(request) ? _cache.CachedResponse : SendRequest(request);
             }
-            catch (ArgumentNullException ex)
-            {
-                AddUiMessage(ex);
-                return null;
-            }
-            catch (SocketException ex)
-            {
-                AddUiMessage(ex);
-                return null;
-            }
             catch (Exception ex)
             {
-                AddUiMessage(ex);
+                Console.WriteLine(ex);
                 return null;
             }
         }
@@ -56,13 +46,20 @@ namespace ProxyServices
         {
             using (tcpClient = new TcpClient())
             {
-                var url = request.Headers["Host"];
-                tcpClient.Connect(url, 80);
+                request.Headers.TryGetValue("Host", out var url);
+
+                try
+                {
+                    tcpClient.Connect(url, 80);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("No URL");
+                    return null;
+                }
 
                 using (var ns = tcpClient.GetStream())
                 {
-                    ns.ReadTimeout = 1000;
-                    ns.WriteTimeout = 1000;
                     var data = Encoding.ASCII.GetBytes(request.Message); //TODO: set request class to string instead of message
                     ns.Write(data, 0, data.Length);
 

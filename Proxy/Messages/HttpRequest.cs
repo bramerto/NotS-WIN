@@ -5,8 +5,7 @@ namespace ProxyServices.Messages
 {
     public class HttpRequest : HttpMessage
     {
-        private bool _isMethodLine;
-
+        private bool _isMethodLine; 
         public string Url { get; protected set; }
 
         public HttpRequest(string message)
@@ -44,8 +43,15 @@ namespace ProxyServices.Messages
         /// <param name="line"></param>
         private void SetMethod(string line)
         {
-            var methodLine = line.Split(new [] {" "}, StringSplitOptions.None);
-            Url = methodLine[1];
+            try
+            {
+                var methodLine = line.Split(new[] { " " }, StringSplitOptions.None);
+                Url = methodLine[1];
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                Console.WriteLine("IndexOutOfRangeException");
+            }
         }
 
         /// <summary>
