@@ -7,7 +7,6 @@ namespace ProxyServices.Messages
     {
         private bool _isMethodLine;
 
-        public string Method { get; private set; }
         public string Url { get; protected set; }
 
         public HttpRequest(string message)
@@ -45,11 +44,8 @@ namespace ProxyServices.Messages
         /// <param name="line"></param>
         private void SetMethod(string line)
         {
-            var methodLine = line.Split(' ');
-
-            Method = methodLine[0];
+            var methodLine = line.Split(new [] {" "}, StringSplitOptions.None);
             Url = methodLine[1];
-            Version = methodLine[2];
         }
 
         /// <summary>

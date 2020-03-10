@@ -33,7 +33,6 @@ namespace ProxyServer.ViewModels
             server = new Server(port, bufferSize, uiEventArgs);
 
             server.MessagesCollection.CollectionChanged += OnAddedToList;
-            server.Client.MessagesCollection.CollectionChanged += OnAddedToList;
 
             server.Start();
         }

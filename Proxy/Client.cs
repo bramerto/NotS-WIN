@@ -1,6 +1,7 @@
 ﻿using ProxyServices.Messages;
 using System;
 using System.Net.Sockets;
+using System.Text;
 using ProxyServices.Models;
 
 namespace ProxyServices
@@ -53,34 +54,40 @@ namespace ProxyServices
         /// <returns></returns>
         private HttpResponse SendRequest(HttpRequest request)
         {
-            tcpClient = new TcpClient();
-            if (request.Headers["Host"] == null) return null;
-
-            var url = request.Headers["Host"];
-            tcpClient.Connect(url, 80);
-            
-
-            using (var ns = tcpClient.GetStream())
+            using (tcpClient = new TcpClient())
             {
-                var data = System.Text.Encoding.ASCII.GetBytes(request.Message);
-                ns.Write(data, 0, data.Length);
+                var url = request.Headers["Host"];
+                tcpClient.Connect(url, 80);
 
-                data = new byte[256];
+                using (var ns = tcpClient.GetStream())
+                {
+                    ns.ReadTimeout = 1000;
+                    ns.WriteTimeout = 1000;
+                    var data = Encoding.ASCII.GetBytes(request.Message); //TODO: set request class to string instead of message
+                    ns.Write(data, 0, data.Length);
 
-                var bytes = ns.Read(data, 0, data.Length);
-                var responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
-                response = new HttpResponse(responseData);
+                    var clientBuffer = new byte[256];
+                    var stringBuilder = new StringBuilder();
+
+                    do
+                    {
+                        var readBytes = ns.Read(clientBuffer, 0, clientBuffer.Length);
+                        stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(clientBuffer, 0, readBytes));
+
+                    } while (ns.DataAvailable);
+
+                    var message = stringBuilder.ToString();
+
+                    response = new HttpResponse(message);
+                }
+
+                if (_caching)
+                {
+                    _cache.AddToCache(new CacheItem() { Url = url, ExpireTime = DateTime.Now.AddDays(30), Response = response });
+                }
+
+                return response;
             }
-
-            tcpClient.Close();
-
-
-            if (_caching)
-            {
-                _cache.AddToCache(new CacheItem() { Url = url, ExpireTime = DateTime.Now.AddDays(30), Response = response });
-            }
-
-            return response;
         }
     }
 }
