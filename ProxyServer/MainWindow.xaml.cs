@@ -23,7 +23,7 @@ namespace ProxyServer
 
         private void StartProxy(object sender, RoutedEventArgs e)
         {
-            var args = new ProxyUIEventArgs()
+            var args = new ProxyUiEventArgs()
             {
                 Buffer = BufferSizeTxtB.Text,
                 Port = PortTxtB.Text,

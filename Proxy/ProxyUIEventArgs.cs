@@ -1,6 +1,6 @@
 ﻿namespace ProxyServices
 {
-    public class ProxyUIEventArgs
+    public class ProxyUiEventArgs
     {
         public string Buffer { get; set; }
         public string Port { get; set; }
