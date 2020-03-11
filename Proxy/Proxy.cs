@@ -37,13 +37,13 @@ namespace ProxyServices
         /// <param name="exception"></param>
         protected void AddUiMessage(Exception exception)
         {
+            Console.WriteLine(exception.ToString());
             MessagesCollection.Add(new ProxyLog
             {
                 Message = exception.Message.Substring(0, Math.Min(exception.Message.Length, maxMessageLength)).TrimEnd(),
                 Source = "Server",
                 Type = "Error"
             });
-            Console.WriteLine(exception.ToString());
         }
     }
 }

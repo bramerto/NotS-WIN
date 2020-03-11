@@ -17,6 +17,7 @@ namespace ProxyServices.Messages
             _isMethodLine = true;
             Message = message;
             Headers = new ConcurrentDictionary<string, string>();
+            SetBody(message);
             SetResponse();
         }
 
@@ -60,16 +61,29 @@ namespace ProxyServices.Messages
         /// <param name="line"></param>
         private void SetHeader(string line)
         {
-            var headerLine = line.Split(new [] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            var headerLine = line.Split(new [] { ": " }, StringSplitOptions.None);
 
             if (headerLine.Length > 1)
             {
                 Headers.TryAdd(headerLine[0], headerLine[1]);
             }
-            else
+        }
+
+        /// <summary>
+        /// Sets the body of the request.
+        /// </summary>
+        private void SetBody(string message)
+        {
+            try
             {
-                Body = headerLine[0];
+                var requestBody = message.Split(new[] { "\r\n\r\n" }, StringSplitOptions.None);
+                Body = requestBody[1];
             }
+            catch (IndexOutOfRangeException e)
+            {
+                Console.WriteLine("IndexOutOfRangeException");
+            }
+            
         }
 
         /// <summary>
@@ -82,29 +96,21 @@ namespace ProxyServices.Messages
             var httpMessage = new StringBuilder();
 
             //Method line
-            httpMessage.AppendLine(Version + " " + StatusCode + " " + Status);
+            httpMessage.AppendLine($"{Version} {StatusCode} {Status}");
 
+            //Headers
             foreach (var header in Headers)
             {
-                httpMessage.AppendLine(header.Key + ": " + header.Value);
+                httpMessage.AppendLine(header.Key + ":" + header.Value);
             }
 
-            //TODO: add ad filter to response here to replace pictures with placeholders
-            if (filter)
+            httpMessage.AppendLine();
+
+            //Body
+            if (Body != null || Body != string.Empty)
             {
-                if (Body != null)
-                {
-                    return string.Empty;
-                }
-
-                Console.WriteLine("AD FILTERING...");
+                httpMessage.Append(Body);
             }
-
-            if (Body != null)
-            {
-                httpMessage.AppendLine(Body);
-            }
-
 
             return httpMessage.ToString();
         }

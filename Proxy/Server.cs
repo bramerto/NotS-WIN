@@ -10,12 +10,11 @@ namespace ProxyServices
     public class Server : Proxy
     {
         private readonly TcpListener _listener;
-        public readonly Client Client;
         private readonly int _bufferSize;
         private readonly bool advertisementFilter;
+        private readonly bool caching;
         private readonly bool privacyFilter;
         private readonly byte[] _buffer;
-        private readonly StringBuilder _stringBuilder;
 
         private bool _listening;
 
@@ -25,12 +24,10 @@ namespace ProxyServices
             _listening = true;
             _listener = new TcpListener(IPAddress.Any, port);
             _buffer = new byte[_bufferSize];
-            _stringBuilder = new StringBuilder();
 
             advertisementFilter = args.AdvertisementFilterEnabled;
             privacyFilter = args.PrivacyFilterEnabled;
-
-            Client = new Client(args.CacheEnabled);
+            caching = args.CacheEnabled;
         }
 
         /// <summary>
@@ -41,7 +38,7 @@ namespace ProxyServices
             try
             {
                 _listener.Start();
-                _ = Listen();
+                Listen();
             }
             catch (Exception ex)
             {
@@ -62,11 +59,11 @@ namespace ProxyServices
                 {
 
                     var c = await _listener.AcceptTcpClientAsync();
-                    AddUiMessage("Client Connected!", "TCP");
-                    HandleConnection(c);
+                    Task.Run(() => HandleConnection(c));
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex);
                     AddUiMessage(ex);
                 }
             }
@@ -76,15 +73,14 @@ namespace ProxyServices
         /// Handles the connection from a tcp client, reads the http message, sends a request to the client and writes it back to original tcp client.
         /// </summary>
         /// <param name="socket"></param>
-        private async Task HandleConnection(TcpClient socket)
+        private void HandleConnection(TcpClient socket)
         {
             using (var ns = socket.GetStream())
             {
-                if (_listening)
-                {
-                    var request = GetHttpRequest(ns);
-                    SendRequest(request, ns);
-                }
+                if (!_listening) return;
+                
+                var request = GetHttpRequest(ns);
+                SendRequest(request, ns);
             }
         }
 
@@ -95,19 +91,20 @@ namespace ProxyServices
         /// <returns></returns>
         private HttpRequest GetHttpRequest(NetworkStream ns)
         {
+            var stringBuilder = new StringBuilder();
             do
             {
                 var readBytes = ns.Read(_buffer, 0, _bufferSize);
-                _stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(_buffer, 0, readBytes));
+                stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(_buffer, 0, readBytes));
 
             } while (ns.DataAvailable);
 
-            var message = _stringBuilder.ToString();
+            var message = stringBuilder.ToString();
+            stringBuilder.Clear();
 
             var request = new HttpRequest(message);
-            _stringBuilder.Clear();
 
-            if (privacyFilter)
+            if (privacyFilter && request.Headers["User-Agent"] != null)
             {
                 request.Headers["User-Agent"] = "Proxy";
             }
@@ -122,14 +119,19 @@ namespace ProxyServices
         /// <param name="ns"></param>
         private void SendRequest(HttpRequest request, NetworkStream ns)
         {
+            var Client = new Client(caching);
             var response = Client.HandleConnection(request);
 
-            if (response == null) return;
+            if (response == null)
+            {
+                ns.Write(new byte[0], 0, 0);
+                return;
+            }
 
             var message = response.GetMessage(advertisementFilter);
+            var messageBytes = Encoding.ASCII.GetBytes(message);
 
-            //TODO: write correct HttpResponse back
-            ns.Write(Encoding.ASCII.GetBytes(message), 0, _bufferSize);
+            ns.Write(messageBytes, 0, messageBytes.Length);
         }
 
         /// <summary>
