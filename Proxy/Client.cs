@@ -8,17 +8,19 @@ namespace ProxyServices
 {
     public class Client
     {
-        private HttpResponse response;
         private TcpClient tcpClient;
         private readonly CacheControl _cache;
         private readonly bool _caching;
+        private readonly bool _contentFilter;
+
         private readonly byte[] _clientBuffer;
 
-        public Client(bool caching)
+        public Client(bool caching, bool contentFilter)
         {
             _caching = caching;
+            _contentFilter = contentFilter;
             _cache = new CacheControl();
-            _clientBuffer = new byte[4096];
+            _clientBuffer = new byte[1];
         }
 
         /// <summary>
@@ -29,7 +31,18 @@ namespace ProxyServices
         {
             try
             {
-                SendRequest(request, clientStream);
+                using (tcpClient = new TcpClient())
+                {
+                    request.Headers.TryGetValue("Host", out var url);
+                    tcpClient.Connect(url, 80);
+
+                    var response = SendRequestToServer(tcpClient, request, clientStream);
+
+                    if (_caching && response != null)
+                    {
+                        _cache.AddToCache(new CacheItem() { Url = url, ExpireTime = DateTime.Now.AddDays(30), Response = response });
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -37,57 +50,40 @@ namespace ProxyServices
             }
         }
 
-        /// <summary>
-        /// Sends request given by request url and gets the response, caches it if enabled.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        private void SendRequest(HttpRequest request, NetworkStream clientStream)
+        private HttpResponse SendRequestToServer(TcpClient client, HttpRequest request, NetworkStream clientStream)
         {
-            using (tcpClient = new TcpClient())
+            using (var ns = client.GetStream())
             {
-                request.Headers.TryGetValue("Host", out var url);
+                var isText = request.Headers["Accept"].Contains("text");
+                var data = Encoding.ASCII.GetBytes(request.GetMessage());
+                ns.Write(data, 0, data.Length);
 
-                try
+                var messageBuilder = new StringBuilder();
+
+                do
                 {
-                    tcpClient.Connect(url ?? throw new InvalidOperationException(), 80);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-
-                using (var ns = tcpClient.GetStream())
-                {
-                    var data = Encoding.ASCII.GetBytes(request.GetMessage());
-                    ns.Write(data, 0, data.Length);
-
-                    var stringBuilder = new StringBuilder();
-
-                    do
+                    var readBytes = ns.Read(_clientBuffer, 0, _clientBuffer.Length);
+                    if (!isText)
                     {
-                        var readBytes = ns.Read(_clientBuffer, 0, _clientBuffer.Length);
-                        if (!request.Headers["Accept-Encoding"].Contains("img"))
-                        {
-                            clientStream.Write(_clientBuffer, 0, readBytes);
-                        }
-                        else
-                        {
-                            stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(_clientBuffer, 0, readBytes));
-                        }
+                        clientStream.Write(_clientBuffer, 0, readBytes);
+                    }
+                    else
+                    {
+                        messageBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(_clientBuffer, 0, readBytes));
+                    }
 
-                    } while (ns.DataAvailable);
+                } while (ns.DataAvailable);
 
-                    var message = stringBuilder.ToString();
+                if (!isText) return null;
+                var response = new HttpResponse(messageBuilder.ToString());
 
-                    response = new HttpResponse(message);
-                }
+                var message = response.GetMessage(_contentFilter);
+                var messageBytes = Encoding.ASCII.GetBytes(message);
 
-                if (_caching)
-                {
-                    _cache.AddToCache(new CacheItem() { Url = url, ExpireTime = DateTime.Now.AddDays(30), Response = response });
-                }
+                clientStream.Write(messageBytes, 0, messageBytes.Length);
+                return response;
             }
         }
     }
 }
+

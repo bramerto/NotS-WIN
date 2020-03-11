@@ -83,7 +83,7 @@ namespace ProxyServices.Messages
             try
             {
                 var requestBody = Message.Split(new[] { "\r\n\r\n" }, StringSplitOptions.None);
-                Body = requestBody[1];
+                if (requestBody.Length == 2) Body = requestBody[1];
             }
             catch (Exception e)
             {
@@ -112,10 +112,13 @@ namespace ProxyServices.Messages
             httpMessage.AppendLine();
 
             //Body
-            if (Body != null || Body != string.Empty)
+            if (Body == null && Body == string.Empty) return httpMessage.ToString();
+
+            if (filter)
             {
-                httpMessage.Append(Body);
+                Console.WriteLine("FILTER!");
             }
+            httpMessage.Append(Body);
 
             return httpMessage.ToString();
         }

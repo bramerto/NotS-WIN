@@ -54,7 +54,7 @@ namespace ProxyServices.Messages
             }
             catch (IndexOutOfRangeException e)
             {
-                Console.WriteLine("IndexOutOfRangeException");
+                Console.WriteLine(e);
             }
         }
 

@@ -31,14 +31,14 @@ namespace ProxyServices
         }
 
         /// <summary>
-        /// Starts the server
+        /// Starts the server.
         /// </summary>
         public void Start()
         {
             try
             {
                 _listener.Start();
-                Listen();
+                _ = Listen();
             }
             catch (Exception ex)
             {
@@ -57,9 +57,8 @@ namespace ProxyServices
             {
                 try
                 {
-
                     var c = await _listener.AcceptTcpClientAsync();
-                    Task.Run(() => HandleConnection(c));
+                    _ = Task.Run(() => HandleConnection(c));
                 }
                 catch (Exception ex)
                 {
@@ -79,7 +78,8 @@ namespace ProxyServices
                 if (!_listening) return;
                 
                 var request = GetHttpRequest(ns);
-                SendRequest(request, ns);
+                var client = new Client(caching, advertisementFilter);
+                client.HandleConnection(request, ns);
             }
         }
 
@@ -111,16 +111,6 @@ namespace ProxyServices
             return request;
         }
 
-        /// <summary>
-        /// Sends request to client and gives it back to the original sender
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="ns"></param>
-        private void SendRequest(HttpRequest request, NetworkStream ns)
-        {
-            var client = new Client(caching);
-            client.HandleConnection(request, ns);
-        }
 
         /// <summary>
         /// Disposes the Server and sets it to off
