@@ -19,7 +19,7 @@ namespace ProxyServices
 
         private bool _listening;
 
-        public Server(int port, int bufferSize, ProxyUIEventArgs args)
+        public Server(int port, int bufferSize, ProxyUiEventArgs args)
         {
             _bufferSize = bufferSize;
             _listening = true;
@@ -60,6 +60,7 @@ namespace ProxyServices
             {
                 try
                 {
+
                     var c = await _listener.AcceptTcpClientAsync();
                     AddUiMessage("Client Connected!", "TCP");
                     HandleConnection(c);
