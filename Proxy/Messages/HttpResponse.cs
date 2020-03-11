@@ -7,6 +7,7 @@ namespace ProxyServices.Messages
     public class HttpResponse : HttpMessage
     {
         private bool _isMethodLine;
+        private bool _HeaderLines;
         public int StatusCode;
         public string Status;
 
@@ -15,9 +16,10 @@ namespace ProxyServices.Messages
         public HttpResponse(string message)
         {
             _isMethodLine = true;
+            _HeaderLines = true;
             Message = message;
             Headers = new ConcurrentDictionary<string, string>();
-            SetBody(message);
+            SetBody();
             SetResponse();
         }
 
@@ -63,27 +65,30 @@ namespace ProxyServices.Messages
         {
             var headerLine = line.Split(new [] { ": " }, StringSplitOptions.None);
 
-            if (headerLine.Length > 1)
+            if (headerLine.Length > 1 && _HeaderLines)
             {
                 Headers.TryAdd(headerLine[0], headerLine[1]);
+            }
+            else
+            {
+                _HeaderLines = false;
             }
         }
 
         /// <summary>
         /// Sets the body of the request.
         /// </summary>
-        private void SetBody(string message)
+        private void SetBody()
         {
             try
             {
-                var requestBody = message.Split(new[] { "\r\n\r\n" }, StringSplitOptions.None);
+                var requestBody = Message.Split(new[] { "\r\n\r\n" }, StringSplitOptions.None);
                 Body = requestBody[1];
             }
-            catch (IndexOutOfRangeException e)
+            catch (Exception e)
             {
-                Console.WriteLine("IndexOutOfRangeException");
+                Console.WriteLine(e);
             }
-            
         }
 
         /// <summary>

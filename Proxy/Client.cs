@@ -12,28 +12,28 @@ namespace ProxyServices
         private TcpClient tcpClient;
         private readonly CacheControl _cache;
         private readonly bool _caching;
+        private readonly byte[] _clientBuffer;
 
         public Client(bool caching)
         {
             _caching = caching;
             _cache = new CacheControl();
+            _clientBuffer = new byte[4096];
         }
 
         /// <summary>
         /// Sends the request to host and returns it
         /// </summary>
         /// <returns></returns>
-        public HttpResponse HandleConnection(HttpRequest request)
+        public void HandleConnection(HttpRequest request, NetworkStream clientStream)
         {
             try
             {
-                if (!_caching) return SendRequest(request);
-                return _cache.SetCacheItem(request) ? _cache.CachedResponse : SendRequest(request);
+                SendRequest(request, clientStream);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return null;
             }
         }
 
@@ -42,7 +42,7 @@ namespace ProxyServices
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private HttpResponse SendRequest(HttpRequest request)
+        private void SendRequest(HttpRequest request, NetworkStream clientStream)
         {
             using (tcpClient = new TcpClient())
             {
@@ -50,26 +50,31 @@ namespace ProxyServices
 
                 try
                 {
-                    tcpClient.Connect(url, 80);
+                    tcpClient.Connect(url ?? throw new InvalidOperationException(), 80);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("No URL");
-                    return null;
+                    Console.WriteLine(e);
                 }
 
                 using (var ns = tcpClient.GetStream())
                 {
-                    var data = Encoding.ASCII.GetBytes(request.Message); //TODO: set request class to string instead of message
+                    var data = Encoding.ASCII.GetBytes(request.GetMessage());
                     ns.Write(data, 0, data.Length);
 
-                    var clientBuffer = new byte[256];
                     var stringBuilder = new StringBuilder();
 
                     do
                     {
-                        var readBytes = ns.Read(clientBuffer, 0, clientBuffer.Length);
-                        stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(clientBuffer, 0, readBytes));
+                        var readBytes = ns.Read(_clientBuffer, 0, _clientBuffer.Length);
+                        if (!request.Headers["Accept-Encoding"].Contains("img"))
+                        {
+                            clientStream.Write(_clientBuffer, 0, readBytes);
+                        }
+                        else
+                        {
+                            stringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(_clientBuffer, 0, readBytes));
+                        }
 
                     } while (ns.DataAvailable);
 
@@ -82,8 +87,6 @@ namespace ProxyServices
                 {
                     _cache.AddToCache(new CacheItem() { Url = url, ExpireTime = DateTime.Now.AddDays(30), Response = response });
                 }
-
-                return response;
             }
         }
     }

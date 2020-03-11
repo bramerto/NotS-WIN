@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Text;
 
 namespace ProxyServices.Messages
 {
@@ -7,6 +8,7 @@ namespace ProxyServices.Messages
     {
         private bool _isMethodLine; 
         public string Url { get; protected set; }
+        public string Method { get; private set; }
 
         public HttpRequest(string message)
         {
@@ -46,7 +48,9 @@ namespace ProxyServices.Messages
             try
             {
                 var methodLine = line.Split(new[] { " " }, StringSplitOptions.None);
+                Method = methodLine[0];
                 Url = methodLine[1];
+                Version = methodLine[2];
             }
             catch (IndexOutOfRangeException e)
             {
@@ -62,6 +66,29 @@ namespace ProxyServices.Messages
         {
             var headerLine = line.Split(new [] { ": " }, StringSplitOptions.RemoveEmptyEntries);
             if (headerLine.Length > 1) Headers.TryAdd(headerLine[0], headerLine[1]);
+        }
+
+        /// <summary>
+        /// Sets the response back to a message
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public string GetMessage()
+        {
+            var httpMessage = new StringBuilder();
+
+            //Method line
+            httpMessage.AppendLine($"{Method} {Url} {Version}");
+
+            //Headers
+            foreach (var header in Headers)
+            {
+                httpMessage.AppendLine(header.Key + ":" + header.Value);
+            }
+
+            httpMessage.AppendLine();
+
+            return httpMessage.ToString();
         }
     }
 }

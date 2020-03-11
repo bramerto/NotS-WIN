@@ -62,7 +62,6 @@ namespace ProxyServices
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
                     AddUiMessage(ex);
                 }
             }
@@ -72,7 +71,7 @@ namespace ProxyServices
         /// Handles the connection from a tcp client, reads the http message, sends a request to the client and writes it back to original tcp client.
         /// </summary>
         /// <param name="socket"></param>
-        private void HandleConnection(TcpClient socket)
+        private async Task HandleConnection(TcpClient socket)
         {
             using (var ns = socket.GetStream())
             {
@@ -118,19 +117,8 @@ namespace ProxyServices
         /// <param name="ns"></param>
         private void SendRequest(HttpRequest request, NetworkStream ns)
         {
-            var Client = new Client(caching);
-            var response = Client.HandleConnection(request);
-
-            if (response == null)
-            {
-                ns.Write(new byte[0], 0, 0);
-                return;
-            }
-
-            var message = response.GetMessage(advertisementFilter);
-            var messageBytes = Encoding.ASCII.GetBytes(message);
-
-            ns.Write(messageBytes, 0, messageBytes.Length);
+            var client = new Client(caching);
+            client.HandleConnection(request, ns);
         }
 
         /// <summary>
