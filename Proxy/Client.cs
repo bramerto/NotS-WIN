@@ -10,19 +10,17 @@ namespace ProxyServices
     public class Client
     {
         private TcpClient tcpClient;
-        private readonly CacheControl _cache;
-        private readonly bool _caching;
         private readonly bool _contentFilter;
 
         private readonly byte[] _clientBuffer;
         private readonly byte[] _serverBuffer;
+        private readonly int _serverBufferSize;
 
-        public Client(byte[] serverBuffer, bool caching, bool contentFilter)
+        public Client(int serverBufferSize, bool contentFilter)
         {
-            _caching = caching;
-            _serverBuffer = serverBuffer;
+            _serverBufferSize = serverBufferSize;
+            _serverBuffer = new byte[serverBufferSize];
             _contentFilter = contentFilter;
-            _cache = new CacheControl();
             _clientBuffer = new byte[1];
         }
 
@@ -36,19 +34,13 @@ namespace ProxyServices
             {
                 using (tcpClient = new TcpClient())
                 {
-                    request.Headers.TryGetValue("Host", out var url);
+                    var url = request.GetHostUrl();
                     tcpClient.Connect(url, 80);
 
                     var response = SendRequestToServer(tcpClient, request, clientStream);
 
-                    if (_caching && response != null)
-                    {
-                        _cache.AddToCache(new CacheItem { Url = url, ExpireTime = DateTime.Now.AddDays(30), Response = response});
-                    }
-
                     return response;
                 }
-
             }
             catch (SocketException exception)
             {

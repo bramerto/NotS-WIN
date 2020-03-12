@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ProxyServices.Models;
 
 namespace ProxyServices
 {
@@ -16,8 +17,9 @@ namespace ProxyServices
         private readonly bool caching;
         private readonly bool privacyFilter;
         private readonly byte[] _buffer;
+        private readonly CacheControl _cache;
 
-        readonly SynchronizationContext uiContext = SynchronizationContext.Current;
+        private readonly SynchronizationContext uiContext = SynchronizationContext.Current;
 
         private bool _listening;
 
@@ -31,6 +33,7 @@ namespace ProxyServices
             advertisementFilter = args.AdvertisementFilterEnabled;
             privacyFilter = args.PrivacyFilterEnabled;
             caching = args.CacheEnabled;
+            _cache = new CacheControl();
         }
 
         /// <summary>
@@ -78,14 +81,19 @@ namespace ProxyServices
             using (var ns = socket.GetStream())
             {
                 if (!_listening) return;
-                
+
                 var request = GetHttpRequest(ns);
                 uiContext.Send(x => AddUiMessage(request.GetHeaders(), "Request"), null);
-                
-                var client = new Client(_buffer, caching, advertisementFilter);
+
+                var client = new Client(_bufferSize, advertisementFilter);
                 var response = client.HandleConnection(request, ns);
+
                 if (response != null)
                 {
+                    if (caching)
+                    {
+                        _cache.AddToCache(new CacheItem { Url = request.GetHostUrl(), ExpireTime = DateTime.Now.AddDays(30), Response = response });
+                    }
                     uiContext.Send(x => AddUiMessage(request.GetHeaders(), "Response"), null);
                 }
             }

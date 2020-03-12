@@ -91,5 +91,11 @@ namespace ProxyServices.Messages
 
             return httpMessage.ToString();
         }
+
+        public string GetHostUrl()
+        {
+            Headers.TryGetValue("Host", out var url);
+            return url;
+        }
     }
 }
