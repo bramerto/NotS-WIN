@@ -33,5 +33,6 @@
         <CheckBox x:Name="CacheCb" Content="Enable cache" Grid.Column="1" HorizontalAlignment="Left" Margin="10,124,0,0" VerticalAlignment="Top" Height="15" Width="89"/>
         <CheckBox x:Name="AdvertiseFilterCb" Content="Advertentie filter" Grid.Column="1" HorizontalAlignment="Left" Margin="9.667,182,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="PrivacyFilterCb" Content="Privacy filter" Grid.Column="1" HorizontalAlignment="Left" Margin="9.667,203,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="ClearBtn" Content="Clear Log" HorizontalAlignment="Left" Margin="9.667,438,0,0" VerticalAlignment="Top" Width="75" Click="ClearLog" Grid.Column="1"/>
     </Grid>
 </Window>

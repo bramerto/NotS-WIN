@@ -24,11 +24,10 @@ namespace ProxyServices
         {
             MessagesCollection.Add(new ProxyLog
             {
-                Message = message.Substring(0, Math.Min(message.Length, maxMessageLength)).TrimEnd(),
+                Message = message,
                 Source = "Server",
                 Type = type
             });
-            Console.WriteLine(message);
         }
 
         /// <summary>

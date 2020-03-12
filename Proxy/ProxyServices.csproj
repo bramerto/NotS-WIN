@@ -53,5 +53,8 @@
     <Compile Include="ProxyUIEventArgs.cs" />
     <Compile Include="Server.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="O6CFo4d.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

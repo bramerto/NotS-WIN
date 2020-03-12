@@ -3,6 +3,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ProxyServices
@@ -15,6 +16,8 @@ namespace ProxyServices
         private readonly bool caching;
         private readonly bool privacyFilter;
         private readonly byte[] _buffer;
+
+        readonly SynchronizationContext uiContext = SynchronizationContext.Current;
 
         private bool _listening;
 
@@ -51,8 +54,7 @@ namespace ProxyServices
         /// </summary>
         private async Task Listen()
         {
-            AddUiMessage("Listening...", "TCP");
-
+            AddUiMessage("Proxy Started", "TCP");
             while (_listening)
             {
                 try
@@ -78,8 +80,14 @@ namespace ProxyServices
                 if (!_listening) return;
                 
                 var request = GetHttpRequest(ns);
-                var client = new Client(caching, advertisementFilter);
-                client.HandleConnection(request, ns);
+                uiContext.Send(x => AddUiMessage(request.GetHeaders(), "Request"), null);
+                
+                var client = new Client(_buffer, caching, advertisementFilter);
+                var response = client.HandleConnection(request, ns);
+                if (response != null)
+                {
+                    uiContext.Send(x => AddUiMessage(request.GetHeaders(), "Response"), null);
+                }
             }
         }
 

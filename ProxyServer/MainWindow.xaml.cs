@@ -53,5 +53,10 @@ namespace ProxyServer
             AdvertiseFilterCb.IsEnabled = (!AdvertiseFilterCb.IsEnabled);
             PrivacyFilterCb.IsEnabled = (!PrivacyFilterCb.IsEnabled);
         }
+
+        private void ClearLog(object sender, RoutedEventArgs e)
+        {
+            ListView.Items.Clear();
+        }
     }
 }

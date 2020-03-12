@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Text;
 
 namespace ProxyServices.Messages
@@ -9,6 +10,10 @@ namespace ProxyServices.Messages
         private bool _isMethodLine; 
         public string Url { get; protected set; }
         public string Method { get; private set; }
+
+        public bool AcceptIsVideoOrImage =>
+            (Headers["Accept"].Contains("video") || Headers["Accept"].Contains("image")) &&
+            !Headers["Accept"].Contains("html");
 
         public HttpRequest(string message)
         {
@@ -80,11 +85,7 @@ namespace ProxyServices.Messages
             //Method line
             httpMessage.AppendLine($"{Method} {Url} {Version}");
 
-            //Headers
-            foreach (var header in Headers)
-            {
-                httpMessage.AppendLine(header.Key + ":" + header.Value);
-            }
+            httpMessage.Append(GetHeaders());
 
             httpMessage.AppendLine();
 

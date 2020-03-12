@@ -7,16 +7,16 @@ namespace ProxyServices.Messages
     public class HttpResponse : HttpMessage
     {
         private bool _isMethodLine;
-        private bool _HeaderLines;
+        private bool _headerLines;
         public int StatusCode;
         public string Status;
 
         public string Body;
-        
+
         public HttpResponse(string message)
         {
             _isMethodLine = true;
-            _HeaderLines = true;
+            _headerLines = true;
             Message = message;
             Headers = new ConcurrentDictionary<string, string>();
             SetBody();
@@ -65,13 +65,13 @@ namespace ProxyServices.Messages
         {
             var headerLine = line.Split(new [] { ": " }, StringSplitOptions.None);
 
-            if (headerLine.Length > 1 && _HeaderLines)
+            if (headerLine.Length > 1 && _headerLines)
             {
                 Headers.TryAdd(headerLine[0], headerLine[1]);
             }
             else
             {
-                _HeaderLines = false;
+                _headerLines = false;
             }
         }
 
@@ -94,30 +94,21 @@ namespace ProxyServices.Messages
         /// <summary>
         /// Sets the response back to a message
         /// </summary>
-        /// <param name="filter"></param>
         /// <returns></returns>
-        public string GetMessage(bool filter)
+        public string GetMessage()
         {
             var httpMessage = new StringBuilder();
 
             //Method line
             httpMessage.AppendLine($"{Version} {StatusCode} {Status}");
 
-            //Headers
-            foreach (var header in Headers)
-            {
-                httpMessage.AppendLine(header.Key + ":" + header.Value);
-            }
+            httpMessage.Append(GetHeaders());
 
             httpMessage.AppendLine();
 
             //Body
             if (Body == null && Body == string.Empty) return httpMessage.ToString();
 
-            if (filter)
-            {
-                Console.WriteLine("FILTER!");
-            }
             httpMessage.Append(Body);
 
             return httpMessage.ToString();
