@@ -20,18 +20,21 @@ namespace ProxyServices
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public bool SetCacheItem(HttpRequest request)
+        public CacheItem GetCacheItem(HttpRequest request)
         {
-            return _cachePool.Any(cacheItem => cacheItem.Url == request.Url && cacheItem.ExpireTime.CompareTo(DateTime.Now) >= 0);
+            return _cachePool.FirstOrDefault(cacheItem => cacheItem.Url == request.GetHostUrl() && 
+                                                          cacheItem.ExpireTime.CompareTo(DateTime.Now) >= 0 && 
+                                                          !request.AcceptIsVideoOrImage
+                );
         }
 
         /// <summary>
-        /// Adds to cache if response header allows it
+        /// Adds cache item to cache
         /// </summary>
         /// <param name="item"></param>
         public void AddToCache(CacheItem item)
         {
-            if (item.Response.Headers["Cache-Control"] == null || item.Response.Headers["Cache-Control"] != "no-cache")
+            if (item.Response.Headers["Content-Type"].Contains("html"))
             {
                 _cachePool.Add(item);
             }

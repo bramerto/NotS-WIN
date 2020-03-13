@@ -13,11 +13,11 @@ namespace ProxyServices.Messages
 
         public string Body;
 
-        public HttpResponse(string message)
+        public HttpResponse(byte[] messageInBytes)
         {
             _isMethodLine = true;
             _headerLines = true;
-            Message = message;
+            Message = Encoding.ASCII.GetString(messageInBytes);
             Headers = new ConcurrentDictionary<string, string>();
             SetBody();
             SetResponse();

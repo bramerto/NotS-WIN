@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using ProxyServices.Models;
 
 namespace ProxyServices
 {
@@ -15,6 +14,8 @@ namespace ProxyServices
         private readonly byte[] _clientBuffer;
         private readonly byte[] _serverBuffer;
         private readonly int _serverBufferSize;
+
+        private const string PlaceHolderPath = "C:\\Users\\Bram\\Documents\\GitHub\\NotS\\Proxy\\O6CFo4d.jpg";
 
         public Client(int serverBufferSize, bool contentFilter)
         {
@@ -28,7 +29,7 @@ namespace ProxyServices
         /// Sends the request to host and returns it
         /// </summary>
         /// <returns></returns>
-        public HttpResponse HandleConnection(HttpRequest request, NetworkStream clientStream)
+        public byte[] HandleConnection(HttpRequest request, NetworkStream clientStream)
         {
             try
             {
@@ -42,11 +43,11 @@ namespace ProxyServices
                     return response;
                 }
             }
-            catch (SocketException exception)
+            catch (SocketException)
             {
                 return null;
             }
-            catch (IOException exception)
+            catch (IOException)
             {
                 return null;
             }
@@ -57,47 +58,42 @@ namespace ProxyServices
             }
         }
 
-        private HttpResponse SendRequestToServer(TcpClient client, HttpRequest request, NetworkStream clientStream)
+        /// <summary>
+        /// Sends request to server and directs reply back to client stream
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="request"></param>
+        /// <param name="clientStream"></param>
+        /// <returns></returns>
+        private byte[] SendRequestToServer(TcpClient client, HttpRequest request, NetworkStream clientStream)
         {
+            using (var memoryStream = new MemoryStream())
             using (var ns = client.GetStream())
             {
                 var isImage = request.AcceptIsVideoOrImage;
                 var data = Encoding.ASCII.GetBytes(request.GetMessage());
                 ns.Write(data, 0, data.Length);
 
-                var messageBuilder = new StringBuilder();
-
                 do
                 {
                     var readBytes = ns.Read(_clientBuffer, 0, _clientBuffer.Length);
-                    if (isImage)
+                    
+                    if (_contentFilter && isImage)
                     {
-                        if (_contentFilter)
-                        {
-                            var placeholder = File.ReadAllBytes("C:\\Users\\Bram\\Documents\\GitHub\\NotS\\Proxy\\O6CFo4d.jpg");
-                            clientStream.Write(placeholder, 0, placeholder.Length);
-                        }
-                        else
-                        {
-                            clientStream.Write(_clientBuffer, 0, readBytes);
-                        }
+                        var placeholder = File.ReadAllBytes(PlaceHolderPath);
+                        clientStream.Write(placeholder, 0, placeholder.Length);
                     }
                     else
                     {
-                        messageBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(_clientBuffer, 0, readBytes));
+                        clientStream.Write(_clientBuffer, 0, readBytes);
+                        memoryStream.Write(_clientBuffer, 0, readBytes);
                     }
 
                 } while (ns.DataAvailable);
 
-                if (isImage) return null;
+                var messageBytes = memoryStream.ToArray();
 
-                var response = new HttpResponse(messageBuilder.ToString());
-
-                var message = response.GetMessage();
-                var messageBytes = Encoding.ASCII.GetBytes(message);
-
-                clientStream.Write(messageBytes, 0, messageBytes.Length);
-                return response;
+                return messageBytes;
             }
         }
     }

@@ -7,6 +7,7 @@ namespace ProxyServices.Models
     {
         public string Url { get; set; }
         public DateTime ExpireTime { get; set; }
+        public byte[] ResponseBytes { get; set; }
         public HttpResponse Response { get; set; }
     }
 }

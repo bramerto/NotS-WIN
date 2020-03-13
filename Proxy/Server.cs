@@ -85,17 +85,8 @@ namespace ProxyServices
                 var request = GetHttpRequest(ns);
                 uiContext.Send(x => AddUiMessage(request.GetHeaders(), "Request"), null);
 
-                var client = new Client(_bufferSize, advertisementFilter);
-                var response = client.HandleConnection(request, ns);
-
-                if (response != null)
-                {
-                    if (caching)
-                    {
-                        _cache.AddToCache(new CacheItem { Url = request.GetHostUrl(), ExpireTime = DateTime.Now.AddDays(30), Response = response });
-                    }
-                    uiContext.Send(x => AddUiMessage(request.GetHeaders(), "Response"), null);
-                }
+                var byteResponse = HandleCache(request, ns);
+                SetCache(byteResponse, request);
             }
         }
 
@@ -127,6 +118,63 @@ namespace ProxyServices
             return request;
         }
 
+        /// <summary>
+        /// Gets request from client or out of the cache pool
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ns"></param>
+        /// <returns></returns>
+        private byte[] HandleCache(HttpRequest request, NetworkStream ns)
+        {
+            if (!caching)
+            {
+                return SentWithClient(request, ns);
+            }
+            var cacheItem = _cache.GetCacheItem(request);
+
+            return cacheItem == null ? SentWithClient(request, ns) : SentCached(cacheItem, ns);
+        }
+
+        private byte[] SentWithClient(HttpRequest request, NetworkStream ns)
+        {
+            var client = new Client(_bufferSize, advertisementFilter);
+            var bytes = client.HandleConnection(request, ns);
+            var response = new HttpResponse(bytes);
+            uiContext.Send(x => AddUiMessage(response.GetHeaders(), "Response"), null);
+            return bytes;
+        }
+
+        private byte[] SentCached(CacheItem cacheItem, NetworkStream ns)
+        {
+            var byteResponse = cacheItem.ResponseBytes;
+            var response = new HttpResponse(byteResponse);
+
+            ns.Write(byteResponse, 0, _bufferSize);
+
+            uiContext.Send(x => AddUiMessage(response.GetHeaders(), "Cached Response"), null);
+            return byteResponse;
+        }
+
+        /// <summary>
+        /// Set response to HttpResponse and set to cache 
+        /// </summary>
+        /// <param name="byteResponse"></param>
+        /// <param name="request"></param>
+        private void SetCache(byte[] byteResponse, HttpRequest request)
+        {
+            if (byteResponse == null) return;
+            var response = new HttpResponse(byteResponse);
+            if (caching)
+            {
+                _cache.AddToCache(new CacheItem
+                {
+                    Url = request.GetHostUrl(),
+                    ExpireTime = DateTime.Now.AddDays(30),
+                    Response = response,
+                    ResponseBytes = byteResponse,
+                });
+            }
+        }
 
         /// <summary>
         /// Disposes the Server and sets it to off

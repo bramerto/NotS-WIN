@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Text;
 
 namespace ProxyServices.Messages
@@ -76,7 +75,6 @@ namespace ProxyServices.Messages
         /// <summary>
         /// Sets the response back to a message
         /// </summary>
-        /// <param name="filter"></param>
         /// <returns></returns>
         public string GetMessage()
         {
@@ -92,6 +90,10 @@ namespace ProxyServices.Messages
             return httpMessage.ToString();
         }
 
+        /// <summary>
+        /// Gets the host http header
+        /// </summary>
+        /// <returns></returns>
         public string GetHostUrl()
         {
             Headers.TryGetValue("Host", out var url);
