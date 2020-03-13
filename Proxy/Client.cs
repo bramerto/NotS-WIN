@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ProxyServices
 {
@@ -11,18 +13,14 @@ namespace ProxyServices
         private TcpClient tcpClient;
         private readonly bool _contentFilter;
 
-        private readonly byte[] _clientBuffer;
-        private readonly byte[] _serverBuffer;
         private readonly int _serverBufferSize;
 
-        private const string PlaceHolderPath = "C:\\Users\\Bram\\Documents\\GitHub\\NotS\\Proxy\\O6CFo4d.jpg";
+        private const string PlaceHolderPath = "..\\..\\..\\Proxy\\O6CFo4d.jpg";
 
         public Client(int serverBufferSize, bool contentFilter)
         {
             _serverBufferSize = serverBufferSize;
-            _serverBuffer = new byte[serverBufferSize];
             _contentFilter = contentFilter;
-            _clientBuffer = new byte[1];
         }
 
         /// <summary>
@@ -38,9 +36,7 @@ namespace ProxyServices
                     var url = request.GetHostUrl();
                     tcpClient.Connect(url, 80);
 
-                    var response = SendRequestToServer(tcpClient, request, clientStream);
-
-                    return response;
+                    return SendRequestToServer(tcpClient, request, clientStream);
                 }
             }
             catch (SocketException)
@@ -61,39 +57,43 @@ namespace ProxyServices
         /// <summary>
         /// Sends request to server and directs reply back to client stream
         /// </summary>
-        /// <param name="client"></param>
+        /// <param name="server"></param>
         /// <param name="request"></param>
         /// <param name="clientStream"></param>
         /// <returns></returns>
-        private byte[] SendRequestToServer(TcpClient client, HttpRequest request, NetworkStream clientStream)
+        private byte[] SendRequestToServer(TcpClient server, HttpRequest request, NetworkStream clientStream)
         {
             using (var memoryStream = new MemoryStream())
-            using (var ns = client.GetStream())
+            using (var ns = server.GetStream())
             {
                 var isImage = request.AcceptIsVideoOrImage;
+                var readBuffer = new byte[_serverBufferSize];
+
+                //Send request to server
                 var data = Encoding.ASCII.GetBytes(request.GetMessage());
                 ns.Write(data, 0, data.Length);
 
-                do
+                if (_contentFilter && isImage)
                 {
-                    var readBytes = ns.Read(_clientBuffer, 0, _clientBuffer.Length);
-                    
-                    if (_contentFilter && isImage)
+                    //Set placeholder if content
+                    var placeholder = File.ReadAllBytes(PlaceHolderPath);
+                    clientStream.Write(placeholder, 0, placeholder.Length);
+                }
+                else
+                {
+                    do
                     {
-                        var placeholder = File.ReadAllBytes(PlaceHolderPath);
-                        clientStream.Write(placeholder, 0, placeholder.Length);
-                    }
-                    else
-                    {
-                        clientStream.Write(_clientBuffer, 0, readBytes);
-                        memoryStream.Write(_clientBuffer, 0, readBytes);
-                    }
+                        var readBytes = ns.Read(readBuffer, 0, readBuffer.Length);
 
-                } while (ns.DataAvailable);
+                        //write response back to server
+                        clientStream.Write(readBuffer, 0, readBytes);
+                        memoryStream.Write(readBuffer, 0, readBytes);
+                        ByteManagement.AwaitNextByteResult(ns);
 
-                var messageBytes = memoryStream.ToArray();
+                    } while (ns.DataAvailable);
+                }
 
-                return messageBytes;
+                return memoryStream.ToArray();
             }
         }
     }
