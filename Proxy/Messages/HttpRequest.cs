@@ -14,6 +14,9 @@ namespace ProxyServices.Messages
             (Headers["Accept"].Contains("video") || Headers["Accept"].Contains("image")) &&
             !Headers["Accept"].Contains("html");
 
+        public bool IsCacheDisabled => Headers["Cache-Control"] == null || Headers["Cache-Control"].Contains("no");
+        public bool IsPragmaDisabled => Headers["Pragma"] == null || Headers["Pragma"].Contains("no-cache");
+
         public HttpRequest(string message)
         {
             _isMethodLine = true;

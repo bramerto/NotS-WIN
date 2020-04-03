@@ -24,7 +24,9 @@ namespace ProxyServices
         {
             return _cachePool.FirstOrDefault(cacheItem => cacheItem.Url == request.GetHostUrl() && 
                                                           cacheItem.ExpireTime.CompareTo(DateTime.Now) >= 0 && 
-                                                          !request.AcceptIsVideoOrImage
+                                                          !request.AcceptIsVideoOrImage &&
+                                                          !request.IsCacheDisabled &&
+                                                          !request.IsPragmaDisabled
                 );
         }
 
