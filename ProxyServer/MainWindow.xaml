@@ -27,7 +27,7 @@
         <TextBox x:Name="PortTxtB" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="10,35,0,0" TextWrapping="Wrap" Text="8080" VerticalAlignment="Top" Width="47" IsUndoEnabled="False"/>
 
         <Label x:Name="BufferSizeLbl" Content="Buffer" Grid.Column="1" HorizontalAlignment="Left" Margin="9.667,60,0,0" VerticalAlignment="Top" Height="25" Width="47" RenderTransformOrigin="0.277,0.56"/>
-        <TextBox x:Name="BufferSizeTxtB" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="10,85,0,0" TextWrapping="Wrap" Text="12" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="BufferSizeTxtB" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="10,85,0,0" TextWrapping="Wrap" Text="2000" VerticalAlignment="Top" Width="120"/>
 
         <Label x:Name="Label" Content="Filters" Grid.Column="1" HorizontalAlignment="Left" Margin="9.667,158,0,0" VerticalAlignment="Top" Height="24" Width="47"/>
         <CheckBox x:Name="CacheCb" Content="Enable cache" Grid.Column="1" HorizontalAlignment="Left" Margin="10,124,0,0" VerticalAlignment="Top" Height="15" Width="89"/>

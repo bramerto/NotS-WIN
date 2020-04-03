@@ -1,5 +1,6 @@
 ﻿using ProxyServices.Messages;
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -85,8 +86,9 @@ namespace ProxyServices
                 var request = GetHttpRequest(ns);
                 uiContext.Send(x => AddUiMessage(request.GetHeaders(), "Request"), null);
 
-                var byteResponse = HandleCache(request, ns);
-                SetCache(byteResponse, request);
+                var ms = HandleCache(request, ns);
+                SetCache(ms, request);
+                ms.Close();
             }
         }
 
@@ -124,7 +126,7 @@ namespace ProxyServices
         /// <param name="request"></param>
         /// <param name="ns"></param>
         /// <returns></returns>
-        private byte[] HandleCache(HttpRequest request, NetworkStream ns)
+        private MemoryStream HandleCache(HttpRequest request, NetworkStream ns)
         {
             if (!caching)
             {
@@ -135,24 +137,24 @@ namespace ProxyServices
             return cacheItem == null ? SentWithClient(request, ns) : SentCached(cacheItem, ns);
         }
 
-        private byte[] SentWithClient(HttpRequest request, NetworkStream ns)
+        private MemoryStream SentWithClient(HttpRequest request, NetworkStream ns)
         {
             var client = new Client(_bufferSize, advertisementFilter);
-            var bytes = client.HandleConnection(request, ns);
-            var response = new HttpResponse(bytes);
+            var ms = client.HandleConnection(request, ns);
+            var response = new HttpResponse(ms.ToArray());
             uiContext.Send(x => AddUiMessage(response.GetHeaders(), "Response"), null);
-            return bytes;
+            return ms;
         }
 
-        private byte[] SentCached(CacheItem cacheItem, NetworkStream ns)
+        private MemoryStream SentCached(CacheItem cacheItem, NetworkStream ns)
         {
-            var byteResponse = cacheItem.ResponseBytes;
-            var response = new HttpResponse(byteResponse);
+            var ms = cacheItem.ResponseBytes;
+            var response = new HttpResponse(ms.ToArray());
 
-            ns.Write(byteResponse, 0, _bufferSize);
+            ns.Write(ms.GetBuffer(), 0, _bufferSize);
 
             uiContext.Send(x => AddUiMessage(response.GetHeaders(), "Cached Response"), null);
-            return byteResponse;
+            return ms;
         }
 
         /// <summary>
@@ -160,18 +162,16 @@ namespace ProxyServices
         /// </summary>
         /// <param name="byteResponse"></param>
         /// <param name="request"></param>
-        private void SetCache(byte[] byteResponse, HttpRequest request)
+        private void SetCache(MemoryStream ms, HttpRequest request)
         {
-            if (byteResponse == null) return;
-            var response = new HttpResponse(byteResponse);
-            if (caching)
+            if (caching && ms != null)
             {
                 _cache.AddToCache(new CacheItem
                 {
                     Url = request.GetHostUrl(),
                     ExpireTime = DateTime.Now.AddDays(30),
-                    Response = response,
-                    ResponseBytes = byteResponse,
+                    Response = new HttpResponse(ms.ToArray()),
+                    ResponseBytes = ms,
                 });
             }
         }

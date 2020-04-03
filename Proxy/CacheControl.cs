@@ -22,12 +22,7 @@ namespace ProxyServices
         /// <returns></returns>
         public CacheItem GetCacheItem(HttpRequest request)
         {
-            return _cachePool.FirstOrDefault(cacheItem => cacheItem.Url == request.GetHostUrl() && 
-                                                          cacheItem.ExpireTime.CompareTo(DateTime.Now) >= 0 && 
-                                                          !request.AcceptIsVideoOrImage &&
-                                                          !request.IsCacheDisabled &&
-                                                          !request.IsPragmaDisabled
-                );
+            return _cachePool.FirstOrDefault(cacheItem => cacheItem.Url == request.GetHostUrl() && cacheItem.ExpireTime.CompareTo(DateTime.Now) >= 0);
         }
 
         /// <summary>
@@ -36,10 +31,7 @@ namespace ProxyServices
         /// <param name="item"></param>
         public void AddToCache(CacheItem item)
         {
-            if (item.Response.Headers["Content-Type"].Contains("html"))
-            {
-                _cachePool.Add(item);
-            }
+            _cachePool.Add(item);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using ProxyServices.Messages;
 
 namespace ProxyServices.Models
@@ -7,7 +8,7 @@ namespace ProxyServices.Models
     {
         public string Url { get; set; }
         public DateTime ExpireTime { get; set; }
-        public byte[] ResponseBytes { get; set; }
+        public MemoryStream ResponseBytes { get; set; }
         public HttpResponse Response { get; set; }
     }
 }

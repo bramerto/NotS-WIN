@@ -3,8 +3,6 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ProxyServices
 {
@@ -27,7 +25,7 @@ namespace ProxyServices
         /// Sends the request to host and returns it
         /// </summary>
         /// <returns></returns>
-        public byte[] HandleConnection(HttpRequest request, NetworkStream clientStream)
+        public MemoryStream HandleConnection(HttpRequest request, NetworkStream clientStream)
         {
             try
             {
@@ -61,19 +59,18 @@ namespace ProxyServices
         /// <param name="request"></param>
         /// <param name="clientStream"></param>
         /// <returns></returns>
-        private byte[] SendRequestToServer(TcpClient server, HttpRequest request, NetworkStream clientStream)
+        private MemoryStream SendRequestToServer(TcpClient server, HttpRequest request, NetworkStream clientStream)
         {
-            using (var memoryStream = new MemoryStream())
             using (var ns = server.GetStream())
             {
-                var isImage = request.AcceptIsVideoOrImage;
+                var memoryStream = new MemoryStream();
                 var readBuffer = new byte[_serverBufferSize];
 
                 //Send request to server
                 var data = Encoding.ASCII.GetBytes(request.GetMessage());
                 ns.Write(data, 0, data.Length);
 
-                if (_contentFilter && isImage)
+                if (_contentFilter && request.AcceptIsVideoOrImage)
                 {
                     //Set placeholder if content
                     var placeholder = File.ReadAllBytes(PlaceHolderPath);
@@ -93,7 +90,7 @@ namespace ProxyServices
                     } while (ns.DataAvailable);
                 }
 
-                return memoryStream.ToArray();
+                return memoryStream;
             }
         }
     }
