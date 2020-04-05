@@ -137,6 +137,12 @@ namespace ProxyServices
             return cacheItem == null ? SentWithClient(request, ns) : SentCached(cacheItem, ns);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ns"></param>
+        /// <returns></returns>
         private MemoryStream SentWithClient(HttpRequest request, NetworkStream ns)
         {
             var client = new Client(_bufferSize, advertisementFilter);
@@ -146,6 +152,12 @@ namespace ProxyServices
             return ms;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cacheItem"></param>
+        /// <param name="ns"></param>
+        /// <returns></returns>
         private MemoryStream SentCached(CacheItem cacheItem, NetworkStream ns)
         {
             var ms = cacheItem.ResponseBytes;
@@ -160,7 +172,7 @@ namespace ProxyServices
         /// <summary>
         /// Set response to HttpResponse and set to cache 
         /// </summary>
-        /// <param name="byteResponse"></param>
+        /// <param name="ms"></param>
         /// <param name="request"></param>
         private void SetCache(MemoryStream ms, HttpRequest request)
         {

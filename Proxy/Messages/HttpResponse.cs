@@ -50,11 +50,18 @@ namespace ProxyServices.Messages
         /// <param name="line"></param>
         private void SetMethod(string line)
         {
-            var methodLine = line.Split(' ');
+            try
+            {
+                var methodLine = line.Split(new[] { " " }, StringSplitOptions.None);
 
-            Version = methodLine[0];
-            StatusCode = int.Parse(methodLine[1]);
-            Status = methodLine[2];
+                Version = methodLine[0];
+                StatusCode = int.Parse(methodLine[1]);
+                Status = (methodLine.Length > 3) ? methodLine[2] + methodLine[3] : methodLine[2];
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                Console.WriteLine(e);
+            }
         }
         
         /// <summary>
