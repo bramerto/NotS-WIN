@@ -1,6 +1,7 @@
 ﻿using ProxyServices.Messages;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -88,7 +89,6 @@ namespace ProxyServices
 
                 var ms = HandleCache(request, ns);
                 SetCache(ms, request);
-                ms.Close();
             }
         }
 
@@ -163,7 +163,24 @@ namespace ProxyServices
             var ms = cacheItem.ResponseBytes;
             var response = new HttpResponse(ms.ToArray());
 
-            ns.Write(ms.GetBuffer(), 0, _bufferSize);
+            var count = 0;
+
+            if (ms.Length > _bufferSize)
+            {
+                while (count < ms.Length)
+                {
+                    if (count > ms.Length)
+                    {
+                        count -= (count - Convert.ToInt32(ms.Length));
+                    }
+                    ns.Write(ms.GetBuffer(), count, _bufferSize);
+                    count += _bufferSize;
+                }
+            }
+            else
+            {
+                ns.Write(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
+            }
 
             uiContext.Send(x => AddUiMessage(response.GetHeaders(), "Cached Response"), null);
             return ms;
@@ -180,7 +197,7 @@ namespace ProxyServices
             {
                 _cache.AddToCache(new CacheItem
                 {
-                    Url = request.GetHostUrl(),
+                    Url = request.Url,
                     ExpireTime = DateTime.Now.AddDays(30),
                     Response = new HttpResponse(ms.ToArray()),
                     ResponseBytes = ms,

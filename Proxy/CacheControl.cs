@@ -22,7 +22,7 @@ namespace ProxyServices
         /// <returns></returns>
         public CacheItem GetCacheItem(HttpRequest request)
         {
-            return _cachePool.FirstOrDefault(cacheItem => cacheItem.Url == request.GetHostUrl() && cacheItem.ExpireTime.CompareTo(DateTime.Now) >= 0);
+            return _cachePool.FirstOrDefault(cacheItem => cacheItem.Url == request.Url && cacheItem.ExpireTime.CompareTo(DateTime.Now) >= 0);
         }
 
         /// <summary>
