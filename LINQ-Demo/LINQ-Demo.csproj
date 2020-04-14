@@ -43,8 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Customer.cs" />
+    <Compile Include="Data\Order.cs" />
+    <Compile Include="Data\Product.cs" />
     <Compile Include="ExtensionLinqImplementation.cs" />
+    <Compile Include="Data\InternalDatabase.cs" />
     <Compile Include="Methods\Aggregates.cs" />
+    <Compile Include="Methods\DeferredExecution.cs" />
     <Compile Include="Methods\Filtering.cs" />
     <Compile Include="Methods\Grouping.cs" />
     <Compile Include="Methods\Joining.cs" />
