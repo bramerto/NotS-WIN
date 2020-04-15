@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace LINQ_Demo.Methods
 {
@@ -16,7 +17,11 @@ namespace LINQ_Demo.Methods
             var stopwatch = new Stopwatch();
 
             stopwatch.Start();
-            var sequence = SequenceGenerator.Products().Where(product => product.name.Contains("60"));
+            var sequence = SequenceGenerator.Products().Where(product =>
+            {
+                var value = int.Parse(Regex.Match(product.name, @"\d+").Value);
+                return value > 1000;
+            });
 
             foreach (var item in sequence)
             {
