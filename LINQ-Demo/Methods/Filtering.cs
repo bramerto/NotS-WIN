@@ -7,54 +7,61 @@ namespace LINQ_Demo.Methods
 {
     public class Filtering
     {
-        public static void MethodLowerTierProducts()
+        public static void MethodHighTierProducts()
         {
-            Console.WriteLine("Hier wordt de methode gebaseerde query toegepast:");
+            Program.IntroLine(true, "Where");
             Console.WriteLine("Zolang de lambda van de Where functie een conditie bevalt waarin er een boolean wordt teruggegeven");
             Console.WriteLine("zal de functie Where een gefilterde IEnumerable van Products teruggeven.");
             Program.WhiteLine();
+            ConsoleTableHeader();
 
             var stopwatch = new Stopwatch();
-
             stopwatch.Start();
             var sequence = SequenceGenerator.Products().Where(product =>
             {
-                var value = int.Parse(Regex.Match(product.name, @"\d+").Value);
+                var value = int.Parse(Regex.Match(product.description, @"\d+").Value);
                 return value > 1000;
             });
 
             foreach (var item in sequence)
             {
-                Console.WriteLine(item.name);
+                Console.WriteLine($"{item.id}         | {item.description}");
             }
             stopwatch.Stop();
-
             Program.WhiteLine();
-            Console.WriteLine($"Code uitgevoerd in: {stopwatch.ElapsedTicks} ticks.");
+            Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
         }
 
-        public static void QueryLowerTierProducts()
+        public static void QueryHighTierProducts()
         {
-            Console.WriteLine("Hier wordt de query expressie toegepast:");
+            Program.IntroLine(false, "Where");
             Console.WriteLine("In de query methode wordt eerst de IEnumerable van Products opgehaald.");
-            Console.WriteLine("Hierop wordt vervolgens een where query uitgevoerd.");
-
+            Console.WriteLine("Hierop wordt vervolgens een where query op uitgevoerd.");
             Program.WhiteLine();
+            ConsoleTableHeader();
 
             var stopwatch = new Stopwatch();
 
             stopwatch.Start();
             var collection = SequenceGenerator.Products();
-            var sequence = from product in collection where product.name.Contains("60") select product;
+            var sequence = from product in collection
+                where int.Parse(Regex.Match(product.description, @"\d+").Value) > 1000
+                select product;
 
             foreach (var item in sequence)
             {
-                Console.WriteLine(item.name);
+                Console.WriteLine($"{item.id}         | {item.description}");
             }
             stopwatch.Stop();
 
             Program.WhiteLine();
-            Console.WriteLine($"Code uitgevoerd in: {stopwatch.ElapsedTicks} ticks.");
+            Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
+        }
+
+        private static void ConsoleTableHeader()
+        {
+            Console.WriteLine("product id | product name");
+            Console.WriteLine("___________|__________________________");
         }
     }
 }

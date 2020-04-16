@@ -6,6 +6,8 @@ namespace LINQ_Demo
 {
     public class SequenceGenerator
     {
+        public static InternalDatabase database;
+
         public static IEnumerable<int> Numbers()
         {
             var index = 0;
@@ -26,17 +28,17 @@ namespace LINQ_Demo
 
         public static IEnumerable<Customer> Customers()
         {
-            return InternalDatabase.GetCustomers();
+            return database.GetCustomers();
         }
 
         public static IEnumerable<Order> Orders()
         {
-            return InternalDatabase.GetOrders();
+            return database.GetOrders();
         }
 
         public static IEnumerable<Product> Products()
         {
-            return InternalDatabase.GetProducts();
+            return database.GetProducts();
         }
     }
 }

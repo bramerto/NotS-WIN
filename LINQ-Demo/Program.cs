@@ -1,50 +1,23 @@
 ﻿using System;
+using LINQ_Demo.Data;
 using LINQ_Demo.Methods;
 
 namespace LINQ_Demo
 {
-    internal class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("Onderstaande onderwerpen zullen ingaan op de LINQ standaard bibliotheek en de methoden.");
-            Console.WriteLine("Er is data aangemaakt door de LINQ_Demo-Data.InternalDatabase class. Hier zal mee worden gewerkt.");
-            Console.WriteLine("In de methoden waarvoor een demo wordt gegeven zijn twee query methoden gebruikt:");
-            Console.WriteLine("     - methode gebaseerde query");
-            Console.WriteLine("     - query expressie");
-            Console.WriteLine("Beide methodes hebben voordelen, maar het komt vooral neer op ease-of-use.");
-            Console.WriteLine("Ook werken beide methodes met IEnumerables en zijn daarmee intern hetzelfde.");
-            Console.WriteLine("De query expressie methode kan worden toegepast als je bekend bent met SQL en graag daarmee werkt.");
-            WhiteLine();
+            //Set data in internal memory database
+            SequenceGenerator.database = new InternalDatabase();
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Onderstaande functies is een filtering van de 15 producten in de interne geheugen database.");
-            WhiteLine();
-            Filtering.MethodLowerTierProducts();
-            Breaker();
-            Filtering.QueryLowerTierProducts();
-            Breaker();
+            DemoOverviewPart1();
+            DemoPart1();
 
-            Console.WriteLine("Onderstaande functies is een projecteren van 15 producten in de interne geheugen database.");
-            WhiteLine();
+            DemoOverviewPart2();
+            DemoPart2();
 
-            Breaker();
-
-            Breaker();
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("Alle demo's van de standaard LINQ bibliotheek zijn we langsgegaan.");
-            Console.WriteLine("In het laatste stuk van dit programma zal er extentions op de SELECT, WHERE en ANY methoden van LINQ worden gemaakt.");
-            WhiteLine();
-
-            Console.ForegroundColor = ConsoleColor.Green;
-
-            var input = default(string);
-
-            while (input != "done")
-            {
-                input = Console.ReadLine();
-            }
+            Console.ReadLine();
         }
 
         public static void Breaker()
@@ -57,6 +30,83 @@ namespace LINQ_Demo
         public static void WhiteLine()
         {
             Console.WriteLine("");
+        }
+
+        public static void StopwatchLine(long milliseconds)
+        {
+            Console.WriteLine(milliseconds > 0
+                ? $"LINQ query uitgevoerd in: {milliseconds}ms."
+                : "LINQ query uitgevoerd tussen de 0ms en 1ms.");
+        }
+
+        public static void IntroLine(bool method, string name)
+        {
+            Console.WriteLine(method
+                ? $"Hier wordt de methode gebaseerde {name} query toegepast:"
+                : $"Hier wordt de {name} query expressie toegepast:");
+        }
+
+        private static void DemoOverviewPart1()
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("Onderstaande onderwerpen zullen ingaan op de LINQ standaard bibliotheek en de methoden.");
+            Console.WriteLine("Er is data aangemaakt door de LINQ_Demo-Data.InternalDatabase class. Hier zal mee worden gewerkt.");
+            Console.WriteLine("In de methoden waarvoor een demo wordt gegeven zijn twee query methoden gebruikt:");
+            Console.WriteLine("     - methode gebaseerde query");
+            Console.WriteLine("     - query expressie");
+            Console.WriteLine("Beide methodes hebben voordelen, maar het komt vooral neer op ease-of-use.");
+            Console.WriteLine("Ook werken beide methodes met IEnumerables en zijn daarmee intern hetzelfde.");
+            Console.WriteLine("De query expressie methode kan worden toegepast als je bekend bent met SQL en graag daarmee werkt.");
+            WhiteLine();
+        }
+
+        private static void DemoPart1()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("1). Filtering: Onderstaande functies is een filtering van de 15 producten.");
+            WhiteLine();
+            Filtering.MethodHighTierProducts();
+            Breaker();
+            Filtering.QueryHighTierProducts();
+            Breaker();
+
+            Console.WriteLine("2). Ordering: Onderstaande functies is een ordering van 15 orders.");
+            WhiteLine();
+            Ordering.MethodByTotalPrice();
+            Breaker();
+            Ordering.QueryByTotalPrice();
+            Breaker();
+
+            Console.WriteLine("3). Projection: Onderstaande functies is een projectie van 15 klanten.");
+            WhiteLine();
+            Projection.MethodSelectCustomerName();
+            Breaker();
+            Projection.QuerySelectCustomerName();
+            Breaker();
+            Projection.MethodSelectManyProductIds();
+            Breaker();
+            Projection.QuerySelectManyProductIds();
+            Breaker();
+
+            Console.WriteLine("4). Joining: Onderstaande functies is een joining van 15 producten, orders en klanten.");
+            WhiteLine();
+            Joining.MethodCustomerOrderProducts();
+            Breaker();
+            Joining.QueryCustomerOrderProducts();
+            Breaker();
+        }
+
+        private static void DemoOverviewPart2()
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("We zijn langs alle demo's van de standaard LINQ bibliotheek gegaan.");
+            Console.WriteLine("In het laatste stuk van dit programma zal er extentions op de SELECT, WHERE en ANY methoden van LINQ worden gemaakt.");
+            WhiteLine();
+        }
+
+        private static void DemoPart2()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
         }
     }
 }
