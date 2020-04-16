@@ -6,11 +6,13 @@ namespace LINQ_Demo.Methods
 {
     public class Joining
     {
-        public static void MethodCustomerOrderProducts()
+        public static void MethodInnerCustomerOrderProducts()
         {
-            Program.IntroLine(true, "Join");
-            Console.WriteLine("");
-            Console.WriteLine("");
+            Program.IntroLine(true, "InnerJoin");
+            Console.WriteLine("Maakt een inner join van Customers, Orders en Products");
+            Console.WriteLine("Geeft alle producten in orders van mensen die een 'M' in hun naam hebben weer.");
+            Console.WriteLine("Geeft een object terug met de product omschrijving en naam van de klant");
+            Console.WriteLine("door twee Join methodes te gebruiken.");
             Program.WhiteLine();
             ConsoleTableHeader();
 
@@ -18,15 +20,17 @@ namespace LINQ_Demo.Methods
             stopwatch.Start();
             var sequence = SequenceGenerator.Customers().Where(customer => customer.name.Contains("M"))
                 .Join(
-                SequenceGenerator.Orders(), 
-                customer => customer.id, 
-                order => order.customer_id, 
-                (customer, order) => new {order, customer})
+                    SequenceGenerator.Orders(), 
+                    customer => customer.id, 
+                    order => order.customer_id, 
+                    (customer, order) => new {order, customer}
+                )
                 .Join(
-                SequenceGenerator.Products(),
-                item => item.order.product_ids.ToArray()[0],
-                product => product.id,
-                (item, product) => new {product.description, item.customer.name});
+                    SequenceGenerator.Products(),
+                    item => item.order.product_ids.ToArray()[0],
+                    product => product.id,
+                    (item, product) => new {product.description, item.customer.name}
+                );
 
             foreach (var item in sequence)
             {
@@ -37,11 +41,13 @@ namespace LINQ_Demo.Methods
             Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
         }
 
-        public static void QueryCustomerOrderProducts()
+        public static void QueryInnerCustomerOrderProducts()
         {
-            Program.IntroLine(false, "Join");
-            Console.WriteLine("");
-            Console.WriteLine("");
+            Program.IntroLine(false, "InnerJoin");
+            Console.WriteLine("Maakt een inner join van Customers, Orders en Products");
+            Console.WriteLine("Geeft alle producten in orders van mensen die een 'M' in hun naam hebben weer.");
+            Console.WriteLine("Vraagt eerst alle IEnumerables en voert daarna join query uit.");
+            Console.WriteLine("Geeft een object terug met de product omschrijving en naam van de klant.");
             Program.WhiteLine();
             ConsoleTableHeader();
 
