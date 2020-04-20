@@ -10,7 +10,7 @@ namespace LINQ_Demo.Methods
         {
             Program.IntroLine(true, "Select");
             Console.WriteLine("Zolang de lambda van de Select functie een return value heeft om terug te geven in de reeks");
-            Console.WriteLine("zal de functie Where een gefilterde IEnumerable van Customers teruggeven.");
+            Console.WriteLine("zal de functie Where een gefilterde IEnumerable van strings teruggeven die uit de Customer reeks komt.");
             Program.WhiteLine();
             ConsoleTableHeader();
 
@@ -20,7 +20,7 @@ namespace LINQ_Demo.Methods
 
             foreach (var item in sequence)
             {
-                Console.WriteLine($"           | {item}");
+                Console.WriteLine($"   | {item}");
             }
             stopwatch.Stop();
             Program.WhiteLine();
@@ -32,6 +32,7 @@ namespace LINQ_Demo.Methods
             Program.IntroLine(false, "Select");
             Console.WriteLine("In de query methode wordt eerst de IEnumerable van Customers opgehaald.");
             Console.WriteLine("Hierop wordt vervolgens een select query op uitgevoerd.");
+            Console.WriteLine("zal er een geordende IEnumerable van strings worden teruggeven die uit de Customer reeks komt.");
             Program.WhiteLine();
             ConsoleTableHeader();
 
@@ -42,7 +43,7 @@ namespace LINQ_Demo.Methods
 
             foreach (var item in sequence)
             {
-                Console.WriteLine($"           | {item}");
+                Console.WriteLine($"   | {item}");
             }
             stopwatch.Stop();
             Program.WhiteLine();
@@ -56,14 +57,12 @@ namespace LINQ_Demo.Methods
             Console.WriteLine("Deze functie koppelt de product_id van Order naar de products");
             Console.WriteLine("zal de functie Selectmany door projectie een IEnumerable van Products teruggeven.");
             Program.WhiteLine();
-            ConsoleTableHeader();
+            ConsoleTableHeader(false);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var sequence = SequenceGenerator.Orders().SelectMany(order => order.product_ids, (order, id) =>
-            {
-                return SequenceGenerator.Products().FirstOrDefault(product => product.id == id);
-            }).OrderBy(product => product?.id); //orderby to compare with query expression
+            var sequence = SequenceGenerator.Orders().SelectMany(order => order.product_ids,
+                (order, id) => SequenceGenerator.Products().FirstOrDefault(product => product.id == id));
 
             foreach (var item in sequence)
             {
@@ -82,32 +81,22 @@ namespace LINQ_Demo.Methods
         {
             Program.IntroLine(false, "SelectMany");
             Console.WriteLine("In de query methode wordt eerst de IEnumerable van Orders en Products opgehaald.");
-            Console.WriteLine("Hierop wordt vervolgens een select query op uitgevoerd op dezelfde manier van selectmany.");
+            Console.WriteLine("Hierop wordt vervolgens een select query op uitgevoerd op de product_ids van Order");
+            Console.WriteLine("Hierop zal over geitereerd worden en bij elke id zal er een nieuw product worden gevonden die wordt getoond.");
             Program.WhiteLine();
-            ConsoleTableHeader();
+            ConsoleTableHeader(false);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var orders = SequenceGenerator.Orders();
-            var products = SequenceGenerator.Products();
-            var sequence = from product in products
-                from id in 
-                (
-                    from ids in 
-                    (
-                        from order in orders select order.product_ids
-                    ) select ids.ToArray()
-                )
-                where id[0] == product.id || id[1] == product.id && product != null
-                //orderby to compare with method expression
-                orderby product.id
-                select product;
+            var identifiers = from order in orders select order.product_ids;
 
-            foreach (var item in sequence)
+            foreach (var ids in identifiers)
             {
-                if (item != null)
+                foreach (var id in ids)
                 {
-                    Console.WriteLine($"{item.id}         | {item.description}");
+                    var product = SequenceGenerator.Products().FirstOrDefault(p => p != null && p.id == id);
+                    Console.WriteLine($"{product.id}         | {product.description}");
                 }
             }
             stopwatch.Stop();
@@ -116,10 +105,30 @@ namespace LINQ_Demo.Methods
             Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
         }
 
-        private static void ConsoleTableHeader()
+        public static void SelectIntro()
         {
-            Console.WriteLine("product id | product name");
-            Console.WriteLine("___________|__________________________");
+            Console.WriteLine("De select query en functie van LINQ selecteert een attribuut binnen de reeks en geeft dit in een soort type terug.");
+            Console.WriteLine("In de onderstaande queries zal er een demo worden gegeven dat customers selecteert en alleen de namen teruggeeft.");
+        }
+
+        public static void SelectManyIntro()
+        {
+            Console.WriteLine("De selectmany query en functie van LINQ selecteert een attribuut binnen de reeks en itereert op dit attribuut");
+            Console.WriteLine("In de onderstaande queries zal er een demo worden gegeven dat orders selecteert en, de producten die onder de bestellingen staan, toont");
+        }
+
+        private static void ConsoleTableHeader(bool customer = true)
+        {
+            if (customer)
+            {
+                Console.WriteLine("id | customer name");
+                Console.WriteLine("___|__________________________");
+            }
+            else
+            {
+                Console.WriteLine("product id | product name");
+                Console.WriteLine("___________|__________________________");
+            }
         }
     }
 }

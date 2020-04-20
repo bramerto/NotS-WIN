@@ -83,10 +83,15 @@ namespace LINQ_Demo
 
             Console.WriteLine("3). Projection: Onderstaande functies is een projectie van 15 klanten.");
             WhiteLine();
+            Projection.SelectIntro();
+            WhiteLine();
             Projection.MethodSelectCustomerName();
             Breaker();
             Projection.QuerySelectCustomerName();
             Breaker();
+
+            Projection.SelectManyIntro();
+            WhiteLine();
             Projection.MethodSelectManyProductIds();
             Breaker();
             Projection.QuerySelectManyProductIds();
