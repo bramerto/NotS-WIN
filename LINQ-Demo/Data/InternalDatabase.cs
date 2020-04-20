@@ -7,13 +7,13 @@ namespace LINQ_Demo.Data
     public class InternalDatabase
     {
         private static readonly Random Random = new Random();
-        private Collection<Customer> Customers;
-        private Collection<Order> Orders;
-        private Collection<Product> Products;
+        private readonly Collection<Customer> customers;
+        private readonly Collection<Order> orders;
+        private readonly Collection<Product> products;
 
         public InternalDatabase()
         {
-            Customers = new Collection<Customer>
+            customers = new Collection<Customer>
             {
                 new Customer {id = 10, name = "Bram"},
                 new Customer {id = 11, name = "Steven"},
@@ -32,7 +32,7 @@ namespace LINQ_Demo.Data
                 new Customer {id = 24, name = "Stefan"}
             };
 
-            Orders = new Collection<Order>
+            orders = new Collection<Order>
             {
                 new Order {id = 10, customer_id = 10, product_ids = new List<int> {Random.Next(10, 24), Random.Next(10, 24) }, total_price = Random.Next(100, 800), discount = 0, shipping_cost = 5},
                 new Order {id = 11, customer_id = 11, product_ids = new List<int> {Random.Next(10, 24), Random.Next(10, 24) }, total_price = Random.Next(100, 800), discount = 0, shipping_cost = 5},
@@ -51,7 +51,7 @@ namespace LINQ_Demo.Data
                 new Order {id = 24, customer_id = 24, product_ids = new List<int> {Random.Next(10, 24), Random.Next(10, 24) }, total_price = Random.Next(100, 800), discount = 0, shipping_cost = 5},
             };
 
-            Products = new Collection<Product>
+            products = new Collection<Product>
             {
                 new Product {id = 10, description = "Nvidia Geforce GTX 660", price = Random.Next(100, 200), in_stock = Random.Next(100), amount_clicks = Random.Next(10000), amount_purchased = Random.Next(1000)},
                 new Product {id = 11, description = "Nvidia Geforce GTX 670", price = Random.Next(100, 200), in_stock = Random.Next(100), amount_clicks = Random.Next(10000), amount_purchased = Random.Next(1000)},
@@ -73,17 +73,17 @@ namespace LINQ_Demo.Data
 
         public IEnumerable<Customer> GetCustomers()
         {
-            return Customers;
+            return customers ?? throw new NullReferenceException();
         }
 
         public IEnumerable<Order> GetOrders()
         {
-            return Orders;
+            return orders ?? throw new NullReferenceException();
         }
 
         public IEnumerable<Product> GetProducts()
         {
-            return Products;
+            return products ?? throw new NullReferenceException();
         }
     }
 }

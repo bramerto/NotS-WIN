@@ -20,7 +20,7 @@ namespace LINQ_Demo
             Console.ReadLine();
         }
 
-        public static void Breaker()
+        private static void Breaker()
         {
             WhiteLine();
             Console.WriteLine("--------------------------------------------------------------------------------------");
@@ -42,8 +42,8 @@ namespace LINQ_Demo
         public static void IntroLine(bool method, string name)
         {
             Console.WriteLine(method
-                ? $"Hier wordt de methode gebaseerde {name} query toegepast:"
-                : $"Hier wordt de {name} query expressie toegepast:");
+                ? $"METHOD BASED '{name}' QUERY:"
+                : $"'{name}' QUERY BASED EXPRESSION:");
         }
 
         private static void DemoOverviewPart1()
@@ -64,6 +64,8 @@ namespace LINQ_Demo
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("1). Filtering: Onderstaande functies is een filtering van de 15 producten.");
+            WhiteLine();
+            Filtering.Intro();
             WhiteLine();
             Filtering.MethodHighTierProducts();
             Breaker();
