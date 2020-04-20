@@ -75,7 +75,7 @@ namespace LINQ_Demo.Methods
 
         public static void MethodOuterCustomerOrderProducts()
         {
-            Program.IntroLine(true, "LeftOuterJoin");
+            Program.IntroLine(true, "RightOuterJoin");
             Console.WriteLine("Maakt een left outer join van Orders en Products");
             Console.WriteLine("Geeft alle orders weer en geeft aan welke geen producten hebben.");
             Program.WhiteLine();
@@ -107,7 +107,7 @@ namespace LINQ_Demo.Methods
 
         public static void QueryOuterCustomerOrderProducts()
         {
-            Program.IntroLine(false, "LeftOuterJoin");
+            Program.IntroLine(false, "RightOuterJoin");
             Console.WriteLine("Maakt een left inner join van Orders en Products");
             Console.WriteLine("Geeft alle orders weer en geeft aan welke geen producten hebben.");
             Console.WriteLine("Vraagt eerst alle IEnumerables en voert daarna join query uit.");

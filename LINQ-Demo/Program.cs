@@ -112,6 +112,14 @@ namespace LINQ_Demo
             Breaker();
             Joining.QueryOuterCustomerOrderProducts();
             Breaker();
+
+            Console.WriteLine("5). Grouping: Onderstaande functies is een groupering van 15 orders.");
+            Grouping.Intro();
+            WhiteLine();
+            Grouping.MethodByShippingCost();
+            Breaker();
+            Grouping.QueryByShippingCost();
+            Breaker();
         }
 
         private static void DemoOverviewPart2()
