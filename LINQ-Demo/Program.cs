@@ -74,6 +74,8 @@ namespace LINQ_Demo
 
             Console.WriteLine("2). Ordering: Onderstaande functies is een ordering van 15 orders.");
             WhiteLine();
+            Ordering.Intro();
+            WhiteLine();
             Ordering.MethodByTotalPrice();
             Breaker();
             Ordering.QueryByTotalPrice();

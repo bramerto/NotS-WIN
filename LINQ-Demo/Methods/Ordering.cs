@@ -33,7 +33,8 @@ namespace LINQ_Demo.Methods
         {
             Program.IntroLine(false, "OrderBy");
             Console.WriteLine("In de query methode wordt eerst de IEnumerable van Orders opgehaald.");
-            Console.WriteLine("Hierop wordt vervolgens een orderby query op uitgevoerd.");
+            Console.WriteLine("Hierop wordt vervolgens een orderby query op uitgevoerd en");
+            Console.WriteLine("zal er een geordende IEnumerable van Orders worden teruggeven.");
             Program.WhiteLine();
             ConsoleTableHeader();
 
@@ -53,6 +54,12 @@ namespace LINQ_Demo.Methods
 
             Program.WhiteLine();
             Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
+        }
+
+        public static void Intro()
+        {
+            Console.WriteLine("De orderby query en functie van LINQ ordend een gegeven reeks op een attribuut van een object.");
+            Console.WriteLine("In de onderstaande queries zal er een demo worden gegeven dat orders ordend op de totale prijs minus de korting.");
         }
 
         private static void ConsoleTableHeader()
