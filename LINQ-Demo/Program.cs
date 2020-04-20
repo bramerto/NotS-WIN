@@ -99,9 +99,18 @@ namespace LINQ_Demo
 
             Console.WriteLine("4). Joining: Onderstaande functies is een joining van 15 producten, orders en klanten.");
             WhiteLine();
+            Joining.InnerJoinIntro();
+            WhiteLine();
             Joining.MethodInnerCustomerOrderProducts();
             Breaker();
             Joining.QueryInnerCustomerOrderProducts();
+            Breaker();
+
+            Joining.OuterJoinIntro();
+            WhiteLine();
+            Joining.MethodOuterCustomerOrderProducts();
+            Breaker();
+            Joining.QueryOuterCustomerOrderProducts();
             Breaker();
         }
 

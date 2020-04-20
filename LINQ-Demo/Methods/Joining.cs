@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LINQ_Demo.Data;
+using System;
 using System.Diagnostics;
 using System.Linq;
 
@@ -27,7 +28,7 @@ namespace LINQ_Demo.Methods
                 )
                 .Join(
                     SequenceGenerator.Products(),
-                    item => item.order.product_ids.ToArray()[0],
+                    item => item.order.GetFirstProductId(),
                     product => product.id,
                     (item, product) => new {product.description, item.customer.name}
                 );
@@ -59,7 +60,7 @@ namespace LINQ_Demo.Methods
 
             var sequence = from customer in customers
                 join order in orders on customer.id equals order.customer_id
-                join product in products on order.product_ids.ToArray()[0] equals product.id
+                join product in products on order.GetFirstProductId() equals product.id
                            where customer.name.Contains("M")
                            select new {product.description, customer.name};
 
@@ -72,10 +73,94 @@ namespace LINQ_Demo.Methods
             Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
         }
 
-        private static void ConsoleTableHeader()
+        public static void MethodOuterCustomerOrderProducts()
         {
-            Console.WriteLine("product name           | ordered by");
-            Console.WriteLine("_______________________|________________________");
+            Program.IntroLine(true, "LeftOuterJoin");
+            Console.WriteLine("Maakt een left outer join van Orders en Products");
+            Console.WriteLine("Geeft alle orders weer en geeft aan welke geen producten hebben.");
+            Program.WhiteLine();
+            ConsoleTableHeader(false);
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var sequence = SequenceGenerator.Orders()
+                .GroupJoin(
+                    SequenceGenerator.Products(),
+                    order => order.GetFirstProductId(),
+                    product => product.id,
+                    (order, product) => new { product, order })
+                .SelectMany(item => item.product.DefaultIfEmpty(new Product { description = "NO PRODUCT            "}), 
+                    (item, product) => new
+                    {
+                        product.description,
+                        orderid = item.order.id
+                    });
+
+            foreach (var item in sequence)
+            {
+                Console.WriteLine($"{item.description} | {item.orderid}");
+            }
+            stopwatch.Stop();
+            Program.WhiteLine();
+            Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
+        }
+
+        public static void QueryOuterCustomerOrderProducts()
+        {
+            Program.IntroLine(false, "LeftOuterJoin");
+            Console.WriteLine("Maakt een left inner join van Orders en Products");
+            Console.WriteLine("Geeft alle orders weer en geeft aan welke geen producten hebben.");
+            Console.WriteLine("Vraagt eerst alle IEnumerables en voert daarna join query uit.");
+            Program.WhiteLine();
+            ConsoleTableHeader(false);
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var orders = SequenceGenerator.Orders();
+            var products = SequenceGenerator.Products();
+
+            var sequence =
+                from order in orders
+                join product in products on order.GetFirstProductId() equals product.id into productsGrouped
+                from newProducts in productsGrouped.DefaultIfEmpty(new Product {description = "NO PRODUCT            "})
+                select new {orderid = order.id, newProducts.description};
+
+            foreach (var item in sequence)
+            {
+                Console.WriteLine($"{item.description} | {item.orderid}");
+            }
+            stopwatch.Stop();
+            Program.WhiteLine();
+            Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
+        }
+
+
+        public static void InnerJoinIntro()
+        {
+            Console.WriteLine("De join query en functie van LINQ voegt verschillende reeksen samen en geeft een aangegeven set aan attributen terug van deze reeksen.");
+            Console.WriteLine("In de onderstaande queries zal er een demo worden gegeven dat alle drie reeksen samenvoegt");
+            Console.WriteLine("met een inner join om te zien welke klanten welke producten als eerste hebben besteld.");
+        }
+
+        public static void OuterJoinIntro()
+        {
+            Console.WriteLine("De join query en functie van LINQ voegt verschillende reeksen samen en geeft een aangegeven set aan attributen terug van deze reeksen.");
+            Console.WriteLine("In de onderstaande queries zal er een demo worden gegeven dat alle drie reeksen samenvoegt");
+            Console.WriteLine("met een left outer join om te zien welke klanten welke producten klanten vermijden.");
+        }
+
+        private static void ConsoleTableHeader(bool inner = true)
+        {
+            if (inner)
+            {
+                Console.WriteLine("product name           | ordered by");
+                Console.WriteLine("_______________________|________________________");
+            }
+            else
+            {
+                Console.WriteLine("product name           | order id");
+                Console.WriteLine("_______________________|________________________");
+            }
         }
     }
 }

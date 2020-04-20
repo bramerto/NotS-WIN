@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace LINQ_Demo.Data
 {
@@ -10,5 +11,10 @@ namespace LINQ_Demo.Data
         public double total_price { get; set; }
         public double discount { get; set; }
         public double shipping_cost { get; set; }
+
+        public int GetFirstProductId()
+        {
+            return product_ids.ToArray()[0];
+        }
     }
 }

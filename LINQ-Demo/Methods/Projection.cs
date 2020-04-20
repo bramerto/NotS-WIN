@@ -81,7 +81,7 @@ namespace LINQ_Demo.Methods
         {
             Program.IntroLine(false, "SelectMany");
             Console.WriteLine("In de query methode wordt eerst de IEnumerable van Orders en Products opgehaald.");
-            Console.WriteLine("Hierop wordt vervolgens een select query op uitgevoerd op de product_ids van Order");
+            Console.WriteLine("Hierop wordt vervolgens een select query op uitgevoerd op de product_ids van Order.");
             Console.WriteLine("Hierop zal over geitereerd worden en bij elke id zal er een nieuw product worden gevonden die wordt getoond.");
             Program.WhiteLine();
             ConsoleTableHeader(false);
@@ -96,7 +96,10 @@ namespace LINQ_Demo.Methods
                 foreach (var id in ids)
                 {
                     var product = SequenceGenerator.Products().FirstOrDefault(p => p != null && p.id == id);
-                    Console.WriteLine($"{product.id}         | {product.description}");
+                    if (product != null)
+                    {
+                        Console.WriteLine($"{product.id}         | {product.description}");
+                    }
                 }
             }
             stopwatch.Stop();
@@ -113,8 +116,8 @@ namespace LINQ_Demo.Methods
 
         public static void SelectManyIntro()
         {
-            Console.WriteLine("De selectmany query en functie van LINQ selecteert een attribuut binnen de reeks en itereert op dit attribuut");
-            Console.WriteLine("In de onderstaande queries zal er een demo worden gegeven dat orders selecteert en, de producten die onder de bestellingen staan, toont");
+            Console.WriteLine("De selectmany query en functie van LINQ selecteert een attribuut binnen de reeks en itereert op dit attribuut.");
+            Console.WriteLine("In de onderstaande queries zal er een demo worden gegeven dat orders selecteert en, de producten die onder de bestellingen staan, toont.");
         }
 
         private static void ConsoleTableHeader(bool customer = true)
