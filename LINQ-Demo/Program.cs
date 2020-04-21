@@ -184,6 +184,8 @@ namespace LINQ_Demo
 
             Console.WriteLine("8). Deferred Execution: Onderstaande functies zijn het uitvoeren van deferred execution.");
             WhiteLine();
+            DeferredExecution.Demo();
+            Breaker();
         }
 
         private static void DemoOverviewPart2()
