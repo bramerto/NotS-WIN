@@ -161,6 +161,29 @@ namespace LINQ_Demo
 
             Console.WriteLine("7). Partitioning: Onderstaande functies zijn partitioning van 15 customers.");
             WhiteLine();
+            Partitioning.TakeSkipIntro();
+            WhiteLine();
+            Partitioning.TakeFive();
+            Breaker();
+            Partitioning.SkipFive();
+            Breaker();
+
+            Partitioning.FirstFirstOrDefaultIntro();
+            WhiteLine();
+            Partitioning.FirstOnName();
+            Breaker();
+            Partitioning.FirstOnNameException();
+            Breaker();
+            Partitioning.FirstOrDefaultOnName();
+            Breaker();
+
+            Partitioning.DistinctIntro();
+            WhiteLine();
+            Partitioning.DistinctCustomers();
+            Breaker();
+
+            Console.WriteLine("8). Deferred Execution: Onderstaande functies zijn het uitvoeren van deferred execution.");
+            WhiteLine();
         }
 
         private static void DemoOverviewPart2()

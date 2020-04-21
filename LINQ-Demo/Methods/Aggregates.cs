@@ -158,7 +158,7 @@ namespace LINQ_Demo.Methods
             Console.WriteLine("Haalt de opgetelde som van een attribuut op binnen een reeks.");
             Console.WriteLine("Geeft een double van de opgetelde som van prijzen dat in de query is gevonden.");
             Program.WhiteLine();
-            ConsoleTableHeader("max");
+            ConsoleTableHeader("sum");
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
