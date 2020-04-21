@@ -81,7 +81,7 @@ namespace LINQ_Demo
             Ordering.QueryByTotalPrice();
             Breaker();
 
-            Console.WriteLine("3). Projection: Onderstaande functies is een projectie van 15 klanten.");
+            Console.WriteLine("3). Projection: Onderstaande functies is een projectie van 15 customers.");
             WhiteLine();
             Projection.SelectIntro();
             WhiteLine();
@@ -97,7 +97,7 @@ namespace LINQ_Demo
             Projection.QuerySelectManyProductIds();
             Breaker();
 
-            Console.WriteLine("4). Joining: Onderstaande functies is een joining van 15 producten, orders en klanten.");
+            Console.WriteLine("4). Joining: Onderstaande functies is een joining van 15 producten, orders en customers.");
             WhiteLine();
             Joining.InnerJoinIntro();
             WhiteLine();
@@ -114,12 +114,53 @@ namespace LINQ_Demo
             Breaker();
 
             Console.WriteLine("5). Grouping: Onderstaande functies is een groupering van 15 orders.");
+            WhiteLine();
             Grouping.Intro();
             WhiteLine();
             Grouping.MethodByShippingCost();
             Breaker();
             Grouping.QueryByShippingCost();
             Breaker();
+
+            Console.WriteLine("6). Aggregates: Onderstaande functies zijn aggregates van 15 producten.");
+            WhiteLine();
+            Aggregates.CountIntro();
+            WhiteLine();
+            Aggregates.MethodCountByPrice();
+            Breaker();
+            Aggregates.QueryCountByPrice();
+            Breaker();
+
+            Aggregates.MinIntro();
+            WhiteLine();
+            Aggregates.MethodMinPrice();
+            Breaker();
+            Aggregates.QueryMinPrice();
+            Breaker();
+
+            Aggregates.MaxIntro();
+            WhiteLine();
+            Aggregates.MethodMaxPrice();
+            Breaker();
+            Aggregates.QueryMaxPrice();
+            Breaker();
+
+            Aggregates.SumIntro();
+            WhiteLine();
+            Aggregates.MethodSumPrice();
+            Breaker();
+            Aggregates.QuerySumPrice();
+            Breaker();
+
+            Aggregates.AverageIntro();
+            WhiteLine();
+            Aggregates.MethodAveragePrice();
+            Breaker();
+            Aggregates.QueryAveragePrice();
+            Breaker();
+
+            Console.WriteLine("7). Partitioning: Onderstaande functies zijn partitioning van 15 customers.");
+            WhiteLine();
         }
 
         private static void DemoOverviewPart2()
