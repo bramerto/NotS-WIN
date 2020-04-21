@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LINQ_Demo.Methods
 {
-    public class Grouping
+    public static class Grouping
     {
         public static void MethodByShippingCost()
         {
@@ -16,7 +16,7 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var sequence = SequenceGenerator.Orders().GroupBy(order => order.shipping_cost, order => order.id, 
+            var sequence = SequenceGenerator.Orders().GroupBy(order => order.ShippingCost, order => order.Id, 
                 (shippingCost, orders) => new { Key = shippingCost, amount = orders.Count() }).OrderBy(item => item.Key);
 
             foreach (var item in sequence)
@@ -42,7 +42,7 @@ namespace LINQ_Demo.Methods
             stopwatch.Start();
             var collection = SequenceGenerator.Orders();
             var sequence = from order in collection
-                group order by order.shipping_cost
+                group order by order.ShippingCost
                 into orderedOrder
                 orderby orderedOrder.Key
                 select new {orderedOrder.Key, amount = orderedOrder.Count()};

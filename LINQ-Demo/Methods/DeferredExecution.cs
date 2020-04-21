@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LINQ_Demo.Methods
 {
-    public class DeferredExecution
+    public static class DeferredExecution
     {
         public static void Demo()
         {
@@ -21,12 +21,12 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var products = SequenceGenerator.Products().Where(p => p.price > 120); //query is gebouwd maar nog niet uitgevoerd
-            products = products.Where(p => p.price < 170); //query is aangepast maar not steeds niet uitgevoerd
+            var products = SequenceGenerator.Products().Where(p => p.Price > 120); //query is gebouwd maar nog niet uitgevoerd
+            products = products.Where(p => p.Price < 170); //query is aangepast maar not steeds niet uitgevoerd
 
             foreach (var product in products) //query wordt hier uitgevoerd
             {
-                Console.WriteLine($"{product.id} | {product.price}");
+                Console.WriteLine($"{product.Id} | {product.Price}");
             }
             stopwatch.Stop();
             Program.WhiteLine();
@@ -37,13 +37,13 @@ namespace LINQ_Demo.Methods
             ConsoleTableHeader();
 
             stopwatch.Start();
-            var products2 = SequenceGenerator.Products().Where(p => p.price > 120)
-                .Where(p => p.price < 170)
+            var products2 = SequenceGenerator.Products().Where(p => p.Price > 120)
+                .Where(p => p.Price < 170)
                 .ToArray(); //in deze instantie wordt de query meteen uitgevoerd met de functie 'ToArray' en in een array gezet
 
             foreach (var product2 in products2) //loopt door de lijst heen zonder lazy evaluation
             {
-                Console.WriteLine($"{product2.id} | {product2.price}");
+                Console.WriteLine($"{product2.Id} | {product2.Price}");
             }
             stopwatch.Stop();
             Program.WhiteLine();

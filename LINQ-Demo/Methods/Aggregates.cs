@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LINQ_Demo.Methods
 {
-    public class Aggregates
+    public static class Aggregates
     {
         public static void MethodCountByPrice()
         {
@@ -16,7 +16,7 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var countedSequence = SequenceGenerator.Products().Count(p => p.price > 150);
+            var countedSequence = SequenceGenerator.Products().Count(p => p.Price > 150);
             Console.WriteLine(countedSequence);
             stopwatch.Stop();
 
@@ -39,7 +39,7 @@ namespace LINQ_Demo.Methods
 
             stopwatch.Start();
             var collection = SequenceGenerator.Products();
-            var countedSequence = (from product in collection where product.price > 150 select product).Count();
+            var countedSequence = (from product in collection where product.Price > 150 select product).Count();
 
             Console.WriteLine(countedSequence);
             stopwatch.Stop();
@@ -64,7 +64,7 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var lowestPrice = SequenceGenerator.Products().Min(p => p.price);
+            var lowestPrice = SequenceGenerator.Products().Min(p => p.Price);
             Console.WriteLine(lowestPrice);
             stopwatch.Stop();
 
@@ -87,7 +87,7 @@ namespace LINQ_Demo.Methods
 
             stopwatch.Start();
             var collection = SequenceGenerator.Products();
-            var lowestPrice = (from product in collection select product).Min(p => p.price);
+            var lowestPrice = (from product in collection select product).Min(p => p.Price);
             Console.WriteLine(lowestPrice);
             stopwatch.Stop();
 
@@ -113,7 +113,7 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var highestPrice = SequenceGenerator.Products().Max(p => p.price);
+            var highestPrice = SequenceGenerator.Products().Max(p => p.Price);
             Console.WriteLine(highestPrice);
             stopwatch.Stop();
 
@@ -136,7 +136,7 @@ namespace LINQ_Demo.Methods
 
             stopwatch.Start();
             var collection = SequenceGenerator.Products();
-            var highestPrice = (from product in collection select product).Max(p => p.price);
+            var highestPrice = (from product in collection select product).Max(p => p.Price);
             Console.WriteLine(highestPrice);
             stopwatch.Stop();
 
@@ -162,7 +162,7 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var summedPrice = SequenceGenerator.Products().Sum(p => p.price);
+            var summedPrice = SequenceGenerator.Products().Sum(p => p.Price);
             Console.WriteLine(summedPrice);
             stopwatch.Stop();
 
@@ -185,7 +185,7 @@ namespace LINQ_Demo.Methods
 
             stopwatch.Start();
             var collection = SequenceGenerator.Products();
-            var summedPrice = (from product in collection select product).Sum(p => p.price);
+            var summedPrice = (from product in collection select product).Sum(p => p.Price);
             Console.WriteLine(summedPrice);
             stopwatch.Stop();
 
@@ -211,7 +211,7 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var averagePrice = SequenceGenerator.Products().Average(p => p.price);
+            var averagePrice = SequenceGenerator.Products().Average(p => p.Price);
             Console.WriteLine(averagePrice);
             stopwatch.Stop();
 
@@ -234,7 +234,7 @@ namespace LINQ_Demo.Methods
 
             stopwatch.Start();
             var collection = SequenceGenerator.Products();
-            var averagePrice = (from product in collection select product).Average(p => p.price);
+            var averagePrice = (from product in collection select product).Average(p => p.Price);
             Console.WriteLine(averagePrice);
             stopwatch.Stop();
 

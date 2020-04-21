@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LINQ_Demo.Methods
 {
-    public class Partitioning
+    public static class Partitioning
     {
         public static void TakeFive()
         {
@@ -20,7 +20,7 @@ namespace LINQ_Demo.Methods
 
             foreach (var item in sequence)
             {
-                Console.WriteLine($"{item.id} | {item.name}");
+                Console.WriteLine($"{item.Id} | {item.Name}");
             }
             stopwatch.Stop();
             Program.WhiteLine();
@@ -41,7 +41,7 @@ namespace LINQ_Demo.Methods
 
             foreach (var item in sequence)
             {
-                Console.WriteLine($"{item.id} | {item.name}");
+                Console.WriteLine($"{item.Id} | {item.Name}");
             }
             stopwatch.Stop();
             Program.WhiteLine();
@@ -65,8 +65,8 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var customer = SequenceGenerator.Customers().First(c => c.name.Contains("Bram"));
-            Console.WriteLine($"{customer.id} | {customer.name}");
+            var customer = SequenceGenerator.Customers().First(c => c.Name.Contains("Bram"));
+            Console.WriteLine($"{customer.Id} | {customer.Name}");
             stopwatch.Stop();
             Program.WhiteLine();
             Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
@@ -83,8 +83,8 @@ namespace LINQ_Demo.Methods
             stopwatch.Start();
             try
             {
-                var customer = SequenceGenerator.Customers().First(c => c.name.Contains("TEST123"));
-                Console.WriteLine($"{customer.id} | {customer.name}");
+                var customer = SequenceGenerator.Customers().First(c => c.Name.Contains("TEST123"));
+                Console.WriteLine($"{customer.Id} | {customer.Name}");
             }
             catch (InvalidOperationException e)
             {
@@ -109,10 +109,10 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var customer = SequenceGenerator.Customers().FirstOrDefault(c => c.name.Contains("Bram"));
+            var customer = SequenceGenerator.Customers().FirstOrDefault(c => c.Name.Contains("Bram"));
             if (customer != null)
             {
-                Console.WriteLine($"{customer.id} | {customer.name}");
+                Console.WriteLine($"{customer.Id} | {customer.Name}");
             }
             
             stopwatch.Stop();
@@ -148,7 +148,7 @@ namespace LINQ_Demo.Methods
 
             foreach (var customer in sequence)
             {
-                Console.WriteLine($"{customer.id} | {customer.name}");
+                Console.WriteLine($"{customer.Id} | {customer.Name}");
             }
 
             stopwatch.Stop();

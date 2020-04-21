@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LINQ_Demo.Methods
 {
-    public class Ordering
+    public static class Ordering
     {
         public static void MethodByTotalPrice()
         {
@@ -17,11 +17,11 @@ namespace LINQ_Demo.Methods
             var stopwatch = new Stopwatch();
 
             stopwatch.Start();
-            var sequence = SequenceGenerator.Orders().OrderBy(order => order.total_price - order.discount);
+            var sequence = SequenceGenerator.Orders().OrderBy(order => order.TotalPrice - order.Discount);
 
             foreach (var item in sequence)
             {
-                Console.WriteLine($"{item.id}       | {item.total_price}");
+                Console.WriteLine($"{item.Id}       | {item.TotalPrice}");
             }
             stopwatch.Stop();
 
@@ -43,12 +43,12 @@ namespace LINQ_Demo.Methods
             stopwatch.Start();
             var collection = SequenceGenerator.Orders();
             var sequence = from order in collection
-                orderby order.total_price - order.discount
+                orderby order.TotalPrice - order.Discount
                 select order;
 
             foreach (var item in sequence)
             {
-                Console.WriteLine($"{item.id}       | {item.total_price}");
+                Console.WriteLine($"{item.Id}       | {item.TotalPrice}");
             }
             stopwatch.Stop();
 

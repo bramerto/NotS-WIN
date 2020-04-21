@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LINQ_Demo.Methods
 {
-    public class Projection
+    public static class Projection
     {
         public static void MethodSelectCustomerName()
         {
@@ -16,7 +16,7 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var sequence = SequenceGenerator.Customers().Select(customer => customer.name);
+            var sequence = SequenceGenerator.Customers().Select(customer => customer.Name);
 
             foreach (var item in sequence)
             {
@@ -39,7 +39,7 @@ namespace LINQ_Demo.Methods
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var collection = SequenceGenerator.Customers();
-            var sequence = from customer in collection select customer.name;
+            var sequence = from customer in collection select customer.Name;
 
             foreach (var item in sequence)
             {
@@ -61,14 +61,14 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var sequence = SequenceGenerator.Orders().SelectMany(order => order.product_ids,
-                (order, id) => SequenceGenerator.Products().FirstOrDefault(product => product.id == id));
+            var sequence = SequenceGenerator.Orders().SelectMany(order => order.ProductIds,
+                (order, id) => SequenceGenerator.Products().FirstOrDefault(product => product.Id == id));
 
             foreach (var item in sequence)
             {
                 if (item != null)
                 {
-                    Console.WriteLine($"{item.id}         | {item.description}");
+                    Console.WriteLine($"{item.Id}         | {item.Description}");
                 }
             }
             stopwatch.Stop();
@@ -89,16 +89,16 @@ namespace LINQ_Demo.Methods
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var orders = SequenceGenerator.Orders();
-            var identifiers = from order in orders select order.product_ids;
+            var identifiers = from order in orders select order.ProductIds;
 
             foreach (var ids in identifiers)
             {
                 foreach (var id in ids)
                 {
-                    var product = SequenceGenerator.Products().FirstOrDefault(p => p != null && p.id == id);
+                    var product = SequenceGenerator.Products().FirstOrDefault(p => p != null && p.Id == id);
                     if (product != null)
                     {
-                        Console.WriteLine($"{product.id}         | {product.description}");
+                        Console.WriteLine($"{product.Id}         | {product.Description}");
                     }
                 }
             }

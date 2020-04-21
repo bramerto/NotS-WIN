@@ -2,11 +2,11 @@
 {
     public class Product
     {
-        public int id { get; set; }
-        public string description { get; set; }
-        public double price { get; set; }
-        public int in_stock { get; set; }
-        public int amount_clicks { get; set; }
-        public int amount_purchased { get; set; }
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public double Price { get; set; }
+        public int InStock { get; set; }
+        public int AmountClicks { get; set; }
+        public int AmountPurchased { get; set; }
     }
 }

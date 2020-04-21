@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace LINQ_Demo.Methods
 {
-    public class Joining
+    public static class Joining
     {
         public static void MethodInnerCustomerOrderProducts()
         {
@@ -19,18 +19,18 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var sequence = SequenceGenerator.Customers().Where(customer => customer.name.Contains("M"))
+            var sequence = SequenceGenerator.Customers().Where(customer => customer.Name.Contains("M"))
                 .Join(
                     SequenceGenerator.Orders(), 
-                    customer => customer.id, 
-                    order => order.customer_id, 
+                    customer => customer.Id, 
+                    order => order.CustomerId, 
                     (customer, order) => new {order, customer}
                 )
                 .Join(
                     SequenceGenerator.Products(),
                     item => item.order.GetFirstProductId(),
-                    product => product.id,
-                    (item, product) => new {product.description, item.customer.name}
+                    product => product.Id,
+                    (item, product) => new {description = product.Description, name = item.customer.Name}
                 );
 
             foreach (var item in sequence)
@@ -59,10 +59,10 @@ namespace LINQ_Demo.Methods
             var products = SequenceGenerator.Products();
 
             var sequence = from customer in customers
-                join order in orders on customer.id equals order.customer_id
-                join product in products on order.GetFirstProductId() equals product.id
-                           where customer.name.Contains("M")
-                           select new {product.description, customer.name};
+                join order in orders on customer.Id equals order.CustomerId
+                join product in products on order.GetFirstProductId() equals product.Id
+                           where customer.Name.Contains("M")
+                           select new {description = product.Description, name = customer.Name};
 
             foreach (var item in sequence)
             {
@@ -87,13 +87,13 @@ namespace LINQ_Demo.Methods
                 .GroupJoin(
                     SequenceGenerator.Products(),
                     order => order.GetFirstProductId(),
-                    product => product.id,
+                    product => product.Id,
                     (order, product) => new { product, order })
-                .SelectMany(item => item.product.DefaultIfEmpty(new Product { description = "NO PRODUCT            "}), 
+                .SelectMany(item => item.product.DefaultIfEmpty(new Product { Description = "NO PRODUCT            "}), 
                     (item, product) => new
                     {
-                        product.description,
-                        orderid = item.order.id
+                        description = product.Description,
+                        orderid = item.order.Id
                     });
 
             foreach (var item in sequence)
@@ -121,9 +121,9 @@ namespace LINQ_Demo.Methods
 
             var sequence =
                 from order in orders
-                join product in products on order.GetFirstProductId() equals product.id into productsGrouped
-                from newProducts in productsGrouped.DefaultIfEmpty(new Product {description = "NO PRODUCT            "})
-                select new {orderid = order.id, newProducts.description};
+                join product in products on order.GetFirstProductId() equals product.Id into productsGrouped
+                from newProducts in productsGrouped.DefaultIfEmpty(new Product {Description = "NO PRODUCT            "})
+                select new {orderid = order.Id, description = newProducts.Description};
 
             foreach (var item in sequence)
             {

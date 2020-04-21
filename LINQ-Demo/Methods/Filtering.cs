@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace LINQ_Demo.Methods
 {
-    public class Filtering
+    public static class Filtering
     {
         public static void MethodHighTierProducts()
         {
@@ -19,13 +19,13 @@ namespace LINQ_Demo.Methods
             stopwatch.Start();
             var sequence = SequenceGenerator.Products().Where(product =>
             {
-                var value = int.Parse(Regex.Match(product.description, @"\d+").Value);
+                var value = int.Parse(Regex.Match(product.Description, @"\d+").Value);
                 return value > 1000;
             });
 
             foreach (var item in sequence)
             {
-                Console.WriteLine($"{item.id}         | {item.description}");
+                Console.WriteLine($"{item.Id}         | {item.Description}");
             }
             stopwatch.Stop();
             Program.WhiteLine();
@@ -46,12 +46,12 @@ namespace LINQ_Demo.Methods
             stopwatch.Start();
             var collection = SequenceGenerator.Products();
             var sequence = from product in collection
-                where int.Parse(Regex.Match(product.description, @"\d+").Value) > 1000
+                where int.Parse(Regex.Match(product.Description, @"\d+").Value) > 1000
                 select product;
 
             foreach (var item in sequence)
             {
-                Console.WriteLine($"{item.id}         | {item.description}");
+                Console.WriteLine($"{item.Id}         | {item.Description}");
             }
             stopwatch.Stop();
 
