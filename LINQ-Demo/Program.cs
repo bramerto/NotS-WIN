@@ -1,5 +1,6 @@
 ﻿using System;
 using LINQ_Demo.Data;
+using LINQ_Demo.Extension;
 using LINQ_Demo.Methods;
 
 namespace LINQ_Demo
@@ -182,7 +183,7 @@ namespace LINQ_Demo
             Partitioning.DistinctCustomers();
             Breaker();
 
-            Console.WriteLine("8). Deferred Execution: Onderstaande functies zijn het uitvoeren van deferred execution.");
+            Console.WriteLine("8). Deferred Execution: Onderstaande functies is het uitvoeren van deferred execution.");
             WhiteLine();
             DeferredExecution.Demo();
             Breaker();
@@ -199,6 +200,18 @@ namespace LINQ_Demo
         private static void DemoPart2()
         {
             Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("1). WHERE Extension: Onderstaande functie is een aangepaste extension van Where in LINQ.");
+            WhiteLine();
+            LinqExtension.DemoWhere();
+            Breaker();
+            Console.Write("2). SELECT Extension: Onderstaande functie is een aangepaste extension van Select in LINQ.");
+            WhiteLine();
+            LinqExtension.DemoSelect();
+            Breaker();
+            Console.Write("3). ANY Extension: Onderstaande functie is een aangepaste extension van Any in LINQ.");
+            WhiteLine();
+            LinqExtension.DemoAny();
+            Breaker();
         }
     }
 }

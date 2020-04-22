@@ -46,7 +46,8 @@
     <Compile Include="Data\Customer.cs" />
     <Compile Include="Data\Order.cs" />
     <Compile Include="Data\Product.cs" />
-    <Compile Include="ExtensionLinqImplementation.cs" />
+    <Compile Include="Extension\LinqExtensionImplementation.cs" />
+    <Compile Include="Extension\LinqExtension.cs" />
     <Compile Include="Data\InternalDatabase.cs" />
     <Compile Include="Methods\Aggregates.cs" />
     <Compile Include="Methods\DeferredExecution.cs" />
