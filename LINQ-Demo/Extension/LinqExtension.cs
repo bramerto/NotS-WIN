@@ -42,13 +42,11 @@ namespace LINQ_Demo.Extension
             ConsoleTableHeader();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var sequence = SequenceGenerator.Products().Any(p => p.Description.Contains("80"));
+            var isPresent = SequenceGenerator.Products().Any(p => p.Description.Contains("80"));
 
-            foreach (var isPresent in sequence)
-            {
-                Console.WriteLine($"{isPresent}");
-            }
-            stopwatch.Stop();
+            Console.WriteLine($"{isPresent}");
+            
+            stopwatch.Stop(); 
             Program.WhiteLine();
             Program.StopwatchLine(stopwatch.ElapsedMilliseconds);
         }

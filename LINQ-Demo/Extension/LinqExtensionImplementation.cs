@@ -26,13 +26,18 @@ namespace LINQ_Demo.Extension
             }
         }
 
-        public static IEnumerable<bool> Any<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        public static bool Any<T>(this IEnumerable<T> source, Func<T, bool> predicate)
         {
-            Console.WriteLine("Own Any implementation");
+            Console.WriteLine("Own 'Any' implementation");
             foreach (var item in source)
             {
-                yield return predicate(item);
+                if (predicate(item))
+                {
+                    return true;
+                }
             }
+
+            return false;
         }
     }
 }
