@@ -17,6 +17,7 @@ namespace LINQ_Demo
 
             DemoOverviewPart2();
             DemoPart2();
+            CollectionVsSequence();
 
             Console.ReadLine();
         }
@@ -183,6 +184,7 @@ namespace LINQ_Demo
             Partitioning.DistinctCustomers();
             Breaker();
 
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("8). Deferred Execution: Onderstaande functies is het uitvoeren van deferred execution.");
             WhiteLine();
             DeferredExecution.Demo();
@@ -195,6 +197,35 @@ namespace LINQ_Demo
             Console.WriteLine("We zijn langs alle demo's van de standaard LINQ bibliotheek gegaan.");
             Console.WriteLine("In het laatste stuk van dit programma zal er extentions op de SELECT, WHERE en ANY methoden van LINQ worden gemaakt.");
             WhiteLine();
+        }
+
+        private static void CollectionVsSequence()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Er is een verschil tussen een reeks en een collectie binnen LINQ.");
+            Console.WriteLine("Reeks:");
+            Console.WriteLine("Is een IEnumerable, en kan alleen het volgende element ophalen.");
+            Console.WriteLine("Een IEnumerable houdt dus niet de hele lijst in het geheugen");
+            Console.WriteLine("en kan hier dus ook niks in aanpassen of dynamiek inlezen of schrijven.");
+            Console.WriteLine("Dit heeft een aantal voordelen:");
+            Console.WriteLine(" - Er wordt minder geheugen gebruikt.");
+            Console.WriteLine(" - Bij grootte reeksen wordt deze niet in een keer opgehaald.");
+            Console.WriteLine(" - Zorgt ervoor dat LINQ queries logisch kunnen worden gebouwd.");
+            Console.WriteLine("Reeksen hebben dus positieve impact op geheugen omdat het niet een hele array op hoeft te halen");
+            Console.WriteLine("om een LINQ query uit te voeren. Dit maakt het efficient voor de software.");
+            WhiteLine();
+            Console.WriteLine("Collectie:");
+            Console.WriteLine("Is een array die wordt geladen in het geheugen.");
+            Console.WriteLine("Dit kunnen verschillende soorten collecties zijn waaronder:");
+            Console.WriteLine(" - List");
+            Console.WriteLine(" - Collection");
+            Console.WriteLine(" - HashTable");
+            Console.WriteLine(" - Dictionary");
+            Console.WriteLine("Het voordeel hiervan is dat deze collecties kunnen");
+            Console.WriteLine("worden ingelezen en er kunnen ook elementen aan toegevoegd worden.");
+            Console.WriteLine("Dit neemt uiteraard meer geheugen in voor het systeem");
+            Console.WriteLine("en kan dus voor grote collecties een performance hit geven.");
+            Console.WriteLine("Op collecties kunnen ook LINQ queries uitgevoerd worden.");
         }
 
         private static void DemoPart2()
