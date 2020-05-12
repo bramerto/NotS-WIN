@@ -22,9 +22,9 @@ namespace LINQ_Demo.Methods
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var products = SequenceGenerator.Products().Where(p => p.Price > 120); //query is gebouwd maar nog niet uitgevoerd
-            products = products.Where(p => p.Price < 170); //query is aangepast maar not steeds niet uitgevoerd
+            products = products.Where(p => p.Price < 170); //query is aangepast maar nog steeds niet uitgevoerd
 
-            foreach (var product in products) //query wordt hier uitgevoerd
+            foreach (var product in products) //query wordt hier uitgevoerd met lazy evaluation.
             {
                 Console.WriteLine($"{product.Id} | {product.Price}");
             }
@@ -41,7 +41,7 @@ namespace LINQ_Demo.Methods
                 .Where(p => p.Price < 170)
                 .ToArray(); //in deze instantie wordt de query meteen uitgevoerd met de functie 'ToArray' en in een array gezet
 
-            foreach (var product2 in products2) //loopt door de lijst heen zonder lazy evaluation
+            foreach (var product2 in products2) //loopt door de lijst heen zonder lazy evaluation (eager evaluation).
             {
                 Console.WriteLine($"{product2.Id} | {product2.Price}");
             }

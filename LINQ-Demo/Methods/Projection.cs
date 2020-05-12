@@ -16,7 +16,7 @@ namespace LINQ_Demo.Methods
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var sequence = SequenceGenerator.Customers().Select(customer => customer.Name);
+            var sequence = SequenceGenerator.Orders().Select(order => new { order.Id, order.ShippingCost, order.Discount});
 
             foreach (var item in sequence)
             {
@@ -62,7 +62,7 @@ namespace LINQ_Demo.Methods
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var sequence = SequenceGenerator.Orders().SelectMany(order => order.ProductIds,
-                (order, id) => SequenceGenerator.Products().FirstOrDefault(product => product.Id == id));
+                (order, productid) => SequenceGenerator.Products().FirstOrDefault(product => product.Id == productid));
 
             foreach (var item in sequence)
             {
